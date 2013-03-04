@@ -1,0 +1,34 @@
+prontera,150,150,4	script	Curandeira	100,{
+// Sua config =======================
+set @delaybuff, gettimetick(2);
+// ==================================
+if( getgroupid() == 0 )
+{
+percentheal 100, 100;
+if ( @delaybuff > @comparabuff )
+{
+sc_start 32, 300000,10;
+set @comparabuff, gettimetick(2) + 30;
+atcommand "@repairall";
+emotion 14;
+end;
+}
+dispbottom "Voce ainda não pode pegar buffs, apenas SP HP.";
+end;
+} else if( getgroupid() > 1 ) {
+percentheal 100, 100;
+if ( @delaybuff > @comparabuff )
+{
+sc_start 30, 300000,10;
+sc_start 32, 300000,10;
+sc_start 29, 300000,10;
+sc_start 41, 300000,10;
+set @comparabuff, gettimetick(2) + 30;
+atcommand "@repairall";
+emotion 14;
+end;
+}
+dispbottom "Voce ainda não pode pegar buffs, apenas SP HP.";
+end;
+}
+}

@@ -1,0 +1,17 @@
+prontera,155,184,5	Script	Novidades	90,{
+	if(getgmlevel() >= 90){
+				mes "[^48D1CCNOVIDADES^000000]";
+				mes "SÓ FUNCIONA ENQUANTO O CLÃ DA STAFF EXISTIR";
+				mes "Qual novidade deseja atualizar?";
+				mes "- Máximo de Letras: 200 -";
+				digit @newz$;
+				query_sql "UPDATE `guild` SET `novidades` = '"+@newz$+"' WHERE `guild_id` = '2'";
+				close;
+	}
+
+OnPcLoginEvent:
+query_sql "SELECT `novidades` FROM `guild` WHERE `guild_id`= '2'",@news$;
+mes "[^48D1CCNOVIDADES^000000]";
+mes @news$;
+close;
+}

@@ -1,0 +1,425 @@
+//                                                                                                 
+//                                                                                                    
+//  DDDDDDDD      D                          D       DDDDDDDDDD                                       
+// DDDDDDDDDDD  DDDD                      DDDDD      DDDDDDDDDDD                                      
+//  DDDDDDDDDD DDDDD                      DDDDD       DDDD  DDDD                                      
+//   DDDD  DDDD DD                        DDDDD       DDDD    DD                                      
+//   DDDD  DDDD    D    DD   DD     DD     DDDD       DDDD          DD       DD  D     D   D    D     
+//   DDDD  DDDD DDDD  DDDDDD DDD  DDDDDD   DDDD       DDDD  D     DDDDDD   DDDD DDD DDDD DDDD DDDDD   
+//   DDDD  DDDDDDDDD  DDDDDD DD  DDD  DD   DDDD       DDDD DD    DD  DDD  DDDDDDDDD DDDDDDDDDDDDDDD   
+//   DDDDDDDDD  DDDD   DDDDD D   DDD  DDD  DDDD       DDDDDDD    DD  DDDD  DDDDDDDD DDDDDDDDDD DDDD   
+//   DDDDDDDD   DDDD    DDDDDD  DDDDDDDDD  DDDD       DDDDDDD        DDDD  DDDD DD  DDDD  DDDD DDDD   
+//   DDDDDD     DDDD     DDDD   DDDDDDDDD  DDDD       DDDD  D     DDDDDDD  DDDD     DDDD  DDDD  DDD   
+//   DDDD       DDDD    DDDDDD  DDDD       DDDD       DDDD  D    DDD DDDD  DDDD     DDDD  DDDD  DDD   
+//   DDDD       DDDD    D DDDD   DDD       DDDD       DDDD      DDDD DDDD  DDDD     DDDD  DDDD DDDD   
+//   DDDD       DDDD   DD DDDDD  DDDD  DD  DDDD       DDDD      DDDD DDDDD DDDD     DDDD  DDDD DDDD   
+//  DDDDDD     DDDDDD DDD DDDDDD DDDDDDD  DDDDDD    DDDDDDD     DDDDDDDDD DDDDDD    DDDDDDDDDD DDDDD  
+//  DDDDDD     DDDDDDDDDD DDDDDD  DDDDD   DDDDD      DDDDDD      DDDD DDD DDDDDD   DDDDD DDDDD DDDDD  
+// ===========================================================
+//===== Cronus Script ========================================
+//= Sistema Vip
+//===== Por: =================================================
+//= Pixel Farm
+//===== Versão Atual: ========================================
+//= 1.0
+//===== Compatibilidade: =====================================
+//= Cronus Emulador
+//===== Descrição: ===========================================
+// Administrador de vip com as opções:
+// Adicionar dias vip.
+// Remover dias vip.
+// Ver dias vip.
+// O jogador adquirir dias vip por cash.
+// Leva o jogador para a sala vip.
+//============================================================
+-	script	atcmd_addcash	-1,{
+//====== Configurações =======================================
+//============================================================
+OnAtcommand:
+if (getgroupid() < @lvl){
+if(getgroupid() <1){
+mes @npc$;
+mes "Me desculpe mais você não é vip, deseja adquirir seu vip agora mesmo?";
+if (select("- Sim:- Não") == 2) close;
+
+	mes @npc$;
+	mes "Você pode adquirir "+@dias+" dias vip por apenas "+@price+" Cashs ";
+	mes "Deseja comprar?";
+	if (select("- Sim:- Não") == 2) close;
+	
+	if(#CASHPOINTS < @price){ next; mes @npc$; mes "Desculpe mas você não possui cash suficiente"; close; }
+	next;
+	mes @npc$;
+	mes "Parabéns seus dias vip foram adquiridos com sucesso, relogue para ativar";
+	query_sql "UPDATE `login` SET `group_id`='2',`diasvip`=`diasvip`+"+@dias+" WHERE `account_id`='"+ getcharid(3) +"'";
+	set #CASHPOINTS,#CASHPOINTS-@price;
+	close;
+	}
+	
+		mes @npc$;
+		query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'", .@diasvip;
+		mes "Olá ^FF7F24"+strcharinfo(0)+"^000000 !";
+		mes "Você Possui ^00BFFF"+.@diasvip+"^000000 Dias VIP.";
+		mes "Deseja ir para a Sala Vip ?";
+		if (select("- Sim:- Não") == 2) close;
+		
+		close2;
+		warp @map$,@x,@Y;
+		end;
+	}
+
+
+mes @npc$;
+mes "Olá "+strcharinfo(0)+" o que deseja administrar no sistema vip?";
+switch(select("- Adicionar Vip:- Remover Vip:- Ver dias vip")){
+
+case 1:
+	next;
+	mes @npc$;
+	mes "Digite o login da conta que deseja adicionar os dias vip";
+	input .@conta$;
+
+	query_sql "SELECT `account_id` FROM `login` WHERE `userid`='"+.@conta$+"'",.@cont;
+	if(.@cont == 0)
+	{
+	next;
+	mes @npc$;
+	mes "Desculpe mais você não digitou o login da conta corretamente.";
+	close;
+}
+	next;
+	mes @npc$;
+	mes "Agora digite a quantidade de dias vip que deseja adicionar a conta "+.@conta$+".";
+	input .@quant;
+			if(.@quant == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mas você digitou uma quantidade invalida.";
+			close;
+			}
+	next;
+	mes @npc$;
+	mes "Tem certeza que deseja adicionar ^00BFFF"+.@quant+"^000000 dias vip na conta ^00BFFF"+.@conta$+"^000000?";
+	if (select("- Sim:- Não") == 2) close;
+	
+	next;
+		mes "Qual o nível da conta?";
+		input .qv$;
+		mes @npc$;
+		mes "Os dias vip da conta "+@conta$+" foram adicionados com sucesso.";
+		query_sql "UPDATE `login` SET `group_id`='"+.qv$+"',`diasvip`=`diasvip`+"+.@quant+" WHERE `userid`='"+.@conta$+"'";
+		close;
+
+case 2:
+	next;
+	mes @npc$;
+	mes "Digite o login da conta que deseja remover os dias vip";
+	input .@conta$;
+			query_sql "SELECT `account_id` FROM `login` WHERE `userid`='"+.@conta$+"'",.@cont;
+			if(.@cont == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mais você não digitou o login da conta corretamente.";
+			close;
+			}
+	next;
+	mes @npc$;
+	mes "Agora digite a quantidade de dias vip que deseja remover da conta "+.@conta$+".";
+	input .@quant;
+			if(.@quant == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mas você digitou uma quantidade invalida.";
+			close;
+			}
+	next;
+	mes @npc$;
+	mes "Tem certeza que deseja remover ^00BFFF"+.@quant+"^000000 dias vip da conta ^00BFFF"+.@conta$+"^000000?";
+	if (select("- Sim:- Não") == 2) close;
+	
+		next;
+		mes @npc$;
+		mes "Os dias vip da conta "+@conta1$+" foram removidos com sucesso.";
+		query_sql "UPDATE `login` SET `group_id`='2',`diasvip`=`diasvip`-"+.@quant+" WHERE `userid`='"+.@conta$+"'";
+		close;
+
+case 3:
+	next;
+	mes @npc$;
+	mes "Digite o login da conta que deseja ver a quantidade de dias vip";
+	input .@conta$;
+			query_sql "SELECT `account_id` FROM `login` WHERE `userid`='"+.@conta$+"'",.@cont;
+			if(.@cont == 0)
+			{
+			next;
+			mes @npc$;
+			mes "Desculpe mais você não digitou o login da conta corretamente.";
+			close;
+			}
+	next;
+	mes @npc$;
+	query_sql "SELECT `diasvip` FROM `login` WHERE `userid` = '"+.@conta$+"'", .@diasvip;
+	mes "A Conta ^00BFFF"+.@conta$+"^000000 Possui ^00BFFF"+.@diasvip+"^000000 dias de vip.";
+	close;
+}
+
+OnInit:
+bindatcmd("cashvip","atcmd_addcash::OnAtcommand",99,99);
+set @npc$,"[^FF7F24Sistema Vip^000000]"; // Nome do npc
+set @srv$,"RagnaMundi"; // Nome do seu servidor
+set @lvl,99; // Level da conta para administrar o vip
+set @price,1000; // Preço dos dias vip.
+set @dias,30; // Quantidade de dias vip.
+set @map$,"sec_in02"; // Mapa da sala vip
+set @x,146; // Coordenada x do mapa da sala vip
+set @y,161; // Coordenada y do mapa da sala vip
+end;
+}
+
+-	script	Sistema Vip#02	-1,{
+
+OnClock0001: query_sql "UPDATE `login` SET `diasvip`=`diasvip`-1 WHERE `group_id`='1'"; end;
+OnClock0002: query_sql "UPDATE `login` SET `group_id`='0' WHERE `diasvip`<='0' AND `group_id`='2'"; end;
+end;
+}
+
+-	script	Sistema Vip#03	-1,{
+
+OnPCLoginEvent:
+if (getgroupid() >= 20){ end; }
+query_sql "SELECT `diasvip` FROM `login` WHERE `account_id` = '"+getcharid(3)+"'", .@diasvip;
+if(.@diasvip == 0){ end; }
+dispbottom "Olá "+strcharinfo(0)+" você possui "+.@diasvip+" dias vip.";
+end;
+}
+//======================================================
+//======================================================
+//======================================================
+//======================================================
+prontera,157,196,4	script	Sala Vip	72,{
+
+if (getgroupid()<1) {
+Mes "[ Sala VIP ]";
+Mes "Desculpe, você não é VIP!!! Para ser vip confira no site do serv e veja os preços dos planos VIP!";
+Close;
+}
+Mes "[ Sala VIP ]";
+Mes "Olá "+strcharinfo(0)+" !";
+Mes "Deseja ir para a Sala Vip ?";
+if (select("Sim:Não") == 1) {
+Mes "[ Sala VIP ]";
+Mes "Vamos ver se você e um player Vip!";
+Next;
+Mes "[ Sala VIP ]";
+Mes "Hmm... você é Vip então vá para a sala Vip agora!";
+Next;
+warp "sec_in02",130,162; 
+}
+Mes "[ Sala VIP ]";
+Mes "Você que sabe !";
+Next;
+Close;
+
+OnInit:
+waitingroom "Sala VIP",0;
+end;
+}
+//======================================================
+//======================================================
+//======================================================
+//======================================================
+sec_in02,130,168,3	script	Saida	70,{
+show "[Saida]";
+if (getgroupid()<1) goto naovip;
+show "Você quer sair da sala VIP?";
+menu "Opa,claro que sim",sim,"Ah,agora não to afim",nao;
+ 
+nao:
+close;
+ 
+sim:
+close2;
+warp "prontera",150,150;
+end;
+
+naovip:
+show "Lamento, mas você não é vip";
+show "Acesse o site e veja como ser VIP!";
+close;
+}
+//|==========================================================================================|
+//|   __________     __________       __________   _____          _____   _____        _____ |
+//|  |::::::::::|   |::::::::: |     |::::::::::|  \::::\        /::::/	  \::::\      /::::/ |
+//|  |:: ____ ::|   |:: ____ ::|     |:: ____ ::|   \::::\      /::::/	   \::::\    /::::/  |
+//|  |::|    |::|   |::|    |::|     |::|    |::|    \::::\    /::::/       \::::\  /::::/   |
+//|  |::|    |::|   |::|    |::|     |::|    |::|     \::::\  /::::/         \::::\/::::/    |
+//|  |::|____|::|   |::|____|::|     |::|    |::|      \::::\/::::/           \::::::::/     |
+//|  |::::::::::|   |::::::::::\     |::|    |::| 	\::::::::/             \::::::/	     |
+//|  |::________|   |:: ____ :::\    |::|    |::|	 \::::::/	       	\::::/	     |
+//|  |::|	    |::|     \:::|   |::|____|::|	 /::::::\               |::::|	     |
+//|  |::|           |::|      |::|   |::      ::|       /::::::::\              |::::|       |
+//|  |::|           |::|      |::|   |::::::::::|      /::::/\::::\             |::::|       |
+//|  |__|	    |__|      |__|   |__________|     /____/  \____\	        |____|	     |
+//|        									   	     |
+//|==========================================================================================|
+//|   Script Criando por ragnaproxy | Cronus | Por Favor, Não Retire Os Créditos.            |
+//|==========================================================================================|
+//|         PM VIP buff - Reparador - shop - torpedo				             |
+//|==========================================================================================|
+
+//=-=-=-=-=-=-  Configurações do shop -=-=-=-=-=-=-=
+
+-	shop	shopvip	-1,700:2000,951:3000
+
+// =-=-=-=-=-=-=-=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+sec_in02,151,175,3	script	PM VIP	100,{
+
+		mes "[^0000FFPM VIP^000000]";
+   	 	mes "Olá ^FF0000"+strcharinfo(0)+"^000000 esses são os beneficios VIP Level 2."; next;
+     		mes "[^0000FFPM VIP^000000]";
+   		mes "Buff";
+   		mes "Reparador";
+    		mes "shop";
+       		mes "torpedo"; next;
+        	mes "[^0000FFPM VIP^000000]";
+    		mes "Para usar os beneficios mande um PM para o npc em qualquer momento do jogo em qualquer lugar, veja o exemplo a seguir..";
+    		mes "npc:buff";
+ 		mes "npc:reparador";
+		mes "npc:shop";
+       		mes "npc:torpedo"; close;
+OnInit:
+waitingroom "",0;
+	OnTimer2000:
+		setarray .@RoomDisplay$,"[VIP PM]","Buff","Reparador","Shop","Torpedo";
+			delwaitingroom;
+				waitingroom .@RoomDisplay$[rand(0,4)],0;
+					initnpctimer;
+}
+-	script	buff	-1,{
+
+OnWhisperGlobal:
+set .nnb$, "[^0000FFBuff via PM^000000]";
+		if (getgroupid()<2) goto NO_VIP;
+			if(NAO == 1) goto ESPERA;
+				skilleffect 33,0; sc_start SC_ANGELUS,360000,10;
+				skilleffect 74,0; sc_start SC_MAGNIFICAT,360000,5;
+				skilleffect 75,0; sc_start SC_GLORIA,360000,5;
+				skilleffect 66,0; sc_start SC_IMPOSITIO,360000,5;
+				skilleffect 67,0; sc_start SC_SUFFRAGIUM,360000,3;
+				skilleffect 34,0; sc_start SC_BLESSING,360000,10;
+				skilleffect 29,0; sc_start SC_INCREASEAGI,360000,10;
+				skilleffect 113,0; sc_start SC_OVERTHRUST,360000,5;
+				skilleffect 357,0; sc_start SC_CONCENTRATION,360000,5;
+				addtimer 60000,"buff::OnTempo";  set NAO,1; end;
+NO_VIP:
+ 		mes .nnb$; mes " Você não pode usar esse recurso ele e exclusivo para jogadores VIP.";
+		mes "Entre no site e saiba como ser VIP."; close;
+
+OnTempo:
+		dispbottom "Você já pode usar o [Buff] via PM novamente.."; set NAO,0; end;
+ESPERA:
+		mes .nnb$; mes "Espere 1 minuto para usar o [Buff] via PM."; close;
+		OnPCLoginEvent: set NAO,0; end;
+}
+-	script	reparador	-1,{
+
+OnWhisperGlobal:
+set .nnr$, "[^0000FFReparador via PM^000000]";
+		if (getgroupid()<2) goto NO_VIP1;
+			if(NAO1 == 1) goto ESPERA1;
+				atcommand "@repairall";
+				addtimer 60000,"reparador::OnTempo1";  set NAO1,1; end;
+NO_VIP1:
+ 		mes .nnr$; mes " Você não pode usar esse recurso ele e exclusivo para jogadores VIP.";
+		mes "Entre no site e saiba como ser VIP."; close;
+
+OnTempo1:
+		dispbottom "Você já pode usar o [Reparado] via PM novamente.."; set NAO1,0; end;
+ESPERA1:
+		mes .nnr$; mes "Espere 1 minuto para usar o [Reparado] via PM."; close;
+		OnPCLoginEvent: set NAO1,0; end;
+}
+
+-	script	shop	-1,{
+
+OnWhisperGlobal:
+if (getgroupid()<2) goto NO_VIP3;
+callshop "shopvip",1; end;
+
+NO_VIP3:
+ 		mes .nnt$; mes " Você não pode usar esse recurso ele e exclusivo para jogadores VIP.";
+		mes "Entre no site e saiba como ser VIP."; close;
+}
+
+-	script	torpedo	-1,{
+
+OnWhisperGlobal:
+set .nnt$, "[^0000FFTorpedo via PM^000000]";
+		if (getgroupid()<2) goto NO_VIP2;
+			if(NAO2 == 1) goto ESPERA2;
+
+		mes .nnt$;
+		mes "Digite sua mensagem";
+		next;
+		digit @torpedo$;
+		mes @torpedo$;
+		if(Select("Está Certo","Está Errado quero Para")==2) close;
+		next;
+		announce ""+strcharinfo(0)+": "+@torpedo$+" ",bc_yellow;
+		mes .nnt$;
+		mes "Sua menssagem foi enviada";
+		close2;
+		addtimer 180000,"torpedo::OnTempo2";  set NAO2,1; end;
+NO_VIP2:
+ 		mes .nnt$; mes " Você não pode usar esse recurso ele e exclusivo para jogadores VIP.";
+		mes "Entre no site e saiba como ser VIP."; close;
+
+OnTempo2:
+		dispbottom "Você já pode usar o [Torpedo] via PM novamente.."; set NAO2,0; end;
+ESPERA2:
+       		mes .nnt$; mes "Espere 3 minuto para usar o [Torpedo] via PM."; close;
+		OnPCLoginEvent: set NAO2,0; end;
+}
+//=========================================================
+//=========================================================
+// ~                                                            brendoroox.! - não retire os creditos
+// ~                                             Seguranças VIP - [V.1]
+sec_in02,134,168,3	script	Segurança VIP	105,5,5,{
+ 
+if (getgroupid()<1) goto r3;
+ 
+mes "[^cc0000 Segurança VIP ^000000]";
+dispbottom "Npc vip Exclusivo";
+mes "Vejo que voçê é VIP , Continue";
+mes "Desculpe o encomodo";
+next;
+close;
+ 
+r3:
+mes "[^cc0000 Segurança VIP ^000000]";
+dispbottom "Npc vip Exclusivo";
+mes "Vejo que voçê não é mais VIP";
+mes "Esta sala é exclusiva para vips, faça sua doação e aproveite as vantagens. Bom Jogo";
+next;
+warp "prontera",150,150;
+close;
+ 
+}
+//
+// MapFlags ~
+sec_in02	mapflag	nowarp
+sec_in02	mapflag	nowarpto
+sec_in02	mapflag	noteleport
+sec_in02	mapflag	nosave	SavePoint
+sec_in02	mapflag	nomemo
+sec_in02	mapflag	nobranch
+sec_in02	mapflag	nopenalty
+sec_in02	mapflag	pvp	off
+sec_in02	mapflag	gvg	off
+sec_in02	mapflag	noicewall
+sec_in02	mapflag	noreturn
+sec_in02	mapflag	nosave

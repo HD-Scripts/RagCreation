@@ -1,0 +1,70 @@
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//              ______       _   _   ___ _ _              ____                 //
+//              | ___ \     | | | | / (_) | |            / ___|                //
+//              | |_/ / ___ | |_| |/ / _| | | ___ _ __  / /___                 //
+//              | ___ \/ _ \| __|    \| | | |/ _ \ '__| | ___ \                //
+//              | |_/ / (_) | |_| |\  \ | | |  __/ |    | \_/ |                //
+//              \____/ \___/ \__\_| \_/_|_|_|\___|_|    \_____/                //
+//                                      _       _                              //
+//                      /\/\   ___   __| |_   _| | ___                         //
+//                     /    \ / _ \ / _` | | | | |/ _ \                        //
+//                    / /\/\ \ (_) | (_| | |_| | |  __/                        //
+//                    \/    \/\___/ \__,_|\__,_|_|\___|                        //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//                                                                             //
+//  Release Date: 03-09-2010      Version: 1.00      Author: Myzter            //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//                                                                             //
+//  Module Name: Fakename //
+
+-	script	fakename_init	-1,{
+OnInit:
+	while (!$@BotKillerEnabled) sleep 100;
+	callfunc "addModule","fakename","Fake Name","1.00",100;
+	set .@NPCID, callfunc("getNPCID","BKfakename");
+	
+	// English Messages
+	set .@lc$,"en";
+	callfunc "newMes", .@NPCID, 0, "Put the mouse over your character then press [Enter] to see the Fake Name (number):",.@lc$;
+	callfunc "newMes", .@NPCID, 1, "Press [Enter] again to continue...",.@lc$;
+	callfunc "newMes", .@NPCID, 2, "See it again",.@lc$;
+	callfunc "newMes", .@NPCID, 3, "Input the number",.@lc$;
+
+	// Spanish Messages
+	set .@lc$,"es";
+	callfunc "newMes", .@NPCID, 0, "Tu nombre ahora es un número, pon el mouse sobre tu personaje y pulsa [Entrar] para hacerte visible y ver ese número:",.@lc$;
+	callfunc "newMes", .@NPCID, 1, "Pulsa [Enter] nuevamente para continuar...",.@lc$;
+	callfunc "newMes", .@NPCID, 2, "Ver de nuevo",.@lc$;
+	callfunc "newMes", .@NPCID, 3, "Ingresar número",.@lc$;
+}
+
+function	script	BK_fakename	{
+	set .@NPCID, callfunc("getNPCID","BKfakename");
+	set .@BKReqNum, rand(1000,9999);
+
+	cutin "",255;
+	set .@IsHide, checkoption(0x40);
+	do {
+		mes "[^ff0000" + @BKPoliceName$ + "^000000]";
+		mes callfunc("getMes",.@NPCID,0);
+		next;
+		atcommand "@fakename " + .@BKReqNum;
+		if (.@IsHide) {
+			setoption 0x800,0;
+			setoption 0x40,0;
+		}
+		soundeffect "anolian_attack.wav",0;
+		mes "[^ff0000" + @BKPoliceName$ + "^000000]";
+		mes callfunc("getMes",.@NPCID,0);
+		next;
+		if (.@IsHide) {
+			setoption 0x40,1;
+			setoption 0x800,1;
+		}
+	} while (prompt(callfunc("getMes",.@NPCID,2),callfunc("getMes",.@NPCID,3)) != 2);
+	atcommand "@fakename";
+	input .@number;
+	return .@number==.@BKReqNum?1:0;
+}

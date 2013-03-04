@@ -1,0 +1,161 @@
+//======== Tabela SQL ========= Lembre se de retirar as barras duplas
+//
+//
+//CREATE TABLE IF NOT EXISTS `poup_control` (
+//`acc_id` int(10)  unsigned NOT NULL default '0',
+//`conta` int(10)  unsigned NOT NULL default '0',
+//`saldo` int(10)  unsigned NOT NULL default '0',
+//`delay` int(10)  unsigned NOT NULL default '0',
+//PRIMARY KEY  (`acc_id`)
+//) ENGINE=MyISAM;
+//
+//=============================
+ 
+ 
+ 
+prontera,150,152,4	script	Poupanca RagnaMundi	864,{
+ 
+Set @npc$,"[^0000FF Poupança RagnaMundi ^000000]";
+mes @npc$;
+mes "Bom dia! O Banco RagnaMundi, gostaria de oferecê-lo nosso serviço de previdência. Escolha abaixo o que você deseja fazer agora.";
+menu "^ff0000• ^000000Informações sobra a poupança",M_poup,"^ff0000• ^000000Depositar em poupança",M_depositar,"^ff0000• ^000000Nada, obrigado!",-;
+	next;
+	mes $@npc;
+	mes "Tenha um bom dia e volte sempre!";
+	close;
+ 
+M_poup:
+	next;
+	mes @npc$;
+	mes "O nosso banco, assim como todos os outros existentes, funciona através de movimentações de capital, mas para poder movimentar esse capital, temos que ter esse dinheiro em caixa.";
+	mes "Assim, nós oferecemos aos nossos clientes, uma conta em nosso banco, onde ele ganhará por dia,^ff00006% de juros^000000";
+	mes "Ou seja: Se você depositar em nosso banco ^ff0000001,000,000z^000000, no decorrer de 7 dias, você terá um lucro de aproximadamente ^ff0000204.000z^000000.";
+	next;
+	mes @npc$;
+	mes "Porém, existe uma regra, ^FF0000se você depositar qualquer quantidade no dia, você somente poderá sacar o dinheiro na proxima semana^000000, ou seja, o prazo minimo de investimento é de uma semana. Assim, se você depositar no dia 1 no mes, qualquer valor, somente poderá resgatar este valor, no dia 7 do mesmo. Caso você faça algum outro depósito nesse intervalo de tempo, o tempo restante será zerado e contará novamente os 7 dias.";
+	close;
+ 
+M_depositar:
+	next;
+	query_sql "SELECT `saldo` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @saldo;
+if(@saldo < 1)callsub Abrirconta;
+	mes @npc$;
+	mes "Bom dia Sr. "+strcharinfo(0)+", como eu posso ajudálo?";
+	switch(select("^ff0000• ^000000Consultar Saldo.:^ff0000• ^000000Depositar uma quantia.:^ff0000• ^000000Realizar um saque.:^ff0000• ^000000Sair")){
+		next;
+ 
+		Case 1:
+	query_sql "SELECT `saldo` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @saldo;
+	query_sql "SELECT `delay` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @delay;
+	query_sql "SELECT `conta` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @conta;
+if(@delay == 1) set @delay,"Este valor estará disponível para saque a partir da meia noite de hoje.";
+		mes @npc$;
+		mes "Muito bem Sr. "+strcharinfo(0)+", Sua conta é: ^FF0000"+@conta+"^000000.";
+		mes "Seu saldo atual é de: ^FF0000"+@saldo+"z^000000.";
+		mes "Valor disponível para saque em: ^FF0000"+@delay+" dias^000000.";
+		close2;
+		end;
+ 
+		Case 2:
+		mes @npc$;
+		mes "Hmmm então você quer depositar mais? Para prosseguir com a operação, por favor, me informe o valor a ser depositado:";
+		input .@vparadepo;
+if(Zeny < .@vparadepo)callsub Dinheirofail;
+		next;
+		mes @npc$;
+		mes "Vamos conferir, você deseja realizar um deposito no valor de: ^ff0000"+.@vparadepo+"z^000000, é isso mesmo?";
+if(select("^ff0000• ^000000Exato, prossiga!:^ff0000• ^000000O valor está errado.")==2)close;{
+	query_sql "UPDATE `poup_control` SET `saldo`=`saldo`+'"+.@vparadepo+"' WHERE `acc_id` = '"+getcharid(3)+"'";
+query_sql "UPDATE `poup_control` SET `delay`='7' WHERE `acc_id` = '"+getcharid(3)+"'";
+	set Zeny,Zeny-.@vparadepo;
+		next;
+	query_sql "SELECT `saldo` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @saldo;
+		mes @npc$;
+		mes "Muito bem! Seu deposito foi realizado com sucesso, seu saldo atual é de: ^ff0000"+@saldo+"z^000000.";
+		mes "Tenha um bom dia!";
+		close2;
+		end;
+ }
+		Case 3:
+	query_sql "SELECT `delay` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @delay;
+	query_sql "SELECT `saldo` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @saldo;
+		mes @npc$;
+		mes "Hmm, então você quer realizar um saque né? Muito bem, deixe me conferir se seu dinheiro já está liberado, aguarde um momento por favor";
+		next;
+if(@delay >= 1)callsub Delayon;
+		mes @npc$;
+		mes "Muito bem Sr. "+strcharinfo(0)+", o seu dinheiro já está liberado, digite o valor a ser sacado:";
+		input .@sacar;
+		next;
+if(.@sacar > @saldo)callsub Sacarinvalido;
+		set Zeny,Zeny+.@sacar;
+	query_sql "UPDATE `poup_control` SET `saldo`=`saldo`-"+.@sacar+" WHERE `acc_id` = '"+getcharid(3)+"'";
+		mes @npc$;
+	query_sql "SELECT `saldo` FROM `poup_control` WHERE `acc_id` = '"+getcharid(3)+"'", @saldo;
+		mes "Muito bem! Seu saque foi realizado com sucesso. Seu saldo atual é de: ^ff0000"+@saldo+"z^000000.";
+		close2;
+		end;
+ 
+		Case 4:
+		mes @npc$;
+		mes "Ok, volte quando quiser, estarei aqui esperando.";
+		close2;
+		end;
+}
+end;
+ 
+Abrirconta:
+	next;
+	mes @npc$;
+	mes "Para abrir uma conta em nosso banco, você precisará fazer um deposito no valor minimo de ^ff0000100,000z^000000, lembrando que esse valor somente será resgatado decorridos 7 dias e caso você adicione qualquer outro valor, iniciaremos uma nova contagem.";
+	if(select("^ff0000• ^000000Estou ciente, pode continuar.:^ff0000•^000000 Muito obrigado mas mudei de ideia.")==2){mes @npc$; mes "Muito bem, volte sempre."; close;}
+ 
+	next;
+	mes @npc$;
+	mes "Muito bem, então digite o valor que você deseja depositar.";
+	input @vparadepo;
+	if(@vparadepo < 100000)callsub Valornegado;
+	next;
+	callsub Verificacao;
+	end;
+ 
+Verificacao:
+	set @conta,rand(1000,1000000);
+	query_sql "SELECT `conta` FROM `poup_control` WHERE `conta` = '"+@conta+"'", @contaigual;
+	if(@conta == @contaigual)callsub Verificacao;
+	mes @npc$;
+query_sql "INSERT INTO `poup_control` (`acc_id`, `conta`, `saldo`, `delay`, `juros`) VALUES ('"+getcharid(3)+"', '"+@conta+"', '"+@vparadepo+"', '7', '0')";
+set Zeny,Zeny-@vparadepo;
+	mes "Muito bem, o numero de sua nova conta é: ^0000ff"+@conta+"^000000.";
+	mes "Seu saldo atual é de: ^0000ff"+@vparadepo+"^000000.";
+	mes "Disponível para saque em: ^0000ff7 dias.^000000";
+	close;
+ 
+Delayon:
+	next;
+	mes @npc$;
+	mes "Me desculpe mas este valorainda não está disponivel para saque.";
+	close;
+ 
+Valornegado:
+	next;
+	mes "Errr, o valor para deposito tem que ser maior que 100,000z.";
+	callsub Abrirconta;
+	end;
+ 
+Sacarinvalido:
+	next;
+	mes @npc$;
+	mes "O valor que você deseja sacar é inferior ao seu saldo atual. Por favor insiraum valor válido.";
+	close;
+ 
+ 
+}
+ 
+ 
+ 
+prontera,150,150,5	script	Juros da Poupanca	-1,{
+OnClock0000:
+	query_sql "UPDATE `poup_control` SET `saldo`=`saldo`*1.06";
+	query_sql "UPDATE `poup_control` SET `delay`=`delay`-1";
+}

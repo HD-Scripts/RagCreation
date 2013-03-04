@@ -1,0 +1,36 @@
+sec_in02,139,171,5	Script	DJ	107,{
+
+set .@n$,"[^00CED1DJ^000000]";
+mes .@n$;
+mes "Olá, você deseja tocar uma música para todos do servidor?";
+switch(select("Sim","Não")){
+
+case 1:
+next;
+mes .@n$;
+mes "Para tocar uma música para todos os jogadores é necessário ter 1kk.";
+switch(select("Tocar música","Não tocar")){
+
+case 1:
+next;
+if (Zeny >= 100000000) {
+		set Zeny, Zeny-1000000;
+	mes "Digite o nome da música que para tocar (Músicas da Pasta BGM)";
+	digit @musica$;
+	playBGMall ""+@musica$;
+	announce ""+strcharinfo(0)+" é o novo DJ do RagnaMundi ! Seu novo sucesso é a música "+@musica$+" ",0;
+	close;
+	end;
+	} else {
+	mes .@n$;
+	mes "Você é pobre !";
+	close;
+	}
+}
+
+case 2:
+next;
+close;
+}
+end;
+}

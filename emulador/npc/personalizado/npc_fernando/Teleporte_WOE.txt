@@ -1,0 +1,200 @@
+/////////////////////////////////////////////////////////////////////////
+//////////////////////////// NPC CRIADO POR \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////////// Equipe Demons Script \\\\\\\\\\\\\\\\\\\\\\\\\\\
+///////////////////// www.demons-scripts.jimdo.com \\\\\\\\\\\\\\\\\\\\\\\\
+//////////////////// Por Favor nao remova os creditos!\\\\\\\\\\\\\\\\\\\\\\
+////////////////////////////////////////////////////////////////////////////
+
+
+prontera,147,170,5	script	Teleportador WoE#2	868,{
+
+set @npc$,"^ff0000Teleportador War of Emperium ^000000"; //nome do npc.|
+
+show @npc$;
+show "Oi ^0000CD"+strcharinfo(0)+"^000000! Eu posso te teleportar para qualquer feudo!";
+show "Voce gostaria de ser teleportado para algum castelo?";
+menu "Sim!",yes,"Nao!",f1;
+
+yes:
+next;
+show @npc$;
+show "Agora escolha o feudo!";
+menu
+"- ^FF0000Prontera ^000000 - Feudo das Valquirias ^FF0000["+ (getmapusers("prt_gld.gat"))+ "]^000000",prontera,
+"- ^FF0000Payon ^000000 - Feudo do Bosque Celestial ^FF0000["+ (getmapusers("pay_gld.gat"))+ "]^000000",payon,
+"- ^FF0000Geffen ^000000 - Feudo de Britoniah ^FF0000["+ (getmapusers("gef_fild13.gat"))+ "]^000000",gefen,
+"- ^FF0000Al De Baran ^000000 - Feudo de Luina ^FF0000["+ (getmapusers("alde_gld.gat"))+ "]^000000",aldebaran,
+"- Cancelar!",f1;
+
+prontera:
+show @npc$;
+show "Escolha o castelo:";
+menu
+"- Castelo ^FF0000Skoegul ^000000",prt_cas1,
+"- Castelo ^FF0000Fadhgridh ^000000",prt_cas2,
+"- Castelo ^FF0000Kriemhild ^000000",prt_cas3,
+"- Castelo ^FF0000Gondul ^000000",prt_cas4,
+"- Castelo ^FF0000Swanhild ^000000",prt_cas5,
+"Cancelar",f1;
+
+prt_cas1:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "prt_gld.gat", 130, 248; end;
+
+prt_cas2:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "prt_gld.gat", 167, 138; end;
+
+prt_cas3:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "prt_gld.gat", 135, 53; end;
+
+prt_cas4:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "prt_gld.gat", 193, 251; end;
+
+prt_cas5:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "prt_gld.gat", 240, 141; end;
+
+payon:
+show @npc$;
+show "Escolha o castelo:";
+menu
+"- Castelo ^FF0000Palácio do Lago Sagrado ^000000",pay_cas1,
+"- Castelo ^FF0000Palácio da Colina ^000000",pay_cas2,
+"- Castelo ^FF0000Palácio da Sombra ^000000",pay_cas3,
+"- Castelo ^FF0000Palácio do Sol ^000000",pay_cas4,
+"- Castelo ^FF0000Palácio Escarlate ^000000",pay_cas5,
+"Cancelar",f1;
+next;
+
+pay_cas1:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "pay_gld.gat", 139, 173; end;
+
+pay_cas2:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "pay_gld.gat", 193, 275; end;
+
+pay_cas3:
+next;
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "pay_gld.gat", 310, 297; end;
+
+pay_cas4:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "pay_gld.gat", 132, 228; end;
+
+pay_cas5:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "pay_gld.gat", 298, 102; end;
+
+gefen:
+show @npc$;
+show "Escolha o castelo:";
+menu
+"- Castelo ^FF0000Eeyolbriggar ^000000",gef_cas1,
+"- Castelo ^FF0000Bergel ^000000",gef_cas2,
+"- Castelo ^FF0000Yesnelph ^000000",gef_cas3,
+"- Castelo ^FF0000Repherion ^000000",gef_cas4,
+"- Castelo ^FF0000Mersetzdeitz ^000000",gef_cas5,
+"Cancelar",f1;
+
+gef_cas1:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "gef_fild13.gat", 296, 241; end;
+
+gef_cas2:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "gef_fild13.gat", 198, 267; end;
+
+gef_cas3:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "gef_fild13.gat", 154, 237; end;
+
+gef_cas4:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "gef_fild13.gat", 164, 44; end;
+
+gef_cas5:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "gef_fild13.gat", 315, 89; end;
+
+aldebaran:
+show @npc$;
+show "Escolha o castelo:";
+menu
+"- Castelo ^FF0000Wuerzburg ^000000",ald_cas1,
+"- Castelo ^FF0000Rothenburg ^000000",ald_cas2,
+"- Castelo ^FF0000Hohenschwangan ^000000",ald_cas3,
+"- Castelo ^FF0000Nuenberg ^000000",ald_cas4,
+"- Castelo ^FF0000Neuschwanstein ^000000",ald_cas5,
+"Cancelar",f1;
+
+ald_cas1:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "alde_gld.gat", 236, 253; end;
+
+ald_cas2:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "alde_gld.gat", 277, 102; end;
+
+ald_cas3:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "alde_gld.gat", 105, 245; end;
+
+ald_cas4:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "alde_gld.gat", 143, 99; end;
+
+ald_cas5:
+show @npc$;
+show "Boa sorte!!";
+next;
+warp "alde_gld.gat", 63, 97; end;
+
+f1:
+show @npc$;
+show "Ok... Volte quando precisar de mim!";
+close;
+
+}

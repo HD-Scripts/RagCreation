@@ -1,0 +1,606 @@
+//Npc Encontrado Na Net e Traduzido e editado por mim
+//Igor 1994 msn: igor_crato_2008@hotmail.com
+//Favor preservar os creditos
+//Servidor DraksDemonsRO (http://www.draksdemonsro.tk)
+//----------------------------------------
+// Poring Race
+//----------------------------------------
+
+p_track01	mapflag	nobranch
+p_track01	mapflag	noicewall
+p_track01	mapflag	nomemo
+p_track01	mapflag	noreturn
+p_track01	mapflag	noteleport
+p_track01	mapflag	nowarpto
+p_track01	mapflag	nowarp
+p_track01	mapflag	pvp	off
+p_track01	mapflag	nosave
+
+prontera,0,0,0	script	PraceAnnouncer	-1,{
+
+OnClock0700:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0720:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0740:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0800:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0820:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0840:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0900:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0920:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock0940:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1000:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1020:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1040:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1100:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1120:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1140:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1200:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1220:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1240:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1300:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!!",0;
+	end;
+
+OnClock1320:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!!",0;
+	end;
+
+OnClock1340:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!!",0;
+	end;
+
+OnClock1400:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!!",0;
+	end;
+
+OnClock1420:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1440:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1500:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1520:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1540:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1600:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1620:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1640:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1700:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1720:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1740:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1800:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1820:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1840:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1900:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1920:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock1940:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2000:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2020:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!!",0;
+	end;
+
+OnClock2040:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2100:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2120:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2140:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2200:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2220:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2240:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2300:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2320:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+OnClock2340:
+	set $accessPrace, 1;
+	announce "A corrida de Poring está aberta!",0;
+	end;
+
+
+OnCheckTimer:
+	mes "[Warper]";
+	mes "Os Porings estão descansando, Aguarde...";
+	set @hour, gettime(3);
+	set @minute, gettime(2);
+	set @second, gettime(1);
+	set @hour2, gettime(3) + 4;
+	if (gettime(3) == 1) set @hour2, @hour2-1;
+	if (gettime(3) == 2) set @hour2, @hour2-2;
+	if (gettime(3) == 3) set @hour2, @hour2-3;
+	if (gettime(3) == 5) set @hour2, @hour2-1;
+	if (gettime(3) == 6) set @hour2, @hour2-2;
+	if (gettime(3) == 7) set @hour2, @hour2-3;
+	if (gettime(3) == 9) set @hour2, @hour2-1;
+	if (gettime(3) == 10) set @hour2, @hour2-2;
+	if (gettime(3) == 11) set @hour2, @hour2-3;
+	if (gettime(3) == 13) set @hour2, @hour2-1;
+	if (gettime(3) == 14) set @hour2, @hour2-2;
+	if (gettime(3) == 15) set @hour2, @hour2-3;
+	if (gettime(3) == 17) set @hour2, @hour2-1;
+	if (gettime(3) == 18) set @hour2, @hour2-2;
+	if (gettime(3) == 19) set @hour2, @hour2-3;
+	if (gettime(3) == 21) set @hour2, @hour2-1;
+	if (gettime(3) == 22) set @hour2, @hour2-2;
+	if (gettime(3) == 23) set @hour2, @hour2-3;
+	if (@second <= 9 && @minute <= 9 && @hour <=9) { mes "São exatamente ^FF00000"+@hour+"^000000:^FF00000"+@minute+"^000000:^FF00000"+@second+"^000000."; goto TimeShowed;}
+	if (@second <= 9 && @minute <= 9) { mes "São exatamente ^FF0000"+@hour+"^000000:^FF00000"+@minute+"^000000:^FF00000"+@second+"^000000."; goto TimeShowed;}
+	if (@second <= 9 && @hour <= 9) { mes "São exatamente ^FF00000"+@hour+"^000000:^FF0000"+@minute+"^000000:^FF00000"+@second+"^000000."; goto TimeShowed;}
+	if (@minute <= 9 && @hour <= 9) { mes "São exatamente ^FF00000"+@hour+"^000000:^FF00000"+@minute+"^000000:^FF0000"+@second+"^000000."; goto TimeShowed;}
+	if (@second <= 9) { mes "São exatamente ^FF0000"+@hour+"^000000:^FF0000"+@minute+"^000000:^FF00000"+@second+"^000000."; goto TimeShowed;}
+	if (@minute <= 9) { mes "São exatamente ^FF0000"+@hour+"^000000:^FF00000"+@minute+"^000000:^FF0000"+@second+"^000000."; goto TimeShowed;}
+	if (@hour <= 9) { mes "São exatamente ^FF00000"+@hour+"^000000:^FF0000"+@minute+"^000000:^FF0000"+@second+"^000000."; goto TimeShowed;}
+	mes "São exatamente ^FF0000"+@hour+"^000000:^FF0000"+@minute+"^000000:^FF0000"+@second+"^000000.";
+
+TimeShowed:
+	if (@hour2 <= 9) { mes "A proxima corrida sera as ^FF00000"+@hour2+"^000000:^FF000000^000000:^FF000000^000000."; goto TimeShowed2;}
+	mes "A proxima corrida sera as ^FF0000"+@hour2+"^000000:^FF000000^000000:^FF000000^000000.";
+
+TimeShowed2:
+	close;
+}
+
+prontera,259,70,5	script	Poring Race::Prace	882,{
+
+	if ($accessPrace == 0) goto PraceOff;
+	mes "[Warper]";
+	mes "Você quer ir até a corrida de porings?";
+	menu "Claro",-,"Nem",L_no;
+	close2;
+	warp "p_track01",52,41;
+	end;
+
+L_no:
+	next;
+	mes "[Warper]";
+	mes "Ok vejo você depois!";
+	close;
+
+PraceOff:
+	doevent "PraceAnnouncer::OnCheckTimer";
+	close;
+
+}
+
+p_track01,78,42,0	warp	p_track002	1,3,prontera,142,170
+
+//NPC Checker
+p_track01,44,41,0	script	Checker#prace0	-1,{
+end;
+
+OnChequeo:
+for(set .@tmp1,0;.@tmp1<(getarraysize($prace_bidders));set .@tmp1,.@tmp1+1) {
+	if(attachrid($prace_bidders[.@tmp1])) {
+	 if (@prace_playing!=1) { end; }
+	 dispbottom "O vencedor é "+$prace_winner$+" e você apostou em "+@prace_winner$+".";
+	 if (@prace_winner$==$prace_winner$ && @prace_winner$!="") {
+   dispbottom "Você ganhou!"; mapannounce "p_track01"," Parabéns! "+strcharinfo(0)+" Ganhou!",1,0xFFAB54;
+   getitem 607,20; emotion 21,1;
+   getitem 12114,2; emotion 21,1;
+   getitem 12115,2; emotion 21,1;
+   getitem 12116,2; emotion 21,1;
+   getitem 20100,1; emotion 21,1;
+   } else { dispbottom "Não foi dessa vez."; emotion 28,1;}
+   set @prace_winner$,"";set @prace_playing,0;
+  } //else { announce .@tmp1+" || "+$prace_bidders[.@tmp1],bc_all; }  //debug
+}
+for(set .@tmp1,0;.@tmp1<(getarraysize($prace_bidders));set .@tmp1,.@tmp1+1) {
+set $prace_bidders[.@tmp1],0;
+}
+
+}
+
+//NPC Principal
+p_track01,58,41,2	script	Bidder#prace0	765,{
+if ($prace_random < 1) callsub OnInit;
+if (@prace_playing==1) goto AlreadyPlaying;
+
+getmapxy(.@mapname$,.@x1,.@y,1,"Poring#prace1");
+getmapxy(.@mapname$,.@x2,.@y,1,"Angeling#prace2");
+getmapxy(.@mapname$,.@x3,.@y,1,"Metaling#prace3");
+getmapxy(.@mapname$,.@x4,.@y,1,"Deviling#prace4");
+getmapxy(.@mapname$,.@x5,.@y,1,"Santa Poring#prace5");
+getmapxy(.@mapname$,.@x6,.@y,1,"Poporing#prace6");
+if (.@x1 != 58 || .@x2 != 58 || .@x3 != 58 || .@x4 != 58 || .@x5 != 58 || .@x6 != 58) {
+mes "[Bidder]";mes "Quieto! Os porings estão descansando...";close;
+end;
+}
+
+
+set .@prace_zeny,10000000;
+mes "[Bidder]";mes "Escolha o seu poring:";mes "Vai custar "+.@prace_zeny+" Zeny.";next;
+menu "Poring",p1,"Angeling",p2,"Metaling",p3,"Deviling",p4,"Santa Poring",p5,"Poporing",p6,"  None",-;
+mes "[Bidder]"; mes "Flw.";close;
+
+p1:
+if (Zeny < .@prace_zeny) { goto NoZeny; } else { set Zeny,Zeny-.@prace_zeny; }
+set @prace_winner$,"Poring"; goto Ready;
+p2:
+if (Zeny < .@prace_zeny) { goto NoZeny; } else { set Zeny,Zeny-.@prace_zeny; }
+set @prace_winner$,"Angeling"; goto Ready;
+p3:
+if (Zeny < .@prace_zeny) { goto NoZeny; } else { set Zeny,Zeny-.@prace_zeny; }
+set @prace_winner$,"Metaling"; goto Ready;
+p4:
+if (Zeny < .@prace_zeny) { goto NoZeny; } else { set Zeny,Zeny-.@prace_zeny; }
+set @prace_winner$,"Deviling"; goto Ready;
+p5:
+if (Zeny < .@prace_zeny) { goto NoZeny; } else { set Zeny,Zeny-.@prace_zeny; }
+set @prace_winner$,"Santa Poring"; goto Ready;
+p6:
+if (Zeny < .@prace_zeny) { goto NoZeny; } else { set Zeny,Zeny-.@prace_zeny; }
+set @prace_winner$,"Poporing"; goto Ready;
+
+Ready:
+set $prace_bets,$prace_bets+1;
+set $prace_bidders[$prace_bets],getcharid(3);
+set @prace_playing,1;
+mes "[Bidder]";
+mes "Eu tenho "+$prace_bets+" Aposta(s).";
+setnpctimer 60000;startnpctimer;
+npctalk "Tenho aqui "+strcharinfo(0)+" apostando!";
+close;
+
+Start1:
+setnpctimer 0;startnpctimer;end;
+
+AlreadyPlaying:
+mes "[Bidder]";mes "Você apostou ^00bb00"+@prace_winner$+"^000000";
+close;
+
+
+NoZeny:
+set @prace_winner$,"";
+mes "[Bidder]";mes "Você não tem zeny suficiente.";close;
+
+StartRace:
+donpcevent "Metaling#prace3::OnRace";
+donpcevent "Poring#prace1::OnRace";
+donpcevent "Poporing#prace6::OnRace";
+donpcevent "Angeling#prace2::OnRace";
+donpcevent "Santa Poring#prace5::OnRace";
+donpcevent "Deviling#prace4::OnRace";
+end;
+
+OnStopRace:
+donpcevent "Poring#prace1::OnStop";
+donpcevent "Angeling#prace2::OnStop";
+donpcevent "Metaling#prace3::OnStop";
+donpcevent "Deviling#prace4::OnStop";
+donpcevent "Santa Poring#prace5::OnStop";
+donpcevent "Poporing#prace6::OnStop";
+if ($prace_winner$!="") callsub WinRace;
+end;
+
+ReturnRace:
+donpcevent "Poring#prace1::OnReturn";
+donpcevent "Angeling#prace2::OnReturn";
+donpcevent "Metaling#prace3::OnReturn";
+donpcevent "Deviling#prace4::OnReturn";
+donpcevent "Santa Poring#prace5::OnReturn";
+donpcevent "Poporing#prace6::OnReturn";
+end;
+
+
+WinRace:
+mapannounce "p_track01","The winner is "+$prace_winner$,1,0xFFAB54;
+donpcevent "Checker#prace0::OnChequeo";
+sleep2 10000;
+mapwarp "p_track01","prontera",142,170;
+set $accessPrace, 0;
+setnpctimer 30000;startnpctimer;
+end;
+
+
+OnInit:
+	set $prace_random,70;
+	set $prace_random2,600;
+	set $prace_winner$,"";
+	set $prace_bets,0;
+	set $prace_bidders,0;
+	end;
+
+OnTimer500:
+mapannounce "p_track01","Porings, Em suas marcas...",1,0xFFAB54;end;
+
+OnTimer3000:
+mapannounce "p_track01","...3...",1,0xFFAB54;end;
+
+OnTimer4000:
+mapannounce "p_track01","...2...",1,0xFFAB54;end;
+
+OnTimer5000:
+mapannounce "p_track01","...1...",1,0xFFAB54;
+callsub StartRace;end;
+
+OnTimer6000:
+stopnpctimer;
+mapannounce "p_track01","Gooo!!!",1,0xFFAB54;end;
+
+OnTimer35000:
+set $prace_winner$,"";set $prace_bets,0;
+stopnpctimer;callsub ReturnRace;end;
+
+OnTimer90000:
+npctalk "Eu tenho "+$prace_bets+" Aposta(s). Mais alguém?"; end;
+OnTimer110000:
+npctalk "A corrida começara em breve. Ultima chance."; end;
+OnTimer120000:
+goto Start1; end;
+
+}
+
+
+
+
+
+//-----------------------------------
+// Racer NPC's
+//-----------------------------------
+
+p_track01,58,38,2	script	Poring#prace1	1002,{
+end;
+OnRace:
+initnpctimer; startnpctimer;end;
+OnStop:
+stopnpctimer;end;
+OnReturn:
+npcwalkto 58,38;end;
+OnTimer1100:
+getmapxy(.@mapname$,.@x,.@y,1,"Poring#prace1");
+if(rand(100) < $prace_random) npcwalkto .@x-1,.@y;
+setnpctimer rand($prace_random2);startnpctimer;
+if ((.@x-1) == 29) { set $prace_winner$,"Poring"; emotion 29; donpcevent "Bidder#prace0::OnStopRace"; }
+end;
+}
+p_track01,58,36,2	script	Angeling#prace2	1096,{
+end;
+OnRace:
+initnpctimer; startnpctimer;end;
+OnStop:
+stopnpctimer;end;
+OnReturn:
+npcwalkto 58,36;end;
+OnTimer1100:
+getmapxy(.@mapname$,.@x,.@y,1,"Angeling#prace2");
+if(rand(100) < $prace_random) npcwalkto .@x-1,.@y;
+setnpctimer rand($prace_random2);startnpctimer;
+if ((.@x-1) == 29) { set $prace_winner$,"Angeling"; emotion 29; donpcevent "Bidder#prace0::OnStopRace"; }
+end;
+}
+p_track01,58,34,2	script	Metaling#prace3	1613,{
+end;
+OnRace:
+initnpctimer; startnpctimer;end;
+OnStop:
+stopnpctimer;end;
+OnReturn:
+npcwalkto 58,34;end;
+OnTimer1100:
+getmapxy(.@mapname$,.@x,.@y,1,"Metaling#prace3");
+if(rand(100) < $prace_random) npcwalkto .@x-1,.@y;
+setnpctimer rand($prace_random2);startnpctimer;
+if ((.@x-1) == 29) { set $prace_winner$,"Metaling"; emotion 29; donpcevent "Bidder#prace0::OnStopRace"; }
+end;
+}
+p_track01,58,32,2	script	Deviling#prace4	1582,{
+end;
+OnRace:
+initnpctimer; startnpctimer;end;
+OnStop:
+stopnpctimer;end;
+OnReturn:
+npcwalkto 58,32;end;
+OnTimer1100:
+getmapxy(.@mapname$,.@x,.@y,1,"Deviling#prace4");
+if(rand(100) < $prace_random) npcwalkto .@x-1,.@y;
+setnpctimer rand($prace_random2);startnpctimer;
+if ((.@x-1) == 29) { set $prace_winner$,"Deviling"; emotion 29; donpcevent "Bidder#prace0::OnStopRace"; }
+end;
+}
+p_track01,58,30,2	script	Santa Poring#prace5	1062,{
+end;
+OnRace:
+initnpctimer; startnpctimer;end;
+OnStop:
+stopnpctimer;end;
+OnReturn:
+npcwalkto 58,30;end;
+OnTimer1100:
+getmapxy(.@mapname$,.@x,.@y,1,"Santa Poring#prace5");
+if(rand(100) < $prace_random) npcwalkto .@x-1,.@y;
+setnpctimer rand($prace_random2);startnpctimer;
+if ((.@x-1) == 29) { set $prace_winner$,"Santa Poring"; emotion 29; donpcevent "Bidder#prace0::OnStopRace"; }
+end;
+}
+p_track01,58,28,2	script	Poporing#prace6	1031,{
+end;
+OnRace:
+initnpctimer; startnpctimer;end;
+OnStop:
+stopnpctimer;end;
+OnReturn:
+npcwalkto 58,28;end;
+OnTimer1100:
+getmapxy(.@mapname$,.@x,.@y,1,"Poporing#prace6");
+if(rand(100) < $prace_random) npcwalkto .@x-1,.@y;
+setnpctimer rand($prace_random2);startnpctimer;
+if ((.@x-1) == 29) { set $prace_winner$,"Poporing"; emotion 29; donpcevent "Bidder#prace0::OnStopRace"; }
+end;
+}

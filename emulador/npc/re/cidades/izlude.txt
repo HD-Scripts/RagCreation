@@ -1,0 +1,36 @@
+//===== rAthena Script ======================================= 
+//= Izlude town NPCs. 
+//===== By: ================================================== 
+//= Masao
+//===== Current Version: ===================================== 
+//= 1.1
+//===== Compatible With: ===================================== 
+//= rAthena SVN
+//===== Description: ========================================= 
+//= Izlude Town Renewal NPC's
+//===== Additional Comments: ================================= 
+//= 1.0 First Version. Still missing many new NPC's and their dialogues. [Masao]
+//= 1.1 Added bullet NPC duplicates. [Euphy]
+//============================================================
+
+izlude,201,181,1	duplicate(Sailor_izlude)	Marinheiro#izlude	100
+izlude,55,74,2	duplicate(Bonne_izlude)	Bonne#izlude	90
+izlude,134,87,4	duplicate(Charfri_izlude)	Charfri#izlude	91
+izlude,119,121,4	duplicate(Cuskoal_izlude)	Cuskoal#izlude	124
+izlude,150,118,4	duplicate(Dega_izlude)	Dega#izlude	84
+izlude,150,143,4	duplicate(Kylick_izlude)	Kylick#izlude	97
+izlude,56,126,2	duplicate(Red_izlude)	Red#izlude	85
+izlude,58,126,2	duplicate(Cebalis_izlude)	Cebalis#izlude	98
+izlude,124,178,2	duplicate(Soldado_izlude)	Soldier#izlude	105
+izlude,171,133,3	duplicate(bdt)	Bullet Dealer Tony#iz	86
+izlude,171,127,3	duplicate(mdk)	Magazine Dealer Kenny	83
+
+izlude,147,131,6	script	Blacksmith#izlude	726,{
+	end;
+}
+
+prt_fild08,350,219,4	script	Guard#izlude	105,{
+	mes "[Izlude Guard]";
+	mes "Welcome to Izlude.";
+	close;
+}

@@ -1,0 +1,31 @@
+// =============================================================== //
+//- Script para bloqueio de login duplo
+// =============================================================== //
+//- Escrito por Kant, Carlos Henrique e Outros usuários do cronus.
+// =============================================================== //
+// Testado in-game usando emulador cronus revisão 3092 trunk.
+// =============================================================== //
+// NPC: uso e configurações.
+// -> O npc está configurado para o mapa <bat_room>
+// -> Para adicionar mais mapas siga o modelo da mapflag.
+// =============================================================== //
+
+-	script	blockdual	-1,{
+OnPCLoadMapEvent:
+query_sql "SELECT `name` FROM `char` INNER JOIN `login` ON `login`.`account_id` = `char`.`account_id` WHERE `char`.`online` = '1' AND `login`.`last_ip` IN (SELECT `last_ip` FROM `login` WHERE `login`.`account_id` = '"+getcharid(3)+"')",.@name$;
+for(set @i,0; @i < getarraysize(.@name$) && getarraysize(.@name$) > 1; set @i,@i+1){
+if(getcharid(0) == getcharid(0,.@name$[@i])) continue;
+atcommand "@adjgmlvl 0 "+.@name$[@i];
+atcommand "@kick "+.@name$[@i];
+}
+if (getarraysize(.@name$) > 1) {
+mes "^FF0000[Guarda]^000000";
+mes "Desculpe, não é permitido multi-client nesse Servidor!";
+close;
+}
+end;
+}
+
+// Mapflag
+bat_room	mapflag	loadevent
+prontera	mapflag	loadevent

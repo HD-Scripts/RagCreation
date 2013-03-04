@@ -1,0 +1,164 @@
+-	shop	rops_ragnamundi	-1,512:100
+
+
+prontera,164,167,5	script	Rops Ragnamundi	757,{
+function ShopSettings;
+function custoitem;
+function infoatual;
+function ClearData;
+function ValueConvert;
+function ErroAviso;
+
+mes "Olá "+strcharinfo(0)+", gostaria de comprar rops do ^40E0D0Ragna Mundi^000000?";
+mes "^FF4500________________^000000^FF8C00____________^000000";
+mes "Qual destes você irá querer comprar?";
+next;
+// Menu Selection
+select("Elmos","Sets","Asas","Auras","Olhos","Úsaveis");
+
+ClearData();
+ShopSettings( @menu );
+npcshopitem "rops_ragnamundi",512,100;
+npcshopdelitem "rops_ragnamundi",512;
+for(set .@i,0; .@i < getarraysize( @lsitem ); set .@i,.@i+1)
+	npcshopadditem "rops_ragnamundi",@lsitem[.@i],@lscusto[.@i];
+infoatual( @Possui$ );
+mes "ROPS ^FF0000Ragna Mundi^000000.";
+callshop "rops_ragnamundi",1;
+npcshopattach "rops_ragnamundi";
+end;
+
+
+function	ShopSettings	{
+	switch( getarg(0) ){
+		Case 1:
+			set @Possui$,"#CASHPOINTS";
+			setarray @lsitem[0],20002;
+			setarray @lscusto[0],99999;
+			break;
+		Case 2:
+			set @Possui$,"#CASHPOINTS";
+			setarray @lsitem[0],20298,20299,20300,20301;
+			setarray @lscusto[0],99999,99999,99999,99999;
+			break;
+		Case 3:
+			set @Possui$,"#CASHPOINTS";
+			setarray @lsitem[0],20321;
+			setarray @lscusto[0],99999;
+			break;
+		Case 4:
+			set @Possui$,"#CASHPOINTS";
+			setarray @lsitem[0],20319;
+			setarray @lscusto[0],99999;
+			break;
+		Case 5:
+			set @Possui$,"#CASHPOINTS";
+			setarray @lsitem[0],20388;
+			setarray @lscusto[0],99999;
+			break;
+		Case 6:
+			set @Possui$,"#CASHPOINTS";
+			setarray @lsitem[0],20558;
+			setarray @lscusto[0],99999;
+			break;
+		default:
+			ErroAviso( "Erro ao achar o menu, contate Zell "+@menu+"." );
+			close;
+	}
+	
+	
+if( @Possui$ == "" )
+	ErroAviso( "Erro ao achar o menu, contate Zell "+@menu+" ." );
+if( getarraysize( @lscusto ) != getarraysize( @lsitem ) || getarraysize( @lsitem ) != getarraysize( @lscusto ) )
+	ErroAviso( "Erro ao achar o menu, contate Zell "+@menu+" ." );
+return;
+}
+
+function	ErroAviso	{
+	mes "^FF0000ERRO^000000 - "+getarg(0);
+	mes "^00FF00____________________________^000000";
+	mes "Informe este erro ao Administrador urgentemente !";
+	close;
+}
+
+function	infoatual	{
+	if( getitemname( atoi( getarg(0) ) ) != "null" ){
+		mes "Saldo Atual : ^0000FF"+ValueConvert( countitem( atoi( getarg(0) ) ) )+"^000000";
+	}else if( getitemname( atoi( getarg(0) ) ) == "null" ){
+		mes "Saldo Atual : ^0000FF"+ValueConvert( getd( getarg(0) ) )+"^000000";
+	}
+return;
+}
+
+function	ValueConvert	{
+	set .@num, atoi(""+getarg(0));
+	if ( .@num == 0 || .@num >= 2147483647 ) return getarg(0);
+	set .@l, getstrlen(""+.@num);
+	for ( set .@i,0; .@i < .@l; set .@i, .@i + 1 ) {
+		set .@num$, .@num % pow(10,.@i+1) / pow(10,.@i) + .@num$;
+			if ( (.@i+1) % 3 == 0 && .@i+1 != .@l ) set .@num$, ","+ .@num$;
+	}
+	return .@num$;
+}
+
+function	custoitem	{
+	if( getitemname( atoi( getarg(0) ) ) != "null" ){
+		if( countitem( atoi( getarg(0) ) ) < getarg(1) ) return 1;
+	}else{
+		if( getd( getarg(0) ) < getarg(1) ) return 1;
+	}
+return 0;
+}
+
+function ClearData	{
+	set @Possui$,"";
+	set @custototal,0;
+	deletearray @bought_nameid[0],getarraysize( @bought_nameid );
+	deletearray @bought_quantity[0],getarraysize( @bought_quantity );
+	deletearray @lsitem[0],getarraysize( @lsitem );
+	deletearray @lscusto[0],getarraysize( @lscusto );
+return;
+}
+
+OnBuyItem:
+	ShopSettings( @menu );
+	for(set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1)
+		for(set @j,0; @j < getarraysize( @lsitem ); set @j,@j+1)
+			if( @lsitem[@j] == @bought_nameid[@i] )
+			set @custototal,@custototal + ( @lscusto[@j] * @bought_quantity[@i] );
+	mes "^FF0000       Lista de Compra^000000";
+	mes "^00FF00____________________________^000000";
+	for( set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1 )
+			mes "^FF0000"+@bought_quantity[@i]+" x ^0000FF"+getitemname( @bought_nameid[@i] )+"^000000";
+	mes "^00FF00____________________________^000000";
+
+	if( getitemname( atoi( @Possui$ ) ) != "null" )
+		mes "Custo Total : ^0000FF"+ValueConvert( @custototal )+" x "+getitemname( atoi( @Possui$ ) )+"^000000";
+	else if( getitemname( atoi( @Possui$ ) ) == "null" ){
+		mes "Custo Total : ^0000FF"+ValueConvert( @custototal )+" "+@Possui$+"^000000";
+	}
+	
+	mes "^00FF00____________________________^000000";
+	if( custoitem( @Possui$,@custototal ) ){
+		if( getitemname( atoi( @Possui$ ) ) != "null" )
+			mes "[ ^FF0000X^000000 ] Insuficiente ^0000FF"+getitemname( atoi( @Possui$ ) )+"^000000";
+		else{
+			mes "[ ^FF0000X^000000 ] Insuficiente ^0000FF"+@Possui$+"^000000";
+		}
+	}else{
+		if( select( "^0000FFComprar^000000:Cancelar" ) == 1 ){
+			if( getitemname( atoi( @Possui$ ) ) != "null" )
+				delitem atoi( @Possui$ ),@custototal;
+			else{
+				set getd( @Possui$ ),getd( @Possui$ ) - @custototal;
+			}
+			for(set @i,0; @i < getarraysize( @bought_nameid ); set @i,@i+1)
+				getitem @bought_nameid[@i],@bought_quantity[@i];
+			message strcharinfo(0),"Purchased "+getarraysize( @bought_nameid )+" Items.";
+			mes "Obrigado pela sua doação e bom jogo.";
+		}
+	}
+ClearData();
+close;
+
+}

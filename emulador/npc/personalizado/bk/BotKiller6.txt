@@ -1,0 +1,1061 @@
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//              ______       _   _   ___ _ _              ____                 //
+//              | ___ \     | | | | / (_) | |            / ___|                //
+//              | |_/ / ___ | |_| |/ / _| | | ___ _ __  / /___                 //
+//              | ___ \/ _ \| __|    \| | | |/ _ \ '__| | ___ \                //
+//              | |_/ / (_) | |_| |\  \ | | |  __/ |    | \_/ |                //
+//              \____/ \___/ \__\_| \_/_|_|_|\___|_|    \_____/                //
+//                     _          _____         _                              //
+//                    | |_ _ _   |     |_ _ ___| |_ ___ ___                    //
+//                    | . | | |  | | | | | |- _|  _| -_|  _|                   //
+//                    |___|_  |  |_|_|_|_  |___|_| |___|_|                     //
+//                        |___|        |___|                                   //
+// --------------------------------------------------------------------------- //
+//                                                                             //
+//  Release Date: 03-31-2012      Version: 6.17     (c)2006-2012 by Myzter     //
+//                                                                             //
+// --------------------------------------------------------------------------- //
+//  DESCRIPTION:                                                               //
+// --------------------------------------------------------------------------- //
+//  BotKiller is a powerfull antibot system, this version was re-coded from    //
+//  the scratch, with a new arquitecture that support external modules and     //
+//  provide a new and flexible multi-language system (MLS).                    //
+//                                                                             //
+//  > Features <                                                               //
+//                                                                             //
+//  a. BotKiller now works with modules, that incorporate new interrogation    //
+//     models, the server administrators now can create their own modules      //
+//     using private methods or formulas to interrogate.                       //
+//                                                                             //
+//  b. The new multi-language system allow to create translations in realtime  //
+//     using the original contents of any integrated script as the input.      //
+//     Use your team knowledge to implement new languages in your server.      //
+//                                                                             //
+//     MLS works with the standard ISO 639-1(2) to identify the languages:     //
+//                                                                             //
+//     http://www.loc.gov/standards/iso639-2/php/English_list.php              //
+//                                                                             //
+//  c. Flexible interrogation system that give enough time to find a safe      //
+//     place before the system stop the player and run the test. The player    //
+//     will start to glow to visually alert other players that it's about to   //
+//     be interrogated.                                                        //
+//                                                                             //
+//  d. Once started the interrogatory, the player is always informed about the //
+//     remaining time to respond.                                              //
+//                                                                             //
+//  e. BK6 calculate the effectiveness of the players and give some bonuses if //
+//     it their have a good history responding the tests. (AGI,DEX,Zeny,Exp)   //
+//                                                                             //
+//  f. BK6 offer a relative period of time before start another interrogatory  //
+//     to the same person, but any Guard or administrator its allowed to start //
+//     a new interrogatory at any time. Also, normal players can acuse others  //
+//     if the right option is set on BotKiller configuration.                  //
+//                                                                             //
+//  g. BK6 will punish players with real jail time, the countdown only works   //
+//     if the guy is connected. When the countdown is over, the player have to //
+//     respond a new interrogatory before be able to exit from the prison.     //
+//     if failed, the countdown is restarted and the Bot player kicked off.    //
+//                                                                             //
+//  h. BK6 save logs that helps administrators to detect Bots Players and      //
+//     apply sanctions.                                                        //
+//                                                                             //
+// --------------------------------------------------------------------------- //
+//   * The best environment to run BotKiller 6 is eAthena SQL Stable 14833+    //
+//                                                                             //
+//   * BotKiller 6 doesn't work on eAthena TXT, please don't request it.       //
+// --------------------------------------------------------------------------- //
+// INSTALLATION:                                                               //
+// --------------------------------------------------------------------------- //
+// In script_athena.conf we have to update the values of this 2 variables:     //
+//                                                                             //
+//    check_cmdcount: 655360                                                   //
+//    check_gotocount: 655360                                                  //
+//                                                                             //
+// 1. Create this folders in your server root:                                 //
+//                                                                             //
+// >  npc/custom/bk                                                            //
+// >  npc/custom/bk/mods                                                       //
+//                                                                             //
+// 2. Copy this scripts in the following paths:                                //
+//                                                                             //
+// >  npc/custom/bk/LangManagement.txt                                         //
+// >  npc/custom/bk/VarSystem.txt                                              //
+// >  npc/custom/bk/BotKiller6.txt                                             //
+// >  npc/custom/bk/lang/BK6_EN.txt                                            //
+// >  npc/custom/bk/lang/BK6_ES.txt                                            //
+// >  npc/custom/bk/mods/BK6_Asc2Num.txt                                       //
+// >  npc/custom/bk/mods/BK6_Asc2Word.txt                                      //
+// >  npc/custom/bk/mods/BK6_Fakename.txt                                      //
+// >  npc/custom/bk/mods/BK6_Img2Num.txt                                       //
+// >  npc/custom/bk/mods/BK6_SMath.txt                                         //
+// >  npc/custom/bk/mods/BK6_Lie2Me.txt                                        //
+// >  npc/custom/bk/mods/BK6_WordNum.txt                                       //
+//                                                                             //
+// 3. Edit npc/scripts_custom.conf adding the following lines:                 //
+//                                                                             //
+// >  // Unlimited Variable System                                             //
+// >  npc: npc/custom/bk/VarSystem.txt                                         //
+//                                                                             //
+// >  // Multi-Language System                                                 //
+// >  npc: npc/custom/bk/LangManagement.txt                                    //
+//                                                                             //
+// >  // Translations                                                          //
+// >  npc: npc/custom/bk/lang/BK6_EN.txt  // English Dialogs                   //
+// >  npc: npc/custom/bk/lang/BK6_ES.txt  // Spanish Dialogs                   //
+// >  npc: npc/custom/bk/lang/BK6_PT.txt  // Portuguese Dialogs (Pedro Brito)  //
+//                                                                             //
+// >  // BotKiller Main Script                                                 //
+// >  npc: npc/custom/bk/BotKiller6.txt                                        //
+//                                                                             //
+// >  // BotKiller Modules                                                     //
+// >  npc: npc/custom/bk/mods/BK6_Asc2Num.txt                                  //
+// >  npc: npc/custom/bk/mods/BK6_Asc2Word.txt                                 //
+// >  npc: npc/custom/bk/mods/BK6_Fakename.txt                                 //
+// >  npc: npc/custom/bk/mods/BK6_Img2Num.txt                                  //
+// >  npc: npc/custom/bk/mods/BK6_Lie2Me.txt                                   //
+// >  npc: npc/custom/bk/mods/BK6_SMath.txt                                    //
+// >  npc: npc/custom/bk/mods/BK6_WordNum.txt                                  //
+//                                                                             //
+// * If you have your own Modules, repeat the steps 2 and 3 with them.         //
+//                                                                             //
+// 4. Run your server and whisp to npc:bkconfig to configure BotKiller 6.      //
+//                                                                             //
+// --------------------------------------------------------------------------- //
+//                                                                             //
+//  History:                                                                   //
+//                                                                             //
+//  2011-05-01: 6.0  - New version, a friendly Police in Midgard!              //
+//  2012-01-18: 6.1  - Using the new version of Unlimited Variable System!     //
+//  2012-01-19: 6.11 - Fixed some problems in the jail!                        //
+//  2012-01-19: 6.12 - Fixed another wierd function in the jail!               //
+//  2012-01-28: 6.13 - npc:bk don't show player selector when found only 1     //
+//                     removed some useless variables in functions             //
+//                     removed a unused function                               //
+//  2012-02-01: 6.14 - Players who manage to stop the interrogatory exiting of //
+//                     the game or using GM commands are re-interrogated.      //
+//  2012-02-01: 6.15 - Fixed a double termination bug related to the player    //
+//                     position at start of the interrogation                  //
+//  2012-03-19: 6.16 - The languages and common functions are now separated    //
+//                     from the main script.                                   //
+//                     Fixed the double continuation problem                   //
+//  2012-03-31: 6.17 - Added Enable/Disable BK6 in global and/or specific maps //
+//                     Thanks to BLUEHD for this useful request                //
+//  2012-03-31: 6.18 - Added the enable/disable effects to the Report options  //
+//                     Non-GM players are not allowed to send bk to their self //
+//                                                                             //
+// --\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\ //
+
+-	script	BKInit	-1,{
+sCheckTable:
+	query_sql "SHOW TABLES LIKE '" + getarg(0) + "'",.@TExists$;
+	return .@TExists$[0] != "";
+OnInit:
+	set $@BotKillerEnabled,0;
+	set $@BotKillerID,rand(100000000,999999999);
+
+	// Table & Data creation
+	if (!callsub(sCheckTable,"bk6_config")) {
+		debugmes "BotKiller 6: Creating table `bk6_config`...";
+		query_sql "CREATE TABLE `bk6_config` (`var` varchar(20) NOT NULL DEFAULT '', `value` varchar(255) NOT NULL DEFAULT '', PRIMARY KEY (`var`)) ENGINE=MyISAM;";
+		
+		debugmes "BotKiller 6: Creating default configuration...";
+		query_sql "INSERT INTO `bk6_config` (`var`,`value`) VALUES ('$@BKBaseJailTime','10'),('$@BKRate','50'),('$@BKMaxTry','5'),('$@BKMinAnswer2Whisp','100'),('$@BKMinGMLevelBK','2'),('$@BKMinUsrLvl','2'),('$@BKNextUse','30'),('$@BKNextUseVariation','15'),('$@BKServerName$','BotKiller Guard'),('$@BKReloadConfigTime','30'),('$@BKSec2Respond','90'),('$@BKWarnTime1','30'),('$@BKWarnTime2','3'),('$@BK_DEFLANG$','en'),('$@BK_MEMORYLANG','0'),('$@BK_LogDays','7')";
+	}
+
+	if (!callsub(sCheckTable,"bk6_module")) {
+		debugmes "BotKiller 6: Creating table `bk6_module`...";
+		query_sql "CREATE TABLE `bk6_module` (`codename` varchar(12) NOT NULL DEFAULT '', `name` varchar(70) NOT NULL DEFAULT '', `enabled` tinyint(3) unsigned DEFAULT '0', `rate` smallint(5) unsigned DEFAULT '100', `version` float(3,2) unsigned NOT NULL DEFAULT '1.00', PRIMARY KEY (`codename`)) ENGINE=MyISAM;";
+	}
+	
+	if (!callsub(sCheckTable,"bk6_logs")) {
+		debugmes "BotKiller 6: Creating table `bk6_logs`...";
+		query_sql "CREATE TABLE `bk6_logs` (`time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `aid` int(11) unsigned NOT NULL DEFAULT '0', `cid` int(11) unsigned NOT NULL DEFAULT '0', `name` varchar(24) NOT NULL DEFAULT '', `map` varchar(24) NOT NULL DEFAULT '', `x` int(11) unsigned NOT NULL DEFAULT '0', `y` int(11) unsigned NOT NULL DEFAULT '0', `npcid` int(11) unsigned NOT NULL DEFAULT '1', `talkid` int(11) unsigned NOT NULL DEFAULT '0', PRIMARY KEY (`time`,`aid`), KEY `idx_account` (`aid`), KEY `idx_character` (`cid`)) ENGINE=MyISAM;";
+	}
+	
+	if (!callsub(sCheckTable,"bk6_cutin")) {
+		debugmes "BotKiller 6: Creating table `bk6_cutin`...";
+		query_sql "CREATE TABLE `bk6_cutin` ( `Id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(24) NOT NULL DEFAULT '', `cutin` varchar(40) DEFAULT NULL, PRIMARY KEY (`Id`) ) ENGINE=MyISAM;";
+		debugmes "BotKiller 6: Creating default cutins for interrogations.";
+		query_sql "INSERT INTO `bk6_cutin` (name, cutin) VALUES ('Kafra','kafra_01.bmp'),('Kafra','kafra_02.bmp'),('Kafra','kafra_03.bmp'),('Kafra','kafra_04.bmp'),('Kafra','kafra_05.bmp');";
+	}
+
+	if (!callsub(sCheckTable,"bk6_staff")) {
+		debugmes "BotKiller 6: Creating table `bk6_staff`..";
+		query_sql "CREATE TABLE `bk6_staff` (`account_id` int(11) unsigned NOT NULL DEFAULT '0', `role` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '1=Guard, 2=Translation Staff, 4... future roles', PRIMARY KEY (`account_id`)) ENGINE=MyISAM;";
+	}
+	
+	if (!callsub(sCheckTable,"bk6_maps")) {
+		debugmes "BotKiller 6: Creating table `bk6_maps`..";
+		query_sql "CREATE TABLE `bk6_maps` ( `mapname` varchar(24) NOT NULL DEFAULT '', `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00', `gmname` varchar(24) NOT NULL DEFAULT '', PRIMARY KEY (`mapname`) ) ENGINE=MyISAM;";
+	}
+	
+	callfunc "BKLoadConfiguration";
+	set $@BotKillerEnabled,1;
+	initnpctimer "bkconfig";
+}
+
+-	script	BKTriggers	-1,{
+OnTChk:
+	if (!@BKID) end;
+	getmapxy .@BKMap$,.@BKX,.@BKY,0;
+	if (.@BKMap$ == @BKMap$ && .@BKX == @BKX && .@BKY == @BKY && !checkoption(0x800)) end;
+	callfunc "BotKillerRun";
+	end;
+OnPCLoginEvent:
+	// Set the default language for all users (the first time)
+	if (#USER_LANG$ == "") set #USER_LANG$,$@BK_DEFLANG$;
+
+	// Always announce how to set a new language
+	announce callfunc("getMes",$@BKNPCID,70),bc_self;
+	
+	if (getgmlevel() < 99 && $@BKRate < 1) message strcharinfo(0), callfunc("getMes",$@BKNPCID,89);
+
+	// If this guy is jailed
+	if (strcharinfo(3) == "sec_pri" && callfunc("iReadC","BKJailTime")) {
+		doevent "JailCounter::OnStart";
+		end;
+	}
+	
+	if (callfunc("iReadC","BKStarted") == 1) {
+		if (callfunc("iReadC","BKID") != $@BotKillerID) {
+			// If it's a different ID, doesn't restart the interrogation because the server was shutdown, it's not a user fault.
+			callfunc "SaveC","BKStarted",0;
+			end;
+		}
+		set @BKID, 1;
+		callfunc "BotKillerRun";
+	}
+	end;
+OnPCLogoutEvent:
+	if (callfunc("iReadC","BKStarted") == 1) callfunc "BKLog",0;
+	
+OnNPCKillEvent:
+	callfunc "chkStartBK";
+}
+
+function	script	BKLog	{
+	getmapxy .@map$,.@x, .@y, 0;
+	set .@NPCID, callfunc("getNPCID","BKlog");
+	query_sql "insert into `bk6_logs` values('" + gettimestr("%Y-%m/%d %H:%M:%S",21) + "'," + getcharid(3) + "," + getcharid(0) + ",'" + strcharinfo(0) + "','" + .@map$ + "'," + .@x + "," + .@y + "," + .@NPCID + "," + getarg(0) + ")";
+	return;
+}
+
+function	script	chkStartBK	{
+	// Check unauthorized unjailed players
+	if (strcharinfo(3) != "sec_pri" && callfunc("iReadC","BKJailTime")) {
+		dispbottom callfunc("getMes",$@BKNPCID,0) + callfunc("formatTime",callfunc("iReadC","BKJailTime"));
+		atcommand "@jail " + strcharinfo(0);
+		sleep2 3000;
+		doevent "BKTriggers::OnPCLoginEvent";
+		end;
+	}
+	if ($@BKRate > rand(10000) && gettimetick(2) - @BKLastRun > 60 && !getd("$@_" + strcharinfo(3))) {
+		callfunc "SaveC","BKMode",0;
+		callfunc "BotKiller";
+	}
+	return;
+}
+
+function	script	BotKiller	{
+	if (gettimetick(2) < callfunc("iReadC","BKNextUse" + callfunc("iReadC","BKMode")) && rand(1000)) end;
+	if (callfunc("iReadC","BKStarted") == 1) end;
+	callfunc "SaveC","BKStarted",1;
+	callfunc "SaveC","BKID",$@BotKillerID;
+	set @BKLastRun,gettimetick(2);
+	if (!@BKID) {
+		set @BKID,1;
+		callfunc "SaveC","BKTry",0;
+		callfunc "SaveC","BKTimeout",$@BKSec2Respond;
+		if (!callfunc("iReadC","BKMode")) callfunc "BKWarningMsg";
+	} else {
+		callfunc "SaveC","BKTry",callfunc("iReadC","BKTry") + 1;
+	}
+	set @BKCaller$, getarg(0,"");
+	set @StackTime, gettimetick(2);
+	addtimer 1,"queueBK::OnStart"; // Stacked
+}
+
+-	script	queueBK	-1,{
+OnStart:
+	callfunc "BotKillerRun";
+}
+
+function	script	BotKillerRun	{
+	// Check the time passed between the start order and the real start time of this interrogation
+	if (@StackTime && gettimetick(2) - @StackTime > 30 && callfunc("iReadC","BKMode") != 1) {
+		callfunc "BKLog",3;
+		callfunc "BKJail";
+		end;
+	}
+	// Main Trigger
+	set .@Cnt, query_sql("select `codename` from `bk6_module` where `enabled`=1 and `rate` > rand(100) order by rand() limit 1",.@CurModule$);
+	if (!.@Cnt) {
+		set .@Cnt, query_sql("select `codename` from `bk6_module` where `enabled`=1 order by rand() limit 1",.@CurModule$);
+		if (!.@Cnt) {
+			debugmes callfunc("getMes",$@BKNPCID,31,$@BK_DEFLANG$);
+			return 1;
+		}
+	}
+
+	callfunc "setPoliceName";
+	disable_items;
+	if (callfunc("iReadC","BKMode") != 1) callfunc "BK_PreparePlayer",1;
+	initnpctimer "TimeoutCtrl",1;
+	addtimer 1,"BKTriggers::OnTChk"; // Stacked
+	while (callfunc("iReadC","BKTry") < $@BKMaxTry) {
+		if (getstrlen(@BKPoliceCutin$)) cutin @BKPoliceCutin$,2;
+		// Start a interrogatory
+		if (callfunc("BK_" + .@CurModule$[0])) {
+			set .@bkt, callfunc("iReadC","BKTry");
+			callfunc "BKClean";
+			callfunc "SaveC","BKGoodAnswer",callfunc("iReadC","BKGoodAnswer") + 1;
+			if (callfunc("iReadC","BKGoodAnswer") % 5 && callfunc("iReadC","BKDuration") > $@BKBaseJailTime) callfunc "SaveC","BKDuration",callfunc("iReadC","BKDuration") - 1;
+			soundeffect "tming_success.wav",0;
+			cutin "",255;
+			callfunc "SaveC","BKJailTime",0;
+			if (!callfunc("iReadC","BKMode")) callfunc "BKReleaseMsg";
+			if (callfunc("iReadC","BKMode") != 1) callfunc "BK_PreparePlayer",0;
+			callfunc "SaveC","BKNextUse" + callfunc("iReadC","BKMode"), gettimetick(2) + (($@BKNextUse + rand($@BKNextUseVariation)) * 60);
+			set .@pctbot, callfunc("iReadC","BKGoodAnswer") * 100 / (callfunc("iReadC","BKGoodAnswer") + callfunc("iReadC","BKBadAnswer"));
+			dispbottom .@pctbot + callfunc("getMes",$@BKNPCID,69);
+			if (@BKCaller$ == "") {
+				if (.@pctbot > 89) {
+					percentheal 100,100;
+					specialeffect2 509;
+					switch (rand(4)) {
+						case 0:
+							set .@bonus, 10 - .@bkt * 2;
+							if (.@bonus > 0) {
+								sc_start SC_BLESSING,300000,.@bonus; // Blessing lvl 10
+								announce @BKPoliceName$ + callfunc("getMes",$@BKNPCID,32) + callfunc("getMes",$@BKNPCID,33) + .@bonus,bc_self;
+							}
+							break;
+						case 1:
+							set .@bonus, 10 - .@bkt * 2;
+							if (.@bonus > 0) {
+								sc_start SC_INCREASEAGI,300000,.@bonus; // Increase agi lvl 10
+								announce @BKPoliceName$ + callfunc("getMes",$@BKNPCID,32) + callfunc("getMes",$@BKNPCID,34) + .@bonus,bc_self;
+							}
+							break;
+						case 2:
+							set .@bonus, 10000 - .@bkt * 1500;
+							if (.@bonus > 0) {
+								set .@z, rand(.@bonus,.@bonus * 3);
+								set zeny, zeny + .@z;
+								announce @BKPoliceName$ + callfunc("getMes",$@BKNPCID,32) + .@z + callfunc("getMes",$@BKNPCID,35),bc_self;
+							}
+							break;
+						case 3:
+							set .@bonus, 5 - .@bkt;
+							set BaseExp, BaseExp + ((NextBaseExp / 100) * .@bonus / 100) * 100;
+							set JobExp, JobExp + ((NextJobExp / 100) * .@bonus / 100) * 100;
+							announce @BKPoliceName$ + callfunc("getMes",$@BKNPCID,32) + .@bonus + callfunc("getMes",$@BKNPCID,36),bc_self;
+							break;
+					}
+				} else {
+					announce @BKPoliceName$ + callfunc("getMes",$@BKNPCID,37) + callfunc("iReadC","BKGoodAnswer") + callfunc("getMes",$@BKNPCID,38) + callfunc("iReadC","BKBadAnswer") + "]", bc_self;
+				}
+			}
+			return;
+		} else {
+			callfunc "SaveC","BKTry", callfunc("iReadC","BKTry") + 1;
+			if (callfunc("iReadC","BKTry") < $@BKMaxTry) {
+				soundeffect "goat_die.wav",0;
+				mes "[^ff0000" + @BKPoliceName$ + "^000000]";
+				mes callfunc("getMes",$@BKNPCID,39);
+				next;
+			} else {
+				dispbottom callfunc("getMes",$@BKNPCID,40);
+			}
+		}
+	}
+	callfunc "SaveC","BKBadAnswer",callfunc("iReadC","BKBadAnswer") + 1;
+	callfunc "BKLog",1;
+	callfunc "BKJail";
+	return 0;
+}
+
+function	script	interCheck	{
+	// Main Trigger
+	set .@Cnt, query_sql("select `codename` from `bk6_module` where `enabled`=1 and `rate` > rand(100) order by rand() limit 1",.@CurModule$);
+	if (!.@Cnt) {
+		set .@Cnt, query_sql("select `codename` from `bk6_module` where `enabled`=1 order by rand() limit 1",.@CurModule$);
+		if (!.@Cnt) {
+			debugmes callfunc("getMes",$@BKNPCID,31,$@BK_DEFLANG$);
+			return 1;
+		}
+	}
+	set @BKTimeOut, $@BKSec2Respond;
+	callfunc "setPoliceName";
+	initnpctimer "TimeoutCtrlInt",1;
+	disable_items;
+	while (callfunc("iReadC","BKTry") < $@BKMaxTry) {
+		// Start a interrogatory
+		if (callfunc("BK_" + .@CurModule$[0])) {
+			set @BKFreeJail,1;
+			callfunc "BKClean";
+			atcommand "@refresh";
+			return 1;
+		} else {
+			callfunc "SaveC","BKTry", callfunc("iReadC","BKTry") + 1;
+			if (callfunc("iReadC","BKTry") < $@BKMaxTry) {
+				soundeffect "goat_die.wav",0;
+				mes "[^ff0000" + $@BKServerName$ + "^000000]";
+				mes callfunc("getMes",$@BKNPCID,39);
+				next;
+			} else {
+				dispbottom callfunc("getMes",$@BKNPCID,40);
+			}
+		}
+	}
+	if (callfunc("iReadC","BKDuration") < $@BKBaseJailTime) {
+		callfunc "SaveC","BKDuration",$@BKBaseJailTime;
+	} else {
+		callfunc "SaveC","BKDuration",callfunc("iReadC","BKDuration") + 1; // Add 1 minute every time a player is jailed
+	}
+	callfunc "SaveC","BKJailTime",callfunc("iReadC","BKDuration") * 60;
+	callfunc "SaveC","BKTry",0;
+	atcommand "@kick " + strcharinfo(0);
+	return 0;
+}
+
+function	script	setPoliceName	{
+	// Get the guard information for this interrogatory
+	set .@Cnt, query_sql("select `name`, `cutin` from `bk6_cutin` order by rand() limit 1",.@GuardName$,.@GuardCutin$);
+	if (.@Cnt) {
+		set @BKPoliceName$, .@GuardName$[0];
+		set @BKPoliceCutin$, .@GuardCutin$[0];
+	} else {
+		set @BKPoliceName$, $@BKServerName$;
+		set @BKPoliceCutin$, "";
+	}
+	return;
+}
+
+function	script	BKWarningMsg	{
+	specialeffect2 381;
+	for (set .@w,$@BKWarnTime1; .@w > 0; set .@w,.@w - 1) {
+		if (.@w % 7 == 0) specialeffect2 381;
+		if (.@w < 11) soundeffect "bloody_knight_move1.wav",0;
+		if (.@w % 5 == 0) announce $@BKServerName$ + callfunc("getMes",$@BKNPCID,41) + .@w + callfunc("getMes",$@BKNPCID,42),bc_self,"0x" + callfunc("Int2Hex",245,255) + callfunc("Int2Hex",145,255) + callfunc("Int2Hex",245,255);
+		sleep2 1000;
+	}
+	return;
+}
+
+function	script	BKReleaseMsg	{
+	for (set .@w,$@BKWarnTime2; .@w > 0; set .@w,.@w - 1) {
+		specialeffect2 459 + rand(3);
+		soundeffect "bloody_knight_move1.wav",0;
+		announce @BKPoliceName$ + callfunc("getMes",$@BKNPCID,43) + .@w + callfunc("getMes",$@BKNPCID,44),bc_self,0xadff2f;
+		sleep2 1000;
+	}
+	return;
+}
+
+function	script	BKJail	{
+	if (callfunc("iReadC","BKDuration") < $@BKBaseJailTime) {
+		callfunc "SaveC","BKDuration",$@BKBaseJailTime; // Initialize the jail duration
+	} else {
+		callfunc "SaveC","BKDuration",callfunc("iReadC","BKDuration") + 1; // Add 1 additionsl minute every time a player is jailed
+	}
+	callfunc "SaveC","BKJailTime",callfunc("iReadC","BKDuration") * 60;
+	callfunc "BKClean";
+	soundeffect "chaos_of_eternity.wav",0;
+	callfunc "BK_PreparePlayer",0;
+	atcommand "@jail " + strcharinfo(0);
+	sleep2 1000;
+	doevent "JailCounter::OnStart";
+	return;
+}
+
+function	script	BKClean	{
+	set @BKID,0;
+	callfunc "SaveC","BKStarted",0;
+	callfunc "SaveC","BKTry",0;
+	deltimer "BKTriggers::OnTChk";
+	return;
+}
+
+-	script	TimeoutCtrl	-1,{
+OnTimer1000:
+	stopnpctimer 1;
+	if (callfunc("iReadC","BKStarted") == 1) {
+		callfunc "SaveC","BKTimeOut",callfunc("iReadC","BKTimeOut") - 1;
+		if (callfunc("iReadC","BKTimeOut") > 0) {
+			announce @BKPoliceName$ + callfunc("getMes",$@BKNPCID,45) + callfunc("iReadC","BKTimeOut") + callfunc("getMes",$@BKNPCID,46),bc_self,0x2fcf2f;
+			getmapxy .@BKMap$,.@BKX,.@BKY,0;
+			if (.@BKMap$ != @BKMap$ || .@BKX != @BKX || .@BKY != @BKY) callfunc "BotKiller";
+			initnpctimer 1;
+		} else {
+			callfunc "BKJail";
+		}
+	} else {
+		callfunc "SaveC","BKTimeout",0;
+	}
+}
+
+-	script	TimeoutCtrlInt	-1,{
+OnTimer1000:
+	stopnpctimer 1;
+	if (@BKFreeJail) {
+		set @BKFreeJail,0;
+		end;
+	}
+	set @BKTimeOut, @BKTimeOut - 1;
+	if (@BKTimeOut > 0) {
+		announce $@BKServerName$ + callfunc("getMes",$@BKNPCID,45) + @BKTimeOut + callfunc("getMes",$@BKNPCID,46),bc_self,0x2fcf2f;
+		initnpctimer 1;
+	} else {
+		callfunc "SaveC","BKJailTime",$@BKBaseJailTime * 60;
+		atcommand "@kick " + strcharinfo(0);
+	}
+}
+
+-	script	JailCounter	-1,{
+OnTimer1000:
+	stopnpctimer 1;
+OnStart:
+	// Check unauthorized unjailed players
+	if (strcharinfo(3) != "sec_pri" && callfunc("iReadC","BKJailTime")) {
+		dispbottom callfunc("getMes",$@BKNPCID,0) + callfunc("formatTime",callfunc("iReadC","BKJailTime"));
+		atcommand "@jail " + strcharinfo(0);
+	}
+	// Show remaining time and update it
+	if (gettime(1) % 5 == 0) {
+		announce callfunc("getMes",$@BKNPCID,47) + callfunc("formatTime",callfunc("iReadC","BKJailTime")) + " **",bc_self,"0x00CCFF";
+		callfunc "SaveC","BKJailTime", callfunc("iReadC","BKJailTime") - 5;
+		if (callfunc("iReadC","BKJailTime") < 1) {
+			callfunc "SaveC","BKJailTime",0;
+			if (callfunc("interCheck")) {
+				atcommand "@unjail " + strcharinfo(0);
+				message strcharinfo(0),$@BKServerName$ + callfunc("getMes",$@BKNPCID,48);
+				end;
+			}
+		}
+	}
+	initnpctimer 1;
+}
+
+function	script	BK_PreparePlayer	{
+	atcommand "@refresh";
+	if (getarg(0)) {
+		set @BK_HP, HP;
+		set @BK_SP, SP;
+		setoption 0x40,1;
+		setoption 0x2000,1; // Ruwach
+		setoption 0x800,1; // Orc Head
+		sc_start SC_FREEZE,1000000,10;
+		sc_start SC_STUN,1000000,10;
+		sc_start SC_SLEEP,1000000,10;
+		sc_start SC_SILENCE,1000000,10;
+		pcblockmove getcharid(3),1;
+		specialeffect2 135;
+		getmapxy @BKMap$,@BKX,@BKY,0;
+	} else {
+		setoption 0x40,0;
+		setoption 0x2000,0; // Ruwach
+		setoption 0x800,0; // Orc Head
+		sc_end SC_FREEZE;
+		sc_end SC_STUN;
+		sc_end SC_SLEEP;
+		sc_end SC_SILENCE;
+		pcblockmove getcharid(3),0;
+		set HP,@BK_HP;
+		set SP,@BK_SP;
+	}
+	return;
+}
+
+// Guards
+sec_pri,24,63,4	script	Kengo::JailMan	795,{
+	if (!callfunc("iReadC","BKJailTime")) {
+		npctalk callfunc("getMes",$@GuardNPCID,0);
+		end;
+	}
+	
+	if (!getnpctimer(1,"JailCounter")) doevent "JailCounter::OnStart";
+	
+	if (callfunc("iReadC","BKJailTime") < 1) {
+		if (callfunc("interCheck")) {
+			callfunc "SaveC","BKJailTime",0;
+			atcommand "@unjail " + strcharinfo(0);
+			end;
+		}
+	}
+	npctalk callfunc("getMes",$@GuardNPCID,1) + strcharinfo(0) + callfunc("getMes",$@GuardNPCID,2) + callfunc("formatTime",callfunc("iReadC","BKJailTime")) + callfunc("getMes",$@GuardNPCID,3);
+	close;
+}
+
+sec_pri,50,63,4	duplicate(JailMan)	Akemi	795
+sec_pri,76,63,4	duplicate(JailMan)	Nomaru	795
+
+function	script	formatTime	{
+	set .@HH, getarg(0) / 3600;
+	set .@MM, (getarg(0) - .@HH * 3600) / 60;
+	set .@SS, getarg(0) - (.@HH * 3600) - (.@MM * 60);
+	if (.@HH) {
+		set .@RT$, .@HH + callfunc("getMes",$@BKNPCID,53);
+		if (.@HH > 1) set .@RT$, .@RT$ + callfunc("getMes",$@BKNPCID,51);
+	}
+	if (.@MM) {
+		if (getstrlen(.@RT$)) set .@RT$, .@RT$ + .@SS?", ":callfunc("getMes",$@BKNPCID,49);
+		set .@RT$, .@RT$ + .@MM + callfunc("getMes",$@BKNPCID,52);
+		if (.@MM > 1) set .@RT$, .@RT$ + callfunc("getMes",$@BKNPCID,51);
+	}
+	if (.@SS) {
+		if (getstrlen(.@RT$)) set .@RT$, .@RT$ + callfunc("getMes",$@BKNPCID,49);
+		set .@RT$, .@RT$ + .@SS + callfunc("getMes",$@BKNPCID,50);
+		if (.@SS > 1) set .@RT$, .@RT$ + callfunc("getMes",$@BKNPCID,51);
+	}
+	return .@RT$;
+}
+
+function	script	BKLoadConfiguration	{
+	debugmes "BotKiller 6: Loading configuration...";
+	query_sql "select count(*) from `bk6_config`",.@Cnt$;
+	set .@Page,0;
+	set .@PageSize,50;
+	set .@TotParams,.@Cnt$[0];
+	while (.@TotParams > 0) {
+		set .@Cfg, query_sql("select `var`, `value`, if(right(`var`,1)='$',1,0) `str` from `bk6_config` limit " + .@Page + "," + .@PageSize,.@Var$,.@Val$,.@Str);
+		if (playerattached()) 
+			dispbottom "BotKiller 6: Processing " + .@Cfg + " parameter(s)...";
+		else
+			debugmes "BotKiller 6: Processing " + .@Cfg + " parameter(s)...";
+		for (set .@x,0; .@x < .@Cfg; set .@x, .@x + 1)
+			if (.@Str[.@x]) setd .@Var$[.@x],.@Val$[.@x]; else setd .@Var$[.@x],atoi(.@Val$[.@x]);
+		set .@TotParams, .@TotParams - .@PageSize;
+		set .@Page, .@Page + .@PageSize;
+	}
+	
+	debugmes "BotKiller 6: " + .@Cnt$[0] + " parameter(s) loaded";
+	
+	debugmes "BotKiller 6: Loading map ignore list...";
+	set .@Cnt,1;
+	set .@Page,0;
+	while (.@Cnt) {
+		set .@Cnt, query_sql("select mapname from bk6_maps limit " + .@Page + ",100",.@IgnoredMap$);
+		for (set .@x,0; .@x < .@Cnt; set .@x,.@x + 1) {
+			setd "$@_" + .@IgnoredMap$[.@x],1;
+		}
+		set .@Page, .@Page + 100;
+	}
+
+	if (playerattached()) dispbottom "Reload Configuration: Complete!";
+	return;
+}
+
+
+// --\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\ //
+// Ingame Configuration System                                                 //
+// --\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\ //
+-	script	bk	-1,{
+OnWhisperGlobal:
+	if (getgmlevel() < $@BKMinUsrLvl) {
+		message strcharinfo(0),callfunc("getMes",$@BKNPCID,1);
+		emotion e_sob;
+		end;
+	}
+	
+	set .@GA, $@BKMinAnswer2Whisp - callfunc("iReadC","BKGoodAnswer") + callfunc("iReadC","BKBadAnswer");
+	if (.@GA > 0 && getgmlevel() < $@BKMinGMLevelBK) {
+		message strcharinfo(0),callfunc("getMes",$@BKNPCID,2) + .@GA + callfunc("getMes",$@BKNPCID,3);
+		emotion e_sob;
+		end;
+	}
+	
+l_Report:
+
+	mes "[^ff0000" + $@BKServerName$ + "^000000]";
+	mes callfunc("getMes",$@BKNPCID,4) + strcharinfo(0) + callfunc("getMes",$@BKNPCID,5);
+	next;
+	switch(select(callfunc("getMes",$@BKNPCID,6),callfunc("getMes",$@BKNPCID,7),callfunc("getMes",$@BKNPCID,8))) {
+		case 1:
+			mes "[^ff0000" + $@BKServerName$ + "^000000]";
+			mes callfunc("getMes",$@BKNPCID,9);
+			mes " ";
+			mes callfunc("getMes",$@BKNPCID,10);
+			next;
+			input .@BKSuspect$;
+			if (getstrlen(.@BKSuspect$) < 3) goto l_Report;
+			set .@st, callfunc("selPlayer",.@BKSuspect$);
+			if (.@st < 1) {
+				if (.@st > -2) {
+					mes "[^ff0000" + $@BKServerName$ + "^000000]";
+					mes callfunc("getMes",$@BKNPCID,11);
+					next;
+				}
+				goto l_Report;
+			}
+			if (checkvending(@playername$) || checkchatting(@playername$)) {
+				if (getgmlevel() < $@BKMinGMLevelBK) {
+					mes "[^ff0000" + $@BKServerName$ + "^000000]";
+					mes callfunc("getMes",$@BKNPCID,85);
+					next;
+					goto l_Report;
+				} else {
+					mes "[^ff0000" + $@BKServerName$ + "^000000]";
+					mes callfunc("getMes",$@BKNPCID,86);
+					next;
+					if (select(callfunc("getMes",$@BKNPCID,21),callfunc("getMes",$@BKNPCID,22)) == 2) goto l_Report;
+				}
+			}
+			set .@GA, callfunc("iGData","BKGoodAnswer",@charid,1);
+			set .@BA, callfunc("iGData","BKBadAnswer",@charid,1);
+			if (.@GA && .@BA)
+				set .@pctbot, callfunc("iGData","BKGoodAnswer",@charid,1) * 100 / (callfunc("iGData","BKGoodAnswer",@charid,1) + callfunc("iGData","BKBadAnswer",@charid,1));
+			else if (.@GA)
+				set .@pctbot, 100;
+			else
+				set .@pctbot, 0;
+			mes "[^ff0000" + $@BKServerName$ + "^000000]";
+			mes callfunc("getMes",$@BKNPCID,13) + @playername$ + "^000000:";
+			mes " ";
+			mes callfunc("getMes",$@BKNPCID,14) + .@GA + "^000000";
+			mes callfunc("getMes",$@BKNPCID,15) + .@BA + "^000000";
+			mes callfunc("getMes",$@BKNPCID,16) + .@pctbot + "%^000000";
+			next;
+			goto l_Report;
+		case 2:
+			mes "[^ff0000" + $@BKServerName$ + "^000000]";
+			if (callfunc("iReadC","BKNextWhisp") > gettimetick(2)) {
+				mes callfunc("getMes",$@BKNPCID,17);
+				close;
+			}
+			mes callfunc("getMes",$@BKNPCID,18);
+			mes " ";
+			mes callfunc("getMes",$@BKNPCID,10);
+			next;
+			input .@BKSuspect$;
+			set .@st, callfunc("selPlayer",.@BKSuspect$,1);
+			if (.@st < 1) {
+				if (.@st > -2) {
+					mes "[^ff0000" + $@BKServerName$ + "^000000]";
+					mes callfunc("getMes",$@BKNPCID,11);
+					next;
+				}
+				goto l_Report;
+			}
+			mes "[^ff0000" + $@BKServerName$ + "^000000]";
+			if (getgmlevel() < $@BKMinGMLevelBK && @accountid == getcharid(3)) {
+				mes callfunc("getMes",$@BKNPCID,103);
+				close;
+			}
+			mes callfunc("getMes",$@BKNPCID,20);
+			mes " ";
+			mes " > ^ff0000" + @playername$ + "^000000";
+			next;
+			if (select(callfunc("getMes",$@BKNPCID,21),callfunc("getMes",$@BKNPCID,22)) == 2) goto l_Report;
+			close2;
+			set .@IAID, getcharid(3);
+			set .@AID, @accountid;
+			set .@Caller$, strcharinfo(0);
+			if (!attachrid(.@AID)) {
+				message .@Caller$,callfunc("getMes",$@BKNPCID,23) + @playername$ + callfunc("getMes",$@BKNPCID,24);
+				end;
+			}
+			if (getd("$@_" + strcharinfo(3))) {
+				message @playername$,strcharinfo(0) + " " + callfunc("getMes",$@BKNPCID,102);
+				end;
+			}
+			
+			if (getgmlevel() == 99) set .@Caller$, "GM 99";
+			message @playername$,callfunc("getMes",$@BKNPCID,25) + .@Caller$ + callfunc("getMes",$@BKNPCID,26);
+			callfunc "BotKiller",.@Caller$;
+			sleep2 10000;
+			getmapxy .@map$,.@x,.@y,0,@playername$;
+			if (.@map$ != "sec_pri") {
+				if (getgmlevel() < $@BKMinGMLevelBK) {
+					// Block the whisp service for 7 days.
+					callfunc "SaveX","BKNextWhisp",gettimetick(2) + 604800,.@IAID;
+					message .@Caller$,callfunc("getMes",$@BKNPCID,27) + @playername$ + callfunc("getMes",$@BKNPCID,28);
+				} else {
+					message .@Caller$,callfunc("getMes",$@BKNPCID,27) + @playername$ + callfunc("getMes",$@BKNPCID,29);
+				}
+			} else {
+				callfunc "BKLog",2;
+				message .@Caller$,callfunc("getMes",$@BKNPCID,27) + @playername$ + callfunc("getMes",$@BKNPCID,30);
+			}
+			end;
+	}
+	close;
+}
+
+-	script	bkconfig	-1,{
+OnTimer60000: // 1 minute
+	set .Cnt, .Cnt + 1;
+	// Reload configuration parameters every N minutes
+	if (.Cnt >= $@BKReloadConfigTime) {
+		set .Cnt,0;
+		callfunc "BKLoadConfiguration";
+	}
+	startnpctimer;
+	end;
+	
+OnWhisperGlobal:
+	if (!$@BotKillerEnabled) {
+		dispbottom callfunc("getMes",$@BKNPCID,54);
+		end;
+	}
+	callfunc "BKCheckAuth";
+	while (1) {
+		mes "[^0000ffBotKiller^000000]";
+		mes callfunc("getMes",$@BKNPCID,55);
+		next;
+		// Pending utilities
+		// callfunc("getMes",$@BKNPCID,58),callfunc("getMes",$@BKNPCID,60),callfunc("getMes",$@BKNPCID,59),callfunc("getMes",$@BKNPCID,61),
+		if ($@BKRate < 1) set .@EnableMsg1$,callfunc("getMes",$@BKNPCID,87); else set .@EnableMsg1$,callfunc("getMes",$@BKNPCID,98);
+		if (getd("$@_" + strcharinfo(3))) set .@EnableMsg2$,callfunc("getMes",$@BKNPCID,88); else set .@EnableMsg2$,callfunc("getMes",$@BKNPCID,99);
+		switch(prompt(callfunc("getMes",$@BKNPCID,56),callfunc("getMes",$@BKNPCID,57),.@EnableMsg1$,.@EnableMsg2$,callfunc("getMes",$@BKNPCID,96),callfunc("getMes",$@BKNPCID,62),callfunc("getMes",$@BKNPCID,63))) {
+			case 1:
+				callfunc "showStatistics";
+				mes "[^0000ffBotKiller^000000]";
+				mes callfunc("getMes",$@BKNPCID,64);
+				next;
+				break;
+			case 2:
+				callfunc "BKModules";
+				break;
+			case 3:
+				callfunc "BKDisableAll";
+				mes "[^0000ffBotKiller^000000]";
+				if ($@BKRate > 0) {
+					mes "BotKiller was enabled! (Global)";
+				} else {
+					mes "BotKiller was disabled! (Global)";
+				}
+				next;
+				break;
+			case 4:
+				callfunc "BKDisableMap";
+				mes "[^0000ffBotKiller^000000]";
+				if (getd("$@_" + strcharinfo(3))) {
+					mes strcharinfo(3) + " " + callfunc("getMes",$@BKNPCID,94);
+				} else {
+					mes strcharinfo(3) + " " + callfunc("getMes",$@BKNPCID,95);
+				}
+				next;
+				break;
+			case 5:
+				callfunc "BKViewIgnoreList";
+				mes "[^0000ffBotKiller^000000]";
+				mes callfunc("getMes",$@BKNPCID,97);
+				next;
+				break;
+			case 6:
+				callfunc "BKLoadConfiguration";
+				mes "[^0000ffBotKiller^000000]";
+				mes callfunc("getMes",$@BKNPCID,64);
+				next;
+				break;
+			case 7:
+			case 255:
+				close;
+		}
+	}
+}
+
+function	script	BKDisableAll	{
+	set $@BKRate, $@BKRate * -1;
+	query_sql "update `bk6_config` set `value` = '" + $@BKRate + "' where var='$@BKRate'";
+	return;
+}
+
+function	script	BKDisableMap	{
+	if (getd("$@_" + strcharinfo(3))) set .@MapMenu$,callfunc("getMes",$@BKNPCID,100); else set .@MapMenu$,callfunc("getMes",$@BKNPCID,101);
+	if (select(.@MapMenu$,callfunc("getMes",$@BKNPCID,80))==1) {
+		if (getd("$@_" + strcharinfo(3))) {
+			query_sql "delete from bk6_maps where mapname='" + strcharinfo(3) + "'";
+			setd "$@_" + strcharinfo(3),0;
+		} else {
+			query_sql "insert into bk6_maps values ('" + strcharinfo(3) + "',now(),'" + strcharinfo(0) + "')";
+			setd "$@_" + strcharinfo(3),1;
+		}
+	}
+	return;
+}
+
+function	script	BKViewIgnoreList	{
+	set .@cnt,1;
+	dispbottom "** " + callfunc("getMes",$@BKNPCID,92) + ":";
+	while (.@cnt) {
+		set .@cnt, query_sql("select mapname, created, gmname from bk6_maps order by mapname limit " + .@Page + ",100",.@mapname$,.@created$,.@gmname$);
+		if (!.@y) set .@y,1;
+		for (set .@x,0; .@x < .@cnt; set .@x, .@x + 1) {
+			dispbottom (.@x + 1 + (.@Page * 100)) + "> " + .@mapname$[.@x] + " (" + .@gmname$[.@x] + " / " + .@created$[.@x] + ")";
+		}
+		set .@Page, .@Page + 100;
+	}
+	if (!.@y) dispbottom "** " + callfunc("getMes",$@BKNPCID,91);
+	return;
+}
+
+-	script	bksw	-1,{
+OnPCLoginEvent:
+	
+	end;
+OnWhisperGlobal:
+	if (getgmlevel() < 99) end;
+}
+
+function	script	BKTranslationStaff	{
+	while (1) {
+		switch(select("Translation Staff List","Add Member","Delete Member","Exit")) {
+			case 1:
+				set .@n, 0;
+				dispbottom "** Translation Staff **";
+				do {
+					set .@Cnt, query_sql("select s.account_id, l.level, (select name from `char` c where l.account_id = c.account_id order by level desc limit 1) name from bk6_staff s join login l on s.account_id = l.account_id where role & 2 order by name limit " + .@Page + ",5",.@account_id, .@level, .@name$);
+					for (set .@x,0; .@x < .@Cnt; set .@x, .@x + 1) {
+						set .@n,.@n + 1;
+						dispbottom .@n + ". Member: " + .@name$[.@x] + " (" + .@account_id[.@x] + ")" + .@level[.@x]?(" [Account level " + .@level[.@x]):"";
+					}
+				} while (.@Cnt);
+				break;
+			case 2:
+		}
+	}
+}
+
+// Check access to BotKiller
+function	script	BKCheckAuth	{
+	if (getgmlevel() < 99) {
+		dispbottom callfunc("getMes",$@BKNPCID,1);
+		end;
+	}
+	return;
+}
+
+// Module modification function
+function	script	BKModules	{
+	set .@cnt, query_sql("select `name`, `codename`, `version`, `rate`, `enabled` from `bk6_module`", .@name$, .@codename$, .@version$, .@rate, .@enabled);
+LMenu:
+	set .@Modules$, "";
+	for (set .@x,0; .@x < .@cnt; set .@x, .@x + 1)
+		set .@Modules$, .@Modules$ + (.@enabled[.@x]?"^0000FF":"^c0c0c0") + .@name$[.@x] + " v." + .@version$[.@x] + " [" + .@rate[.@x] + "%]^000000:";
+	set .@Modules$, .@Modules$ + "< Back";
+	while (1) {
+		mes "[^0000ffBotKiller^000000]";
+		mes callfunc("getMes",$@BKNPCID,72);
+		next;
+		set .@opc, select(.@Modules$) - 1;
+
+		if (.@opc > .@cnt - 1) return; // Back
+		
+		// Module Options
+		l_Editing:
+		mes "[^0000ffBotKiller^000000]";
+		mes callfunc("getMes",$@BKNPCID,73) + .@name$[.@opc] + "^000000";
+		mes " ";
+		mes callfunc("getMes",$@BKNPCID,74) + ": " + (.@enabled[.@opc]==1?"^0000ff" + callfunc("getMes",$@BKNPCID,75):"^ff0000" + callfunc("getMes",$@BKNPCID,76)) + "^000000";
+		next;
+		set .@BKMenu$, (.@enabled[.@opc]?"^ff0000" + callfunc("getMes",$@BKNPCID,78):"^0000ff" + callfunc("getMes",$@BKNPCID,77)) + "^000000:" + callfunc("getMes",$@BKNPCID,79) + " [" + .@rate[.@opc] + "%]:" + callfunc("getMes",$@BKNPCID,80);
+		switch(select(.@BKMenu$)) {
+			case 1: // Activate - Deactivate module
+				if (.@enabled[.@opc]) {
+					query_sql "update `bk6_module` set `enabled`=0 where `codename`='" + .@codename$[.@opc] + "'";
+					set .@enabled[.@opc],0;
+				} else {
+					query_sql "update `bk6_module` set `enabled`=1 where `codename`='" + .@codename$[.@opc] + "'";
+					set .@enabled[.@opc],1;
+				}
+				goto LMenu;
+			case 2: // Rate
+				l_InputRate:
+				mes "[^0000ffBotKiller^000000]";
+				mes callfunc("getMes",$@BKNPCID,81) + ": ^ff0000" + .@name$[.@opc] + "^000000";
+				mes "> " + callfunc("getMes",$@BKNPCID,74) + ": ^ff0000" + (.@enabled[.@opc]==1?callfunc("getMes",$@BKNPCID,75):callfunc("getMes",$@BKNPCID,76)) + "^000000";
+				mes "> " + callfunc("getMes",$@BKNPCID,79) + ": ^ff0000" + .@rate[.@opc] + "%^000000";
+				mes callfunc("getMes",$@BKNPCID,82);
+				next;
+				input .@ratex,1,100;
+				if (.@ratex == 0) break;
+				if (.@ratex < 1 || .@ratex > 100) {
+					mes "[^0000ffBotKiller^000000]";
+					callfunc("getMes",$@BKNPCID,83);
+					next;
+					goto l_InputRate;
+				}
+				if (.@rate[.@opc] != .@ratex) {
+					set .@changed,1;
+					query_sql "update `bk6_module` set `rate`=" + .@ratex + " where `codename`='" + .@codename$[.@opc] + "'";
+					set .@rate[.@opc], .@ratex;
+				}
+			default: // Exit
+				goto LMenu;
+		}
+	}
+}
+
+function	script	BK_UpdateMod	{
+	//query_sql "update 
+}
+
+// Called from the modules
+// addModule '<codename>','<name>','<version>',<rate>
+function	script	addModule	{
+	if (query_sql("select `version` from `bk6_module` where `codename`='" + getarg(0) + "'",.@ver$))
+		if (.@ver$[0] == getarg(2)) return; // Already exists, do nothing.
+	query_sql "replace into `bk6_module` (`codename`, `name`, `enabled`, `rate`, `version`) values ('" + getarg(0) + "','" + getarg(1) + "',1," + getarg(3) + ",'" + getarg(2) + "')";
+	return;
+}
+
+function	script	showStatistics	{
+	dispbottom "** " + callfunc("getMes",$@BKNPCID,66) + " **";
+	set .@page,0;
+	set .@max,0;
+	do {
+		set .@Cnt, query_sql("select date_format(`time`,'%m-%d %h:%i') time, `name`, concat(`map`,'(',x,',',y,')') map, `dialog` from `bk6_logs` l join `bk6_talk` t on l.npcid = t.npcid and l.talkid = t.talkid where t.lang='" + #USER_LANG$ + "' and `time` > date_sub(now(), interval " + $@BK_LogDays + " day) order by `time` desc limit " + .@page + ", 20", .@time$, .@name$, .@map$, .@dialog$);
+		for (set .@x,0; .@x < .@Cnt; set .@x, .@x + 1)
+			dispbottom .@time$[.@x] + " " + .@name$[.@x] + " [" + .@map$[.@x] + "] " + .@dialog$[.@x];
+		set .@page, .@page + 20;
+		set .@max, .@max + 1;
+	} while (.@Cnt && .@max < 4);
+	dispbottom "** " + callfunc("getMes",$@BKNPCID,64) + " **";
+	return;
+}
+
+function	script	RndColor	{
+	return "^" + callfunc("Int2Hex",0,200) + callfunc("Int2Hex",0,200) + callfunc("Int2Hex",0,200);
+}
+
+function	script	RndColor2	{
+	return "^" + callfunc("Int2Hex",190,255) + callfunc("Int2Hex",245,255) + callfunc("Int2Hex",210,255);
+}
+
+function	script	RepeatString	{
+	for (set .@rs,0; .@rs < getarg(1); set .@rs, .@rs + 1)
+		set .@cs$,.@cs$ + getarg(0);
+	return .@cs$;
+}
+
+function	script	CheckBKNPC	{
+	if (getarg(0) > rand(10000)) {
+		set @BKID,1;
+		callfunc "SaveC","BKMode",1; // 1 is for NPC time control
+		callfunc "SaveC","BKTry",0;
+		callfunc "SaveC","BKTimeout",$@BKSec2Respond;
+		callfunc "BotKillerRun";
+	}
+	return;
+}
+
+/*
+// Using Botkiller on NPC's (Sample)
+prontera,133,203,4	script	Test#987	90,{
+	mes "[Test]";
+	mes "Input the probabilities to activate Botkiller in this NPC:";
+	mes " ";
+	mes "10000=100%  5000=50%  1000=10%";
+	next;
+	input .@Prob;
+	do {
+		callfunc "CheckBKNPC",.@Prob;
+		mes "[Test]";
+		mes "Running NPC.";
+		next;
+	} while (select("Retry with " + .@Prob,"Exit")==1);
+	atcommand "@refresh";
+}
+*/

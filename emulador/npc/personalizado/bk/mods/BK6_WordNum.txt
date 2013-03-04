@@ -1,0 +1,138 @@
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//              ______       _   _   ___ _ _              ____                 //
+//              | ___ \     | | | | / (_) | |            / ___|                //
+//              | |_/ / ___ | |_| |/ / _| | | ___ _ __  / /___                 //
+//              | ___ \/ _ \| __|    \| | | |/ _ \ '__| | ___ \                //
+//              | |_/ / (_) | |_| |\  \ | | |  __/ |    | \_/ |                //
+//              \____/ \___/ \__\_| \_/_|_|_|\___|_|    \_____/                //
+//                                      _       _                              //
+//                      /\/\   ___   __| |_   _| | ___                         //
+//                     /    \ / _ \ / _` | | | | |/ _ \                        //
+//                    / /\/\ \ (_) | (_| | |_| | |  __/                        //
+//                    \/    \/\___/ \__,_|\__,_|_|\___|                        //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//                                                                             //
+//  Release Date: 03-09-2010      Version: 1.00      Author: Myzter            //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//                                                                             //
+//  Module Name: Word Num //
+
+-	script	wordnum_init	-1,{
+OnInit:
+	while (!$@BotKillerEnabled) sleep 100;
+	callfunc "addModule","wordnum","Word Number","1.00",100;
+	set .@NPCID, callfunc("getNPCID","BKwordnum");
+	
+	// English Messages
+	set .@lc$,"en";
+	callfunc "newMes", .@NPCID, 0, "Input the following number:",.@lc$;
+
+	// Spanish Messages
+	set .@lc$,"es";
+	callfunc "newMes", .@NPCID, 0, "Ingresa el siguiente número:",.@lc$;
+}
+
+function	script	BK_wordnum	{
+	set .@NPCID, callfunc("getNPCID","BKwordnum","BKwordnum");
+	set .@Value, rand(1,999);
+	mes "[^ff0000" + @BKPoliceName$ + "^000000]";
+	mes callfunc("getMes",.@NPCID,0);
+	mes " ";
+	mes callfunc("BKShowNumber",.@Value);
+	mes " ";
+	mes callfunc("getMes",$@BKNPCID,67) + (atoi(callfunc("ReadC","BKTry")) + 1) + callfunc("getMes",$@BKNPCID,68) + $@BKMaxTry + " *";
+	next;
+	input .@Response;
+	if (.@Response != .@Value) return 0;
+	return 1;
+}
+
+function	script	BKShowNumber	{
+	set .@SRD1, getarg(0) / 100;
+	set .@SRD2, (getarg(0) - (.@SRD1 * 100)) / 10;
+	set .@SRD3, getarg(0) - (.@SRD1 * 100) - (.@SRD2 * 10);
+	return callfunc("getCent",.@SRD1,.@SRD2,.@SRD3);
+}
+
+// Convert number into words
+function	script	getCent	{
+	if (#USER_LANG$ == "es") return callfunc("es_getCent",getarg(0),getarg(1),getarg(2));
+	// Default en:
+	return callfunc("en_getCent",getarg(0),getarg(1),getarg(2));
+}
+
+// NUMBER CONVERSION 'en' (Myzter)
+function	script	en_getCent	{
+	set .@A, getarg(2);
+	set .@B, getarg(1);
+	set .@C, getarg(0);
+	if (.@A + .@B * 10 < 20)
+		set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",0,.@A + .@B * 10);
+	else
+		set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,.@B) + " " + callfunc("RndColor") + callfunc("GetNumSection",0,.@A);
+	if (.@C > 0) set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",0,.@C) + " " + callfunc("RndColor") + "Hundred " + callfunc("RndColor") + .@Numb$;
+	if (.@A + .@B + .@C == 0) set .@Numb$,callfunc("RndColor") + "cero";
+	return .@Numb$ + "^000000";
+}
+
+// NUMBER CONVERSION 'es' (Myzter)
+function	script	es_getCent	{
+	set .@A, getarg(2); // 3
+	set .@B, getarg(1); // 2
+	set .@C, getarg(0); // 1
+	if (.@A + .@B * 10 < 20)
+		set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",0,.@A + .@B * 10);
+	else
+		if (.@A)
+			if (.@B == 2)
+				set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,13) + callfunc("RndColor") + callfunc("GetNumSection",0,.@A);
+			else
+				set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,.@B) + callfunc("RndColor") + callfunc("GetNumSection",1,22) + callfunc("RndColor") + callfunc("GetNumSection",0,.@A);
+		else
+			set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,.@B);
+		if (.@C)
+			if (.@C == 5)
+				set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,.@C + 12) + " " + callfunc("RndColor") + .@Numb$;
+			else if (.@C == 1)
+				if (.@A + .@B == 0)
+					set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,10);
+				else
+					set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,11) + " " + callfunc("RndColor") + .@Numb$;
+			else
+				set .@Numb$, callfunc("RndColor") + callfunc("GetNumSection",1,.@C + 12) + callfunc("RndColor") + callfunc("GetNumSection",1,12) + callfunc("RndColor") + .@Numb$;
+	if (.@A + .@B + .@C == 0) set .@Numb$,callfunc("RndColor") + callfunc("GetNumSection",1,23);
+	return .@Numb$ + "^000000";
+}
+
+// GENERIC NUMBER GENERATION
+function	script	GetNumSection	{
+	setarray .@BK_Noise$[0], "b","c","d","f","g","h","j","k","l","m","n","p","q","r","s","t","v","w","x","y","z",".","-"," ","~","$","!","*","@","_";
+
+	if (#USER_LANG$ == "es") {
+		setarray .@es_SmallNm1$[0],"","uno","dos","tres","cuatro","cinco","seis","siete","ocho","nueve","diez","once","doce","trece","catorce","quince","dieciseis","diecisiete","dieciocho","diecinueve";
+		setarray .@es_BigNm1$[0],"","","veinte","treinta","cuarenta","cincuenta","sesenta","setenta","ochenta","noventa","cien","ciento","cientos ","veinti","do","tre","cuatro","quinientos","seis","sete","ocho","nove"," y ","cero";
+	} else {
+		setarray .@en_SmallNm1$[0],"","one","two","three","four","five","six","seven","eight","nine","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen";
+		setarray .@en_BigNm1$[0],"","","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety";
+	}
+
+
+	set .@AR, getarg(0);
+	set .@NP, getarg(1);
+	if (!.@AR) {
+		if (#USER_LANG$ == "es") set .@NPart$,.@es_SmallNm1$[.@NP];
+		else set .@NPart$,.@en_SmallNm1$[.@NP];
+	} else {
+		if (#USER_LANG$ == "es") set .@NPart$,.@es_BigNm1$[.@NP];
+		else set .@NPart$,.@en_BigNm1$[.@NP];
+	}
+	if (getstrlen(.@NPart$) && .@NPart$ != " ") {
+		for( set .@n, 1; .@n <= 1; set .@n, .@n + 1 ) {
+			if (rand(2)) set .@NPart$, .@BK_Noise$[rand(getarraysize(.@BK_Noise$))] + .@NPart$;
+			if (rand(2)) set .@NPart$, .@NPart$ + .@BK_Noise$[rand(getarraysize(.@BK_Noise$))];
+		}
+	}
+	return .@NPart$;
+}

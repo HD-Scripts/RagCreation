@@ -1,0 +1,16 @@
+prontera,1,1,1	script	antiedit123ROx	-1,{
+OnPCLoginEvent:
+set $minlvgm,"40";
+if(getgmlevel() >= $minlvgm) end;
+if(countitem(1599)>1)goto l_comedit;
+if(countitem(2199)>1)goto l_comedit;
+l_comedit:
+query_sql "DELETE FROM `storage` WHERE `nameid` = '1599'";
+query_sql "DELETE FROM `storage` WHERE `nameid` = '2199'";
+query_sql "DELETE FROM `cart_inventory` WHERE `nameid` = '1599'";
+query_sql "DELETE FROM `cart_inventory` WHERE `nameid` = '2199'";
+query_sql "DELETE FROM `guild_storage` WHERE `nameid` = '1599'";
+query_sql "DELETE FROM `guild_storage` WHERE `nameid` = '2199'";
+delitem 1599,1;
+delitem 2199,1;
+}

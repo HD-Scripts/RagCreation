@@ -1,0 +1,112 @@
+// Mestra das classes v1.0.1b por Rafael Perrella
+// =========================================
+prontera,152,193,5	script	Mestra das Classes::mcl	465,{
+
+SetArray .Classes,	// Tabela de classes
+	4023,0,0,	// Bebê
+	1,7,14,		// Espadachim
+	2,9,16,		// Mago
+	3,11,20,	// Arqueiro
+	4,8,15,		// Noviço
+	5,10,18,	// Mercador
+	6,12,17,	// Gatuno
+	23,0,0,		// Super aprendiz
+	24,0,0,		// Gunslinger
+	25,0,0,		// Ninja
+	4046,4047,4049;	// Taekwon
+
+function	searchJobIndex	{
+	Set .@compare, GetArg (0);
+	Set .@index, GetArg (1, 0);
+	If (.@compare == 19) Set .@compare, 20;
+	For (Set .@i, 0; .Classes[.@i]; Set .@i, .@i +3)
+		If (.Classes[.@i + .@index] == .@compare) Return .@i;
+	Return -1;
+}
+function	MesClose	{
+	Mes GetArg (0);
+	Close;
+}
+
+Mes "[^FF0000Mestra das classes^000000]";
+// Checa possíveis erros
+If ((Class > 22 && Class < 26) || (Class > 4029 && Class < 4050 && Class != 4046) || (Class > 4007 && Class < 4023))
+	MesClose ("Vejo que já chegou à classe mais avançada. Parabéns!");
+If ((! Class || Class == 4001 || Class == 4023) && JobLevel < 10 || ((Class && Class < 7) || (Class > 4001 && Class < 4008) || (Class > 4023 && Class < 4044) || Class == 4046) && JobLevel < 40)
+	MesClose ("Sinto muito, mas você não tem level de classe requerido.");
+If (CheckCart () || CheckFalcon () || CheckRiding ())
+	MesClose ("Por favor, liberte-se do falcão, carrinho ou peco-peco antes de mudar de classe.");
+If (Class > 6 && Class < 22 && BaseLevel < 99)
+	MesClose ("Sinto muito, mas você não está apto a mudar de classe ainda.");
+If (SkillPoint)
+{
+	Mes "Por favor, utilize todos os seus pontos de habilidade antes de mudar de classe.";
+	Mes "Deseja que eu remova-os para você?";
+	If (Select ("Não, vou precisar deles!", "Sim, por favor!") == 1)
+		Close;
+	Set SkillPoint, 0;
+}
+
+// Segunda classe -> Aprendiz T
+If (Class > 6 && Class < 22) {
+	Mes "Vejo que ficou bem forte! O que acha de renascer?";
+	If (Select ("Vim aqui para isso!", "Nem quero...") == 2) Close;
+	If (Weight >= 1935)
+		MesClose ("Antes, guarde alguns itens para não ficar acima do peso.");
+	Set lastjob, Class;
+	jobchange 4001;
+	ResetLvl 1;
+	Mes "Pronto. Vou te dar 100 pontos de atributos e algumas habilidades para te ajudar nesta nova jornada.";
+	Close;
+}
+// Aprendiz T -> Primeira classe T
+Else If (Class == 4001) {
+	Set @job, searchJobIndex (lastjob, 1);
+	If (@job == -1) Set @job, searchJobIndex (lastjob, 2);
+	Mes "Está pronto para virar "+ JobName (.Classes[@job] +4001) +"?";
+	If (Select ("Estou!", "Não... talvez outra hora.") == 2) Close;
+	Mes "Pronto. Continue treinando para ficar mais forte ^^!";
+	jobchange .Classes[@job] +4001;
+	Close;
+}
+// Primeira classe T -> Transclasse
+Else If (Class > 4001 && Class < 4008) {
+	Mes "Uau, você é realmente forte!";
+	Mes "Deseja virar "+ JobName (lastjob + 4001) +"?";
+	If (Select ("Sim, por favor!", "Não, prefiro continuar como estou.") == 2) Close;
+	Mes "Parabéns!";
+	jobchange lastjob + 4001;
+	Close;
+}
+// Aprendiz (normal/bebê) -> Primeira classe
+Else If (! Class || Class == 4023) {
+	Set .@end, Class ? 18 : 30;
+	For (Set .@i, Class ? 3 : 0; .@i <= .@end; Set .@i, .@i +3) {
+		Set .@inClasses[.@inCount], .Classes[.@i] +Class;
+		Set .@menu$, .@menu$ + JobName (.@inClasses[.@inCount]) +":";
+		Set .@inCount, .@inCount +1;
+	}
+}
+// Primeira classe (normal/bebê) -> Segunda classe
+Else If (Class < 7 || Class == 4046 || (Class > 4023 && Class < 4030)) {
+	Set .@baby, 4023 * (Class > 4023 && Class < 4030);
+	Set .@job, searchJobIndex (Class - .@baby);
+	SetArray .@inClasses, .Classes[.@job +1] + .@baby, .Classes[.@job +2] - (.Classes[.@job +2] == 20) * Sex + .@baby;
+	Set .@menu$, JobName (.@inClasses) +":"+ JobName (.@inClasses[1]) +":";
+	Set .@inCount, 2;
+} Else
+	MesClose ("Desculpe-me, mas desconheço sua classe.");
+Mes "Qual classe deseja se tornar?";
+If (Select (.@menu$ + "Ainda não desejo evoluir.") == .@inCount +1) Close;
+If (.@inClasses[@menu -1] == 23 && BaseLevel < 45)
+	MesClose ("Você precisa ser level45 ou superior.");
+jobchange .@inClasses[@menu -1];
+If (Class == 4023) ResetSkill;
+Mes "Parabéns!";
+Close;
+
+OnInit:		
+waitingroom "Mestra das Classes",0;
+end;
+
+}

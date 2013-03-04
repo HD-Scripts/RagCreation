@@ -1,0 +1,70 @@
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Visual Studio
+*.exe
+*.ilk
+*.pdb
+*.sln.docstates
+*.suo
+*.user
+*.psess
+*.vsp
+/ipch
+/vcproj-10/map-server_sql
+/vcproj-10/char-server_sql
+/vcproj-10/login-server_sql
+/vcproj-10/mapcache
+*.opensdf
+*.sdf
+_ReSharper.*
+[Dd]ebug/
+[Rr]elease/
+*_i.c
+*_p.c
+*.ilk
+*.aps
+*.ncb
+*.meta
+*.obj
+*.pch
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.vspscc
+.builds
+*.dotCover
+*.bsc
+
+# Linux
+char-server_sql
+login-server_sql
+map-server_sql
+mapcache
+config.log
+config.status
+Makefile
+
+#Mac OS X
+*.DS_Store
+
+# Windows image file caches
+Thumbs.db
+
+# Folder config file
+Desktop.ini

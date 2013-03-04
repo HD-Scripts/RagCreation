@@ -1,0 +1,292 @@
+//=============================================
+//== Cronus Tools :: Gerador de Quest's =======
+//== Versão: ==================================
+//== 1.0
+//== Autor: ===================================
+//== RoM
+//=============================================
+sec_in02,135,175,3	script	Tintureira	860,{
+	mes "[Tintureira]";
+	mes "Olá "+StrCharInfo(0)+"!";
+	mes "Eu tenho alguns tipos de tintas bem interessantes.";
+	mes "E bem provavel que voce precisa-ra mais tarde.";
+	mes "De uma olha nos tipos de tintas agora.";
+	next;
+	if( select("Claro!:Talvez mais tarde...") == 2 )
+	{
+		mes "[Tintureiro]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Tintureiro]";
+	mes "Bem, estes são os itens que eu tenho...";
+	mes "Sobre qual deles vai querer saber mais?";
+	next;
+	switch(select("Tintura Vermelha:Tintura Amarela:Tintura Azul:Tintura Branca:Tintura Laraja:Tintura Preta:Tintura Verde:Tintura Violeta:Nenhum"))
+	{
+	case 1:
+		mes "[Tintura Vermelha]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(975);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 975,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 2:
+		mes "[Tintura Amarela]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(976);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 976,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 3:
+		mes "[Tintura Azul]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(978);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 978,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 4:
+		mes "[Tintura Branca]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(982);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 982,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 5:
+		mes "[Tintura Laraja]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(980);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 980,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 6:
+		mes "[Tintura Preta]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(983);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 983,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 7:
+		mes "[Tintura Verde]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(979);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 979,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 8:
+		mes "[Tintura Violeta]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(981);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(7134);
+		mes "1x "+getitemname(12020);
+		mes "1x "+getitemname(7037);
+		mes "20000 Zenys";
+		next;
+		mes "[Tintureiro]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Tintureiro]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7134) >= 1 && countitem(12020) >= 1 && countitem(7037) >= 1 && Zeny >= 20000)
+		{
+			delitem 7134,1;
+			delitem 12020,1;
+			delitem 7037,1;
+			set Zeny,Zeny-20000;
+			getitem 981,1;
+			mes "[Tintureiro]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 9:
+		mes "[Tintureiro]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Tintureiro]";
+	mes "Me desculpe, mas você não tem todos os itens necessários para esta quest.";
+	mes "Volte quando você tiver todos os itens!";
+	close;
+}

@@ -1,0 +1,219 @@
+prontera.gat,165,195,3	script	Anúncio	-1,{
+
+OnClock0015:
+announce "[RagnaMundi] Doe, Ajude nosso servidor !",8;
+end;
+OnClock0030:
+announce "[RagnaMundi] Visite o nosso Fórum e fique por dentro das novidades!",8;
+end;
+OnClock0045:
+announce "[RagnaMundi] Ajude o servidor a crescer, traga seus amigos agora mesmo !",8;
+end;
+OnClock0115:
+announce "[RagnaMundi] Nunca se esqueça, você é especial para nós !",8;
+end;
+OnClock0130:
+announce "[RagnaMundi] Vote diariamente no servidor !",8;
+end;
+OnClock0145:
+announce "[RagnaMundi] O Ganhador do mês no Ranking PvP Será Premiado",8;
+end;
+OnClock0215:
+announce "[RagnaMundi] A Staff agradeçe a todos players por jogarem em nosso servidor !",8;
+end;
+OnClock0230:
+announce "[RagnaMundi] Ajude o servidor a crescer, traga seus amigos agora mesmo !",8;
+end;
+OnClock0245:
+announce "[RagnaMundi] Visite o nosso Fórum e fique por dentro das novidades! ",8;
+end;
+OnClock0315:
+announce "[RagnaMundi] Não Somos os melhores, Mas fazemos a diferença !!! ",8;
+end;
+OnClock0330:
+announce "[RagnaMundi] Vote, Ajude o servidor, não leva nem um minutinho !!!",8;
+end;
+OnClock0345:
+announce "[RagnaMundi] A Staff Jamais irá pedir sua Senha ou Login, Então não passe-a para ninguém",8;
+end;
+OnClock0415:
+announce "[RagnaMundi] Nunca se esqueça, você é especial para nós !",8;
+end;
+OnClock0430:
+announce "[RagnaMundi] Eventos estarão ocorrendo e sendo anunciados no site e fórum então fiquem ligados !",8;
+end;
+OnClock0445:
+announce "[RagnaMundi] Participe das enquetes no fórum e no servidor !!",8;
+end;
+OnClock0515:
+announce "[RagnaMundi] Obrigado a todos por jogar em nosso servidor !",8;
+end;
+OnClock0530:
+announce "[RagnaMundi] Um servidor que faz a diferença !!!",8;
+end;
+OnClock0545:
+announce "[RagnaMundi] Visitem o nosso fórum e fiquem ligados nos eventos que irão ocorrer.",8;
+end;
+OnClock0615:
+announce "[RagnaMundi] Traga seus amigos e ajude o Servidor a crescer !",8;
+end;
+OnClock0630:
+announce "[RagnaMundi] Doe, Ajude o servidor !!!",8;
+end;
+OnClock0645:
+announce "[RagnaMundi] Um servidor descente com uma Staff competente",8;
+end;
+OnClock0715:
+announce "[RagnaMundi] Visite o Fórum e Fique por Dentro das Novidades!",8;
+end;
+OnClock0730:
+announce "[RagnaMundi] O Ganhador do mês no Ranking PvP Será Premiado",8;
+end;
+OnClock0745:
+announce "[RagnaMundi] Chamem seus amigos agora mesmo para jogar em nosso Servidor",8;
+end;
+OnClock0815:
+announce "[RagnaMundi] Participe dos eventos e ganhe prêmios incríveis",8;
+end;
+OnClock0830:
+announce "[RagnaMundi] A Staff Jamais irá pedir sua Senha ou Login, Então não passe-a para ninguém",8;
+end;
+OnClock0845:
+announce "[RagnaMundi] Se sentiu ofendido? Alguem lhe chingou? foi hackiado? Acesse o fórum e denuncie",8;
+end;
+OnClock0915:
+announce "[RagnaMundi] Vote diariamente no servidor, não leva nem um minutinho !",8;
+end;
+OnClock0930:
+announce "[RagnaMundi] Participe dos eventos e ganhe prêmios incríveis",8;
+end;
+OnClock0945:
+announce "[RagnaMundi] O Ganhador do mês no Ranking PvP Será Premiado com 30k de Rop's",8;
+end;
+OnClock1015:
+announce "[RagnaMundi] Fiquem ligados nas promoções em nosso site !!!",8;
+end;
+OnClock1030:
+announce "[RagnaMundi] Visite o Fórum e fiquem por dentro das novidades!",8;
+end;
+OnClock1045:
+announce "[RagnaMundi] Encontrou algum bug no servidor? Reporte à Staff",8;
+end;
+OnClock1115:
+announce "[RagnaMundi] Confira no Fórum os eventos que irão ocorrer Diariamente!",8;
+end;
+OnClock1130:
+announce "[RagnaMundi] Crie sua guild e detone na woe !!! Você e os membros podem ser premiados no final de cada mês",8;
+end;
+OnClock1145:
+announce "[RagnaMundi] Por questão de segurança nunca passe sua conta para ninguém.",8;
+end;
+OnClock1215:
+announce "[RagnaMundi] Se Alguém tentar se passar por um membro da Staff , Favor denunciar no forúm",8;
+end;
+OnClock1230:
+announce "[RagnaMundi] A Staff Jamais irá pedir sua Senha ou Login, Então não passe-a para ninguém",8;
+end;
+OnClock1245:
+announce "[RagnaMundi] Ajude o servidor, traga novos player para jogar !",8;
+end;
+OnClock1315:
+announce "[RagnaMundi] Confira as novidades do servidor no fórum. !",8;
+end;
+OnClock1330:
+announce "[RagnaMundi] Não somos o melhor, mas fazemos a diferença !!!",8;
+end;
+OnClock1345:
+announce "[RagnaMundi] Vote diariamente no servidor, não leva nem um minutinho",8;
+end;
+OnClock1415:
+announce "[RagnaMundi] Nunca ofenda ninguém, além de ser ridículo, você pode ser punido !!!",8;
+end;
+OnClock1430:
+announce "[RagnaMundi] O Vencedor do Rank PVP, Ganhará 5k de Rop's, não fique fora dessa !!",8;
+end;
+OnClock1445:
+announce "[RagnaMundi] Ajude o servidor, traga seus amigos para jogar !",8;
+end;
+OnClock1515:
+announce "[RagnaMundi] Servidor Totalmente Amigável !",8;
+end;
+OnClock1530:
+announce "[RagnaMundi] Visite o Fórum e fique por dentro das Novidades!",8;
+end;
+OnClock1545:
+announce "[RagnaMundi] Evento Diariamentes fiquem atentos. RagnaMundi Um Mundo de Aventuras",8;
+end;
+OnClock1615:
+announce "[RagnaMundi] A Staff Jamais irá pedir sua Senha ou Login, Então não passe-a para ninguém",8;
+end;
+OnClock1630:
+announce "[RagnaMundi] Doe, ajude nosso servidor !!!",8;
+end;
+OnClock1645:
+announce "[RagnaMundi] Ajude nosso servidor, vote diariamente",8;
+end;
+OnClock1715:
+announce "[RagnaMundi] Vocês Ja votaram Hoje? Não? Então nós ajudem não gasta mais que 2 minutinhos",8;
+end;
+OnClock1730:
+announce "[RagnaMundi] Nós da Staff Nunca pediremos seu login ou senha, fique atento !",8;
+end;
+OnClock1745:
+announce "[RagnaMundi] RagnaMundi Um Mundo de Aventuras",8;
+end;
+OnClock1815:
+announce "[RagnaMundi] Evento Diariamentes fiquem atentos. RagnaMundi Um Mundo de Aventuras",8;
+end;
+OnClock1830:
+announce "[RagnaMundi] Acesse o fórum e fique por dentro das novidades !!!",8;
+end;
+OnClock1845:
+announce "[RagnaMundi] Vote diariamente no servidor !!!",8;
+end;
+OnClock1915:
+announce "[RagnaMundi] Traga seus amigos agora mesmo para jogar em nosso servidor. RagnaMundi Um Mundo de Aventuras",8;
+end;
+OnClock1930:
+announce "[RagnaMundi] O Clã que mais se destacar a cada mês, será premiado",8;
+end;
+OnClock1945:
+announce "[RagnaMundi] Denuncie aqueles que nao seguem as regras do jogo faça do Nosso servidor um lugar melhor",8;
+end;
+OnClock2015:
+announce "[RagnaMundi] RagnaMundi Um Mundo de Aventuras",8;
+end;
+OnClock2030:
+announce "[RagnaMundi] Evento Diariamentes fiquem atentos. RagnaMundi Um Mundo de Aventuras",8;
+end;
+OnClock2045:
+announce "[RagnaMundi] Doe, ajude nosso servidor",8;
+end;
+OnClock2115:
+announce "[RagnaMundi] Denuncie o uso de Qualquer tipo de Hack/bot, Ajude a staff !",8;
+end;
+OnClock2130:
+announce "[RagnaMundi] Participe dos eventos e ganhe prêmios incríveis",8;
+end;
+OnClock2145:
+announce "[RagnaMundi] Vote diariamente no servidor !",8;
+end;
+OnClock2215:
+announce "[RagnaMundi] Mantenha o espírito amigável !",8;
+end;
+OnClock2230:
+announce "[RagnaMundi] Sempre inovando",8;
+end;
+OnClock2245:
+announce "[RagnaMundi] Dúvidas? os gms sempre estárão por perto para resolvê-las",8;
+end;
+OnClock2315:
+announce "[RagnaMundi] Denuncie aqueles que nao seguem as regras do jogo !",8;
+end;
+OnClock2330:
+announce "[RagnaMundi] Aqui você é encontra um servidor de qualidade !",8;
+end;
+OnClock2345:
+announce "[RagnaMundi] Estamos muito felizes por terem vocês com a gente!",8;
+end;
+}

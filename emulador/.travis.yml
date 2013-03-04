@@ -1,0 +1,12 @@
+language: c
+compiler:
+  - clang
+  - gcc
+script: ./configure && make clean && make sql
+notifications:
+  email:
+    recipients:
+      - greenboxal@gmail.com
+      - roberto@forbrazil.com.br
+      - carlos.lain@virtuati.com.br
+      - marceloll@outlook.com

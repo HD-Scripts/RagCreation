@@ -1,0 +1,151 @@
+//===== Cronus Script ================================================= 
+//= Moedas Por Zenys
+//===== Por: ==========================================================
+//= [ADM] Logan
+//=====================================================================
+sec_in02,155,175,4	script	Moedas Por Zenys	869,{
+
+set @np$,"[ Moedas ]";// Nome do NPC
+set @preco1,1000000000;//Preco Moeda1
+set @preco2,500000000;//Preco Moeda2
+set @preco3,1000000000;//Preco Moeda3
+set @ID1,670; // id da Moeda 1 ou sacola de ouro
+set @ID2,676; // id da moeda 2 ou sacola de prata
+set @ID3,672; // id da moeda 3 ou sacola de bronze
+
+show @np$;
+show "Olá "+strcharinfo(0)+"!";
+show "Gostaria de trocar dinheiro por Moedas?";
+menu "Sim",sim,"Não",-;
+next;
+show @np$;
+show "Ok, volte quando quiser";
+close;
+
+sim:
+next;
+show @np$;
+show "Qual moeda você quer?";
+menu "Moeda de Ouro",m1,"Moeda de Prata",m2,"BMoeda de Bronze",m3,"Não quero mais",-;
+next;
+show @np$;
+show "Ok, volte quando quiser";
+close;
+
+m1:
+next;
+show @np$;
+show "Esta Moeda custa 1.000.000.000 zeny";
+show "Quer mesmo ela?";
+menu "Sim",-,"Não",nope;
+next;
+show @np$;
+show "Quer Comprar ou Vender?";
+menu "Comprar",-,"Vender",vende;
+next;
+show @np$;
+show "Deixe-me verificar seu zeny";
+if (Zeny < @preco1) goto nz;
+next;
+show @np$;
+show "Aqui está sua moeda! Volte Sempre!";
+set Zeny,Zeny-@preco1;
+additem @ID1,1;
+close;
+
+vende:
+next;
+show @np$;
+show "Deixe-me ver sua moeda";
+if (countitem(@ID1) == 0)goto nomo;
+next;
+show @np$;
+show "Aqui está seu Zeny!!Volte Sempre!!";
+delitem @ID1,1;
+set Zeny,Zeny+@preco1;
+close;
+
+nope:
+next;
+show @np$;
+show "Ok, Volte quando quiser";
+close;
+
+nz:
+next;
+show @np$;
+show "Você não tem zeny suficiente";
+close;
+
+nomo:
+next;
+show @np$;
+show "Você não tem a moeda";
+close;
+
+m2:
+next;
+show @np$;
+show "Esta Moeda custa 500.000.000 zeny";
+show "Quer mesmo ela?";
+menu "Sim",-,"Não",nope;
+next;
+show @np$;
+show "Quer Comprar ou Vender?";
+menu "Comprar",-,"Vender",vende2;
+next;
+show @np$;
+show "Deixe-me verificar seu zeny";
+if (Zeny < @preco2) goto nz;
+next;
+show @np$;
+show "Aqui está sua moeda! Volte Sempre!";
+set Zeny,Zeny-@preco2;
+additem @ID2,1;
+close;
+
+vende2:
+next;
+show @np$;
+show "Deixe-me ver sua moeda";
+if (countitem(@ID2) == 0)goto nomo;
+next;
+show @np$;
+show "Aqui está seu Zeny!!Volte Sempre!!";
+delitem @ID2,1;
+set Zeny,Zeny+@preco2;
+close;
+
+m3:
+next;
+show @np$;
+show "Esta moeda custa 100.000.000 zeny";
+show "Quer mesmo ela?";
+menu "Sim",-,"Não",nope;
+next;
+show @np$;
+show "Quer Comprar ou Vender?";
+menu "Comprar",-,"Vender",vende3;
+next;
+show @np$;
+show "Deixe-me verificar seu zeny";
+if (Zeny < @preco3) goto nz;
+next;
+show @np$;
+show "Aqui está sua moeda! Volte Sempre!";
+set Zeny,Zeny-@preco3;
+additem @ID3,1;
+close;
+
+vende3:
+next;
+show @np$;
+show "Deixe-me ver sua moeda";
+if (countitem(@ID3) == 0)goto nomo;
+next;
+show @np$;
+show "Aqui está seu Zeny!!Volte Sempre!!";
+delitem @ID3,1;
+set Zeny,Zeny+@preco3;
+close;
+}

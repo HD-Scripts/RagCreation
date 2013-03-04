@@ -1,0 +1,18 @@
+-	script	OnPCLoginEvent	-1,{
+
+    OnPCLoginEvent:
+cutin "bat_kiyom1",2;
+    set @npcname$,"^336699[ Bem Vindo ao RagnaMundi ]^000000";
+    set @servername$,"RagnaMundi";	
+    mes @npcname$;
+    mes "Olá, seja bem vindo(a) no "+ @servername$ +"";
+    mes "Você possui ^FF0000"+#CASHPOINTS+"^000000 Cash";
+    mes "Não se esqueça de votar!";
+    next;
+    mes @npcname$;
+    mes "Tudo certo, tenha um bom jogo";
+cutin "",255;
+    close;
+
+
+}

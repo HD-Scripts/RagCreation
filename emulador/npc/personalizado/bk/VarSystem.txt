@@ -1,0 +1,266 @@
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//    _   _      _ _       _ _          _  __   __        _      _    _        //
+//   | | | |_ _ | (_)_ __ (_) |_ ___ __| | \ \ / /_ _ _ _(_)__ _| |__| |___    //
+//   | |_| | ' \| | | '  \| |  _/ -_) _` |  \ V / _` | '_| / _` | '_ \ / -_)   //
+//    \___/|_||_|_|_|_|_|_|_|\__\___\__,_|   \_/\__,_|_| |_\__,_|_.__/_\___|   //
+//                                                                             //
+//    ___         _                                                            //
+//   / __|_  _ __| |_ ___ _ __                                                 //
+//   \__ \ || (_-<  _/ -_) '  \                                                //
+//   |___/\_, /__/\__\___|_|_|_|                                               //
+//        |__/                                                                 //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//   Release Date: 13-09-2010      Version: 1.3      (c)2010-2012 by Myzter    //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//     ______  __   __      _______ __   __ ______ _______ _______  ______     //
+//     |_____]   \_/        |  |  |   \_/    ____/    |    |______ |_____/     //
+//     |_____]    |         |  |  |    |    /_____    |    |______ |    \_     //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//  Description: Create unlimited permanent variables to different scopes      //
+//               using MySQL and eAthena.                                      //
+//                                                                             //
+//               Include Garbage Collector for dead vars. (Party/Guild Break)  //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//               This script require eAthena MySQL                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//                                                                             //
+//  HOW TO USE:                                                                //
+//                                                                             //
+//  1. To save data:                                                           //
+//                                                                             //
+//  >  callfunc "SaveC","MyVar","MyValue";              // Player Variable     //
+//  >  callfunc "SaveA","MyVar","MyValue";              // Account Variable    //
+//  >  callfunc "SaveG","MyVar","MyValue";              // Guild Variable      //
+//  >  callfunc "SaveP","MyVar","MyValue";              // Party Variable      //
+//  >  callfunc "SaveM","MyVar","MyValue";              // Map Variable        //
+//  >  callfunc "SaveN","MyVar","MyValue";              // NPC Variable        //
+//  >  callfunc "SaveX","MyVar","MyValue","MyCustomID"; // Custom Variable     //
+//                                                                             //
+//  2. To read alphanumeric data:                                              //
+//                                                                             //
+//  >  set @a$, callfunc("ReadC","MyVar");              // Player Variable     //
+//  >  set @a$, callfunc("ReadA","MyVar");              // Account Variable    //
+//  >  set @a$, callfunc("ReadG","MyVar");              // Guild Variable      //
+//  >  set @a$, callfunc("ReadP","MyVar");              // Party Variable      //
+//  >  set @a$, callfunc("ReadM","MyVar");              // Map Variable        //
+//  >  set @a$, callfunc("ReadN","MyVar");              // NPC Variable        //
+//  >  set @a$, callfunc("ReadX","MyVar","MyCustomID"); // Custom Variable     //
+//                                                                             //
+//  3. To read integer data: add the prefix 'i' to the function name.          //
+//                                                                             //
+//  >  set @i, callfunc("iReadC","MyIntegerVar");       // Player Variable     //
+//                                                                             //
+//  3. To delete variables, set "" or 0 as value, ie:                          //
+//                                                                             //
+//        callfunc "SaveC","MyVar","";                                         //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+// Changelog:                                                                  //
+//                                                                             //
+// 2010-09-14 - v.1.1: Fixed index, drop table altreg and restart your server  //
+//                     Added escape_sql before save data to MySQL              //
+// 2010-09-14 - v.1.2: Optimized database model, automatic update              //
+//                     Added new scopes: Map, NPC, Custom                      //
+// 2012-01-18 - v.1.2: Added a better support to integer variables             //
+//                     using i prefix in the function name, ie: iReadC         //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+
+-	script	UVarSystem	-1,{
+OnInit:
+	// Create the table the first time
+	query_sql "show tables like 'altreg'",.@MV$;
+	if (.@MV$[0] == "") {
+		debugmes "MySQL Variable System - Creating `altreg` table ...";
+		set $VarSystem$,"1.3";
+		query_sql "CREATE TABLE `altreg` ( `varid` varchar(25) NOT NULL DEFAULT '', `scope` int(11) unsigned NOT NULL DEFAULT '1', `playerid` varchar(25) NOT NULL DEFAULT '', `content` varchar(255) NOT NULL DEFAULT '', PRIMARY KEY (`varid`,`scope`,`playerid`) ) ENGINE=MyISAM";
+	} else {
+		// MySQL Update
+		if ($VarSystem$ != "1.2") {
+			if ($VarSystem$ != "1.3") {
+				// Drop the table index
+				query_sql "alter table `altreg` DROP PRIMARY KEY;";
+				// Fix the old model
+				query_sql "alter table `altreg` MODIFY `playerid` varchar(25) NOT NULL DEFAULT '';";
+				// Create the new index
+				query_sql "alter table `altreg` ADD PRIMARY KEY (`varid`,`scope`,`playerid`);";
+				debugmes "MySQL Variable System - System updated to v.1.3";
+			}
+			set $VarSystem$,"1.3";
+		}
+	}
+	
+OnTimer600000: // Garbage Collector (Every 10 minutes)
+
+	// Delete Unused Party Variables
+	set .@cnt, query_sql("select a.varid, a.playerid from `altreg` a left join `party` p on party_id = playerid where a.scope=4 and isnull(p.party_id) limit 127",.@VarID$,.@DeadParty);
+	for (set .@x,0; .@x < .@cnt; set .@x, .@x + 1) {
+		callfunc "SData",.@VarID$[.@x],.@DeadParty[.@x],"",4;
+		debugmes "Garbage Collector: Variable [" + .@VarID$[.@x] + "] was deleted - invalid party id.";
+	}
+	
+	// Delete Unused Guild Variables
+	set .@cnt, query_sql("select a.varid, a.playerid from `altreg` a left join `guild` g on guild_id = playerid where a.scope=3 and isnull(g.guild_id) limit 127",.@VarID$,.@DeadGuild);
+	for (set .@x,0; .@x < .@cnt; set .@x, .@x + 1) {
+		callfunc "SData",.@VarID$[.@x],.@DeadGuild[.@x],"",3;
+		debugmes "Garbage Collector: Variable [" + .@VarID$[.@x] + "] was deleted - invalid guild id.";
+	}
+	initnpctimer;
+}
+
+// --/--/--/--/--/--/--/--/--/--/--//
+// USE THIS FUNCTIONS TO READ DATA //
+// --/--/--/--/--/--/--/--/--/--/--//
+
+// Get Player Variable
+function	script	ReadC	{
+	return callfunc("GData",getarg(0),getcharid(0),1);
+}
+
+function	script	iReadC	{
+	return callfunc("iGData",getarg(0),getcharid(0),1);
+}
+
+// Get Account Variable
+function	script	ReadA	{
+	return callfunc("GData",getarg(0),getcharid(3),2);
+}
+
+function	script	iReadA	{
+	return callfunc("iGData",getarg(0),getcharid(3),2);
+}
+
+// Get Guild Variable
+function	script	ReadG	{
+	if (!getcharid(2)) return "";
+	return callfunc("GData",getarg(0),getcharid(2),3);
+}
+
+function	script	iReadG	{
+	if (!getcharid(2)) return "";
+	return callfunc("iGData",getarg(0),getcharid(2),3);
+}
+
+// Get Party Variable
+function	script	ReadP	{
+	if (!getcharid(1)) return "";
+	return callfunc("GData",getarg(0),getcharid(1),4);
+}
+
+function	script	iReadP	{
+	if (!getcharid(1)) return "";
+	return callfunc("iGData",getarg(0),getcharid(1),4);
+}
+
+// Get Map Variable
+function	script	ReadM	{
+	getmapxy .@map$,.@x,.@y,0;
+	return callfunc("GData",getarg(0),.@map$,5);
+}
+
+function	script	iReadM	{
+	getmapxy .@map$,.@x,.@y,0;
+	return callfunc("iGData",getarg(0),.@map$,5);
+}
+
+// Get NPC Variable
+function	script	ReadN	{
+	return callfunc("GData",getarg(0),strnpcinfo(0),6);
+}
+
+function	script	iReadN	{
+	return callfunc("iGData",getarg(0),strnpcinfo(0),6);
+}
+
+// Set Custom Variable (require a second parameter with the custom scope, ie: Class)
+function	script	ReadX	{
+	return callfunc("GData",getarg(0),getarg(1),99);
+}
+
+function	script	iReadX	{
+	return callfunc("iGData",getarg(0),getarg(1),99);
+}
+
+// --/--/--/--/--/--/--/--/--/--/--//
+// USE THIS FUNCTIONS TO SAVE DATA //
+// --/--/--/--/--/--/--/--/--/--/--//
+
+// Set Player Variable
+function	script	SaveC	{
+	return callfunc("SData",getarg(0),getcharid(0),getarg(1) + "",1);
+}
+
+// Set Account Variable
+function	script	SaveA	{
+	return callfunc("SData",getarg(0),getcharid(3),getarg(1) + "",2);
+}
+
+// Set Guild Variable
+function	script	SaveG	{
+	if (!getcharid(2)) return "";
+	return callfunc("SData",getarg(0),getcharid(2),getarg(1) + "",3);
+}
+
+// Set Party Variable
+function	script	SaveP	{
+	if (!getcharid(1)) return "";
+	return callfunc("SData",getarg(0),getcharid(1),getarg(1) + "",4);
+}
+
+// Set Map Variable
+function	script	SaveM	{
+	getmapxy .@map$,.@x,.@y,0;
+	return callfunc("SData",getarg(0),.@map$,getarg(1) + "",5);
+}
+
+// Set NPC Variable
+function	script	SaveN	{
+	return callfunc("SData",getarg(0),strnpcinfo(0),getarg(1) + "",6);
+}
+
+// Set Custom Variable (require a third parameter with the custom scope, ie: Class)
+function	script	SaveX	{
+	return callfunc("SData",getarg(0),getarg(2),getarg(1) + "",99);
+}
+
+// Generic Variable Management (MySQL + RAM + Expiration Cicle)
+function	script	GData	{
+	set .@LastLoad, getd("$@F" + getarg(2) + getarg(1) + getarg(0));
+	if (.@LastLoad && .@LastLoad > gettimetick(2)) {
+		return getd("$@D" + getarg(2) + getarg(1) + getarg(0) + "$");
+	}
+	set .@cnt, query_sql("select content from `altreg` where playerid='" + getarg(1) + "' and varid = '" + getarg(0) + "' and scope=" + getarg(2),.@Content$);
+	if (!.@cnt) set .@Value$,""; else set .@Value$, .@Content$[0];
+	setd "$@F" + getarg(2) + getarg(1) + getarg(0),gettimetick(2) + 3600;	// Stay in Memory 1 hour before read again from MySQL
+	setd "$@D" + getarg(2) + getarg(1) + getarg(0) + "$",.@Value$;
+	return .@Value$;
+}
+
+function	script	SData	{
+	set .@SD$, getarg(2) + "";
+	if (.@SD$ == "0" || .@SD$ == "") {
+		set .@SD$, "";
+		query_sql "delete from `altreg` where playerid='" + getarg(1) + "' and varid = '" + getarg(0) + "' and scope=" + getarg(3);
+	} else {
+		query_sql "replace into `altreg` set playerid='" + getarg(1) + "', varid = '" + getarg(0) + "', scope=" + getarg(3) + ", content='" + escape_sql(.@SD$) + "'";
+	}
+	setd "$@F" + getarg(3) + getarg(1) + getarg(0),gettimetick(2) + 3600;	// Stay in Memory 1 hour before read again from MySQL
+	setd "$@D" + getarg(3) + getarg(1) + getarg(0) + "$",.@SD$;
+	return .@SD$;
+}
+
+function	script	iGData	{
+	set .@LastLoad, getd("$@F" + getarg(2) + getarg(1) + getarg(0));
+	if (.@LastLoad && .@LastLoad > gettimetick(2)) {
+		set @var$, getd("$@D" + getarg(2) + getarg(1) + getarg(0) + "$");
+		if (@var$ == "") set @var$, "0";
+		return atoi(@var$);
+	}
+	set .@cnt, query_sql("select content from `altreg` where playerid='" + getarg(1) + "' and varid = '" + getarg(0) + "' and scope=" + getarg(2),.@Content$);
+	if (!.@cnt) set .@Value$,""; else set .@Value$, .@Content$[0];
+	setd "$@F" + getarg(2) + getarg(1) + getarg(0),gettimetick(2) + 3600;	// Stay in Memory 1 hour before read again from MySQL
+	setd "$@D" + getarg(2) + getarg(1) + getarg(0) + "$",.@Value$;
+	if (.@Value$ == "") set .@Value$, "0";
+	return atoi(.@Value$);
+}

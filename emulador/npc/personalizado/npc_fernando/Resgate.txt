@@ -1,0 +1,92 @@
+prontera,256,70,5	script	Evento Resgate	65,{
+
+	set @npc$,"[Resgate]";
+
+	mes @npc$;
+	mes "Olá meu jovem o evento funciona da seguinte maneira.";
+	mes "Um Monstro muito forte, sequestrou uma vítima e você precisa salva-la antes do tempo.";
+	mes "E se você matar o monstro primeiro, será teletransportado para a sala onde ela está escondida.";
+	next;
+	mes @npc$;
+	mes "Vamos la te levarei ao mapa, Boa Sorte.";
+	warp "06guild_04",0,0;
+	close;
+
+	OnClock0230:
+	OnClock0530:
+	OnClock0830:
+	OnClock1130:
+	OnClock1456:
+	OnClock1730:
+	OnClock2030:
+	OnClock2330:
+
+	announce "Faltam 5 minutos para o evento RESGATE começar ! Corra e garanta seu lugar ! !",bc_all;
+	sleep2 30000;
+
+	announce "O evento Resgate Começou !!! Fale com npc resgate. E tente salva-la !",8;
+	sleep 5000;
+	monster "06guild_04",49,49,"Sequestrador",1917,1,"Evento Resgate::OnMobDeath";
+	end;
+
+	OnMobDeath:
+	warp "quiz_test",263,126;
+	enablenpc "Vitima";
+	end;
+}
+
+quiz_test,259,126,5	script	Vitima	91,{
+
+
+	mes "[ Vitima ]";
+	mes "Olá , Muito obrigada por me salvar !";
+	mes "Isso comprova que você é um grande guerreiro !";
+	mes "Irei te dar uma recompensa por me salvar ...";
+	next;
+
+	getitem 12208,1;
+	getitem 671,1;
+	announce strcharinfo(0)+" Salvou a Vítima e recebeu sua recompença, obrigado.",bc_all;
+	warp "prontera",155,178; 
+	close;
+}
+
+06guild_04.gat,0,0,0	script	Final	-1,{
+
+OnClock0200:
+atcommand "@killmonster";
+end;
+
+OnClock0500:
+atcommand "@killmonster";
+end;
+
+OnClock0800:
+atcommand "@killmonster";
+end;
+
+OnClock1100:
+atcommand "@killmonster";
+end;
+
+OnClock1400:
+atcommand "@killmonster";
+end;
+
+OnClock1700:
+atcommand "@killmonster";
+end;
+
+OnClock2000:
+atcommand "@killmonster";
+end;
+
+OnClock2300:
+atcommand "@killmonster";
+end;
+
+}
+
+sec_pri	mapflag	noteleport
+sec_pri	mapflag	nowarp
+sec_pri	mapflag	nowarpto

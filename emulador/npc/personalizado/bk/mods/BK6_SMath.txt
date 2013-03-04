@@ -1,0 +1,82 @@
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//              ______       _   _   ___ _ _              ____                 //
+//              | ___ \     | | | | / (_) | |            / ___|                //
+//              | |_/ / ___ | |_| |/ / _| | | ___ _ __  / /___                 //
+//              | ___ \/ _ \| __|    \| | | |/ _ \ '__| | ___ \                //
+//              | |_/ / (_) | |_| |\  \ | | |  __/ |    | \_/ |                //
+//              \____/ \___/ \__\_| \_/_|_|_|\___|_|    \_____/                //
+//                                      _       _                              //
+//                      /\/\   ___   __| |_   _| | ___                         //
+//                     /    \ / _ \ / _` | | | | |/ _ \                        //
+//                    / /\/\ \ (_) | (_| | |_| | |  __/                        //
+//                    \/    \/\___/ \__,_|\__,_|_|\___|                        //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//                                                                             //
+//  Release Date: 03-09-2010      Version: 1.00      Author: Myzter            //
+//                                                                             //
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//                                                                             //
+//  Module Name: Simple Math  //
+
+-	script	smath_init	-1,{
+OnInit:
+	while (!$@BotKillerEnabled) sleep 100;
+	callfunc "addModule","smath","Simple Math","1.00",100;
+	set .@NPCID, callfunc("getNPCID","BKsmath");
+	
+	// English Messages
+	set .@lc$,"en";
+	callfunc "newMes", .@NPCID, 0, "Solve the following problem:",.@lc$;
+	callfunc "newMes", .@NPCID, 1, "> If: ",.@lc$;
+	callfunc "newMes", .@NPCID, 2, "How many is ",.@lc$;
+
+	// Spanish Messages
+	set .@lc$,"es";
+	callfunc "newMes", .@NPCID, 0, "Resuelve el siguiente problema:",.@lc$;
+	callfunc "newMes", .@NPCID, 1, "> Si: ",.@lc$;
+	callfunc "newMes", .@NPCID, 2, "Cuanto es ",.@lc$;
+}
+
+function	script	BK_smath	{
+	set .@NPCID, callfunc("getNPCID","BKsmath","BKsmath");
+	setarray .@VarNames$[0],"A","B","C";
+	set .@TotCalc, rand(2,3);
+	setarray .@VarOrder[0],rand(.@TotCalc),rand(.@TotCalc),0;
+	while (.@VarOrder[0] == .@VarOrder[1]) {
+		set .@VarOrder[1], rand(.@TotCalc);
+	}
+	while (.@VarOrder[0] == .@VarOrder[2] || .@VarOrder[1] == .@VarOrder[2]) {
+		set .@VarOrder[2], .@VarOrder[2] + 1;
+	}
+	for (set .@x,0; .@x < .@TotCalc; set .@x, .@x + 1) {
+		setd ".@Calc" + .@x, rand(1,2);
+		setd ".@CalcO" + .@x, rand(2);
+		if (!.@x)
+			set .@Result, getd(".@Calc" + .@x);
+		else
+			if (getd(".@CalcO" + .@x))
+				set .@Result, .@Result + getd(".@Calc" + .@x);
+			else
+				set .@Result, .@Result - getd(".@Calc" + .@x);
+	}
+	mes "[^ff0000" + @BKPoliceName$ + "^000000]";
+	mes callfunc("getMes",.@NPCID,0);
+	mes " ";
+	for (set .@x,0; .@x < .@TotCalc; set .@x,.@x + 1) {
+		set .@Header$, .@Header$ + "^0000ff" + .@VarNames$[.@VarOrder[.@x]] + "^000000=^ff0000" + getd(".@Calc" + .@VarOrder[.@x]) + " ";
+	}
+	mes callfunc("getMes",.@NPCID,1) + .@Header$ + "...";
+	set .@Header$,callfunc("getMes",.@NPCID,2);
+	for (set .@x,0; .@x < .@TotCalc; set .@x,.@x + 1) {
+		if (.@x) set .@Header$, .@Header$ + (getd(".@CalcO" + .@x)?"+ ":"- ");
+		set .@Header$, .@Header$ + "^0000ff" + .@VarNames$[.@x] + " ^000000";
+	}
+	mes .@Header$ + "?^000000";
+	mes " ";
+	mes callfunc("getMes",$@BKNPCID,67) + (atoi(callfunc("ReadC","BKTry")) + 1) + callfunc("getMes",$@BKNPCID,68) + $@BKMaxTry + " *";
+	next;
+	input .@Response$;
+	if (atoi(.@Response$) != .@Result) return 0;
+	return 1;
+}

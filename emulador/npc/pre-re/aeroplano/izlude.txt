@@ -1,0 +1,15 @@
+//===== Cronus Script ========================================
+//= Equipe do Aeroplano de Izlude
+//===== Por: =================================================
+//= L0ne_W0lf, Muad_Dib
+//===== Versão Atual: ========================================
+//= 1.1
+//===== Compatível Com: ======================================
+//= eAthena; rAthena; Cronus; brAthena; Maya SVN.
+//===== Comentários Adicionais: ==============================
+//= 1.0 Versão inicial.
+//= 1.1 Traduzido. [mkbu95]
+//= 2.0 Adequado ao rAthena. [MaminhA]
+//============================================================
+
+izlude,206,55,3	duplicate(Assist_do_Aeroporto_izlude)	Assist. do Aeroporto#iz	90

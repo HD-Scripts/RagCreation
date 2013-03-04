@@ -1,0 +1,148 @@
+// --/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/--/ //
+//              ______       _   _   ___ _ _              ____                 //
+//              | ___ \     | | | | / (_) | |            / ___|                //
+//              | |_/ / ___ | |_| |/ / _| | | ___ _ __  / /___                 //
+//              | ___ \/ _ \| __|    \| | | |/ _ \ '__| | ___ \                //
+//              | |_/ / (_) | |_| |\  \ | | |  __/ |    | \_/ |                //
+//              \____/ \___/ \__\_| \_/_|_|_|\___|_|    \_____/                //
+//                 __                                                          //
+//                / /  __ _ _ __   __ _ _   _  __ _  __ _  ___                 //
+//               / /  / _` | '_ \ / _` | | | |/ _` |/ _` |/ _ \                //
+//              / /__| (_| | | | | (_| | |_| | (_| | (_| |  __/                //
+//              \____/\__,_|_| |_|\__, |\__,_|\__,_|\__, |\___|                //
+//                                |___/             |___/                      //
+// --------------------------------------------------------------------------- //
+// Español 1.0 by Myzter                                                       //
+// --------------------------------------------------------------------------- //
+
+// ** Para usar este archivo como base para un nuevo lenguaje **
+// Por favor asegurate de asignar el nombre correcto al Script
+//    ie: Para Francés usa BK6LangFR
+// Además, debes cambiar el código del lenguaje en la línea 26
+
+-	script	BK6LangES	-1,{
+OnInit:
+	// Define el código del lenguage (es)
+	set .@lc$,"es";
+
+	// Read (or create) the BotKiller NPC ID
+	set $@BKNPCID, callfunc("getNPCID","BotKiller");	
+	callfunc "newMes", $@BKNPCID, 0, "** Se detectó una actividad no autorizada, debes permanecer en la cárcel por ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 1, "No tengo los privilegios necesarios para usar este servicio.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 2, "Necesito ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 3, " intererogatorios correctos más para poder usar este servicio.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 4, "Hola ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 5, ", ¿cómo puedo ayudarte?",.@lc$;
+	callfunc "newMes", $@BKNPCID, 6, "Estadísticas de Jugador",.@lc$;
+	callfunc "newMes", $@BKNPCID, 7, "^ff0000Interrogar Jugador^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 8, "^0000ffEstoy bien, gracias.^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 9, "Claro, escribe el nombre del jugador (o parte de este)",.@lc$;
+	callfunc "newMes", $@BKNPCID, 10, "(Al menos 3 letras)",.@lc$;
+	callfunc "newMes", $@BKNPCID, 11, "Lo siento, no hay jugadores que concuerden con el criterio: ^ff0000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 12, "Lo siento, no hay jugadores conectados que concuerden con el criterio: ^ff0000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 13, "Estadísticas of ^0000ff",.@lc$;
+	callfunc "newMes", $@BKNPCID, 14, "> Respuestas Correctas: ^ff0000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 15, "> Encarcelamientos: ^ff0000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 16, "> Efectividad: ^ff0000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 17, "Imposible, no puedes volver a usar el servicio aún.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 18, "Interesante, escribe el nombre del sospechoso (o parte de este).",.@lc$;
+	callfunc "newMes", $@BKNPCID, 19, ":^ff0000Cancelar^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 20, "¿Quieres interrogar a este jugador(a)?",.@lc$;
+	callfunc "newMes", $@BKNPCID, 21, "Si, hazlo!",.@lc$;
+	callfunc "newMes", $@BKNPCID, 22, "No, podría ser un error.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 23, "Lo siento, el jugador ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 24, " no está online.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 25, "Atención!, ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 26, " te reportó como Bot, por favor completa el siguiente interrogatorio.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 27, "El jugador(a) ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 28, " no fue en prisión. No podrás usar nuevamente este servicio durante 7 días.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 29, " no es Bot.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 30, " fue incapaz de responder y ahora está en prisión, gracias por tu ayuda.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 31, "Botkiller: No hay módulos activos para interrogar.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 32, ": Por esta interrupción, por favor acepta ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 33, "un blessing nivel ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 34, "un AGI nivel ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 35, " zeny.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 36, " % de experiencia.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 37, ": No habrá bonos mientras no superes el 90% de efectividad. [Correcto: ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 38, " / Incorrecto: ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 39, "Lo siento, tu respuesta es incorrecta.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 40, "Gastaste todos los intentos, irás a la cárcel.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 41, ": Por motivos de seguridad hemos de interrogarte, por favor, busca un lugar seguro. [",.@lc$;
+	callfunc "newMes", $@BKNPCID, 42, " seg.]",.@lc$;
+	callfunc "newMes", $@BKNPCID, 43, ": Prepárate para continuar... ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 44, " segundo(s)",.@lc$;
+	callfunc "newMes", $@BKNPCID, 45, ": Tienes ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 46, " segundo(s) para responder.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 47, "** Serás libre en ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 48, ": Por ahora vuelves a ser libre, no vuelvas a usar Bots.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 49, " y ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 50, " segundo",.@lc$;
+	callfunc "newMes", $@BKNPCID, 51, "s",.@lc$;
+	callfunc "newMes", $@BKNPCID, 52, " minuto",.@lc$;
+	callfunc "newMes", $@BKNPCID, 53, " hora",.@lc$;
+	callfunc "newMes", $@BKNPCID, 54, "Botkiller no está listo, espera...",.@lc$;
+	callfunc "newMes", $@BKNPCID, 55, "Bienvenido(a) a ^0000ffBotKiller^000000:",.@lc$;
+	callfunc "newMes", $@BKNPCID, 56, "^ff0000Actividad Bot^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 57, "^0000ffAdministrar Módulos^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 58, "^ffc0c0Traducciones^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 59, "^00ff00Staff de Guardianes^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 60, "^c0ffc0Staff Traducciones^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 61, "^1010ffEditar Configuración^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 62, "^1010ffRecargar Configuración^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 63, "^ff0000Salir^000000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 64, "Listo!",.@lc$;
+	callfunc "newMes", $@BKNPCID, 65, "Cambiar Lenguaje!",.@lc$;
+	callfunc "newMes", $@BKNPCID, 66, "Estadísticas",.@lc$;
+	callfunc "newMes", $@BKNPCID, 67, "* Intento ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 68, " de ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 69, "% de efectividad.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 70, "Atención: Si deseas cambiar el lenguaje de tu cuenta susurra a npc:lang",.@lc$;
+	callfunc "newMes", $@BKNPCID, 71, "Lenguaje seleccionado: ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 72, "Configura tus módulos BotKiller: ",.@lc$;
+	callfunc "newMes", $@BKNPCID, 73, "Editando módulo ^ff0000",.@lc$;
+	callfunc "newMes", $@BKNPCID, 74, "Estado",.@lc$;
+	callfunc "newMes", $@BKNPCID, 75, "Activo",.@lc$;
+	callfunc "newMes", $@BKNPCID, 76, "Inactivo",.@lc$;
+	callfunc "newMes", $@BKNPCID, 77, "Activar",.@lc$;
+	callfunc "newMes", $@BKNPCID, 78, "Desactivar",.@lc$;
+	callfunc "newMes", $@BKNPCID, 79, "Porcentaje",.@lc$;
+	callfunc "newMes", $@BKNPCID, 80, "Volver",.@lc$;
+	callfunc "newMes", $@BKNPCID, 81, "Módulo",.@lc$;
+	callfunc "newMes", $@BKNPCID, 82, "Ingresa el porcentaje: (1 a 100, 0 para cancelar)",.@lc$;
+	callfunc "newMes", $@BKNPCID, 83, "Número inválido, por favor ingresa un número entre 1 y 100",.@lc$;
+	callfunc "newMes", $@BKNPCID, 84, "Configura los lenguajes a usar en tu server.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 85, "Este personaje no puede responder, por favor no uses el sistema en gente con ventana de venta o de chat.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 86, "Este jugador está ocupado vendiendo o chateando, ¿deseas iniciar el interrogatorio de todos modos?",.@lc$;
+	callfunc "newMes", $@BKNPCID, 87, "Activar BotKiller (Global)",.@lc$;
+	callfunc "newMes", $@BKNPCID, 88, "Activar BotKiller (Este Mapa)",.@lc$;
+	callfunc "newMes", $@BKNPCID, 89, "Precaución, BotKiller 6 no está activado.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 90, "Mapa",.@lc$;
+	callfunc "newMes", $@BKNPCID, 91, "La lista de mapas ignorados de BotKiller está vacía.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 92, "La lista de mapas ignorados de BotKiller contiene los siguientes mapas",.@lc$;
+	callfunc "newMes", $@BKNPCID, 93, "BotKiller 6 está desactivado en este mapa",.@lc$;
+	callfunc "newMes", $@BKNPCID, 94, "fue agregado a la lista de mapas ignorados de BotKiller 6.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 95, "fue removido de la lista de mapas ignorados de BotKiller 6.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 96, "Ver Lista de Mapas Ignorados",.@lc$;
+	callfunc "newMes", $@BKNPCID, 97, "La información fue enviada a tu Chat.",.@lc$;
+	callfunc "newMes", $@BKNPCID, 98, "Desactivar BotKiller (Global)",.@lc$;
+	callfunc "newMes", $@BKNPCID, 99, "Desactivar BotKiller (Este Mapa)",.@lc$;
+	callfunc "newMes", $@BKNPCID,100, "Remover este mapa de la lista de ignorados de BK6",.@lc$;
+	callfunc "newMes", $@BKNPCID,101, "Agregar este mapa a la lista de ignorados de BK6",.@lc$;
+	callfunc "newMes", $@BKNPCID,102, "está en un mapa ignorado por BotKiller 6.",.@lc$;
+	callfunc "newMes", $@BKNPCID,103, "Lo lamento, no puedo reportarte a ti mismo.",.@lc$;
+
+	// Mensajes de Log
+	set $@LOGNPCID, callfunc("getNPCID","BKLog");
+	callfunc "newMes", $@LOGNPCID, 0, "El personaje se ha desconectado para evitar un interrogatorio.",.@lc$;
+	callfunc "newMes", $@LOGNPCID, 1, "El personaje fue enviado a prisión, interrogación fallida.",.@lc$;
+	callfunc "newMes", $@LOGNPCID, 2, "El personaje fue acusado de usar Bot y no fue capaz de responder al interrogatorio.",.@lc$;
+	callfunc "newMes", $@LOGNPCID, 3, "El personaje intentó hablar con otro NPC para intentar evadir el antibot.",.@lc$;
+	
+	// Diálogos de los Guardias
+	set $@GuardNPCID, callfunc("getNPCID","BKGuard");
+	callfunc "newMes", $@GuardNPCID, 0, "Lo lamento, no puedo ayudarte dado que un GM tiene tus papeles.",.@lc$;
+	callfunc "newMes", $@GuardNPCID, 1, "Por favor relájate ",.@lc$;
+	callfunc "newMes", $@GuardNPCID, 2, ", debes esperar ",.@lc$;
+	callfunc "newMes", $@GuardNPCID, 3, " para tu liberación.",.@lc$;
+}

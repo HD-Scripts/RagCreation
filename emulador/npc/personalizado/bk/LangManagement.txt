@@ -1,0 +1,239 @@
+/*
+                __                                          
+               / /  __ _ _ __   __ _ _   _  __ _  __ _  ___ 
+              / /  / _` | '_ \ / _` | | | |/ _` |/ _` |/ _ \
+             / /__| (_| | | | | (_| | |_| | (_| | (_| |  __/
+             \____/\__,_|_| |_|\__, |\__,_|\__,_|\__, |\___|
+                               |___/             |___/      
+                                                                _   
+        /\/\   __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+       /    \ / _` | '_ \ / _` |/ _` |/ _ \ '_ ` _ \ / _ \ '_ \| __|
+      / /\/\ \ (_| | | | | (_| | (_| |  __/ | | | | |  __/ | | | |_ 
+      \/    \/\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+                                       |___/                               
+                    _          _____         _ 
+                   | |_ _ _   |     |_ _ ___| |_ ___ ___ 
+                   | . | | |  | | | | | |- _|  _| -_|  _|
+                   |___|_  |  |_|_|_|_  |___|_| |___|_|
+                       |___|        |___|
+
+                          Version: 6.15
+                      (c)2006-2012 by Myzter                      
+*/
+
+-	script	LngInit	-1,{
+sCheckTable:
+	query_sql "SHOW TABLES LIKE '" + getarg(0) + "'",.@TExists$;
+	return .@TExists$[0] != "";
+OnInit:
+	if (!callsub(sCheckTable,"bk6_npc")) {
+		debugmes "Multi-language System: Creating table `bk6_npc`...";
+		query_sql "CREATE TABLE `bk6_npc` (`npcid` int(11) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(22) DEFAULT '', PRIMARY KEY (`npcid`), KEY `idx_name` (`name`)) ENGINE=MyISAM AUTO_INCREMENT=1;";
+	}
+
+	if (!callsub(sCheckTable,"bk6_talk")) {
+		debugmes "Multi-language System: Creating table `bk6_talk`...";
+		query_sql "CREATE TABLE `bk6_talk` (`intid` int(11) unsigned NOT NULL AUTO_INCREMENT, `npcid` mediumint(8) unsigned DEFAULT '0', `talkid` int(11) unsigned NOT NULL DEFAULT '0', `lang` varchar(3) NOT NULL DEFAULT 'en', `custom` tinyint(1) unsigned NOT NULL DEFAULT '0', `dialog` varchar(255) DEFAULT NULL, PRIMARY KEY (`intid`), UNIQUE KEY `idx_unique` (`npcid`,`talkid`,`lang`,`dialog`), KEY `idx_dialog` (`npcid`,`talkid`,`lang`)) ENGINE=MyISAM AUTO_INCREMENT=1;";
+	}
+	
+	if (!callsub(sCheckTable,"bk6_lang")) {
+		debugmes "Multi-language System: Creating table `bk6_lang`..";
+		query_sql "CREATE TABLE `bk6_lang` (`lang` varchar(3) NOT NULL DEFAULT '', `name` varchar(80) NOT NULL DEFAULT '', `enabled` tinyint(3) unsigned DEFAULT '1', PRIMARY KEY (`lang`)) ENGINE=MyISAM;";
+		debugmes "Multi-language System:  Creating default languages...";
+		query_sql "INSERT INTO `bk6_lang` VALUES ('en','English',1),('es','Spanish',1),('ab','Abkhazian',0),('af','Afrikaans',0),('an','Aragonese',0),('ar','Arabic',0),('as','Assamese',0),('az','Azerbaijani',0),('be','Belarusian',0),('bg','Bulgarian',0),('bn','Bengali',0),('bo','Tibetan',0),('br','Breton',0),('bs','Bosnian',0),('ca','Catalan / Valencian',0),('ce','Chechen',0),('co','Corsican',0),('cs','Czech',0),('cu','Church Slavic',0),('cy','Welsh',0),('da','Danish',0),('de','German',0),('el','Greek',0),('eo','Esperanto',0),('et','Estonian',0),('eu','Basque',0),('fa','Persian',0),('fi','Finnish',0),('fj','Fijian',0),('fo','Faroese',0),('fr','French',0),('fy','Western Frisian',0),('ga','Irish',0),('gd','Gaelic / Scottish Gaelic',0),('gl','Galician',0),('gv','Manx',0),('he','Hebrew',0),('hi','Hindi',0),('hr','Croatian',0),('ht','Haitian Haitian Creole',0),('hu','Hungarian',0),('hy','Armenian',0),('id','Indonesian',0),('is','Icelandic',0),('it','Italian',0),('ja','Japanese',0),('jv','Javanese',0),('ka','Georgian',0),('kg','Kongo',0),('ko','Korean',0),('ku','Kurdish',0),('kw','Cornish',0),('ky','Kirghiz',0),('la','Latin',0),('lb','Luxembourgish Letzeburgesch',0),('li','Limburgan Limburger Limburgish',0),('ln','Lingala',0),('lt','Lithuanian',0),('lv','Latvian',0),('mg','Malagasy',0),('mk','Macedonian',0),('mn','Mongolian',0),('mo','Moldavian',0),('ms','Malay',0),('mt','Maltese',0),('my','Burmese',0),('nb','Norwegian (Bokmål)',0),('ne','Nepali',0),('nl','Dutch',0),('nn','Norwegian (Nynorsk)',0),('no','Norwegian',0),('oc','Occitan',0),('pl','Polish',0),('pt','Portuguese',1),('rm','Raeto-Romance',0),('ro','Romanian',0),('ru','Russian',0),('sc','Sardinian',0),('se','Northern Sami',0),('sk','Slovak',0),('sl','Slovenian',0),('so','Somali',0),('sq','Albanian',0),('sr','Serbian',0),('sv','Swedish',0),('sw','Swahili',0),('tk','Turkmen',0),('tr','Turkish',0),('ty','Tahitian',0),('uk','Ukrainian',0),('ur','Urdu',0),('uz','Uzbek',0),('vi','Vietnamese',0),('vo','Volapuk',0),('yi','Yiddish',0),('zh','Chinese',0);";
+	}
+}
+
+// Convert int to hex (by Myzter)
+function	script	Int2Hex	{
+	if (getarraysize(.hexbase$) < 2) setarray .hexbase$, "0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G";
+	set .@num, rand(getarg(0),getarg(1));
+	set .@hex$,"";
+	while (.@num) {
+		set .@r, .@num % 16 + (1 / 2);
+		set .@hex$, .hexbase$[.@r] + .@hex$;
+		set .@num, .@num / 16;
+	}
+	if (getstrlen(.@hex$) < 1) set .@hex$, "0";
+	if (getstrlen(.@hex$) < 2) set .@hex$, "0" + .@hex$;
+	return .@hex$;
+}
+
+// Display a player selection filtered by criteria, the selected player values are returned in @playername$, @accountid and @charid
+/* Sample:
+  input .@BKSuspect$;
+  set .@st, callfunc("selPlayer",.@BKSuspect$,1); // The "1" show only online players based on MySQL status.
+  switch (.@st) {
+	case 0: 'There are not Player that match that criteria
+	case -2: 'Player canceled
+	default: 'the Account ID of the selected player
+  }
+*/
+function	script	selPlayer	{
+	set .@Cnt, query_sql("select `name`, `account_id`, `char_id` from `char` where `name` like '%" + escape_sql(getarg(0)) + "%' " + (getarg(1,0)?" and online=1":"") + " limit 15", .@name$, .@account_id, .@char_id);
+	if (!.@Cnt) return 0;
+	if (.@Cnt > 1) {
+		for (set .@x,0; .@x < .@Cnt; set .@x, .@x + 1) {
+			set .@Menu$, .@Menu$ + .@name$[.@x] + ":";
+		}
+		set .@Menu$, .@Menu$ + ":^ff0000" + callfunc("getMes",$@BKNPCID,64) + "^000000";
+		set .@Opc, select(.@Menu$) - 1;
+		if (.@Opc > .@Cnt) return -2;
+	} else {
+		set .@Opc,0;
+	}
+	set @playername$, .@name$[.@Opc];
+	set @accountid, .@account_id[.@Opc];
+	set @charid, .@char_id[.@Opc];
+	return .@account_id[.@Opc];
+}
+
+// --\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\ //
+// Multilanguage System                                                        //
+// --\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\--\ //
+
+// getMes <npcid>,<talkid>,{<language (default en)>}
+function	script	getMes	{
+	set .@Lang$,getarg(2,"") == ""?#USER_LANG$:getarg(2,"");
+	
+	// Getting message type
+	set .@mt, getd("$@mt" + getarg(0) + "_" + getarg(1));
+	
+	// Checking temporary marked messages for reloading from MySQL... (10% probabilities)
+	if (getd("$@r" + getarg(0) + "_" + getarg(1) + .@Lang$) && rand(100) < 10) set .@mt,1;
+	
+	// Using cache data for unique messages
+	if (!.@mt && getd("$@m" + getarg(0) + "_" + getarg(1) + .@Lang$ + "$") != "") return getd("$@m" + getarg(0) + "_" + getarg(1) + .@Lang$ + "$");
+	
+	// Using cache data with probabilities in multi message (reduce MySQL querys)
+	if (.@mt && getd("$@m" + getarg(0) + "_" + getarg(1) + .@Lang$ + "$") != "" && rand(100) < 25) return getd("$@m" + getarg(0) + "_" + getarg(1) + .@Lang$ + "$");
+	
+	// Getting message from MySQL
+	set .@Cnt, query_sql("select `dialog` from `bk6_talk` where `npcid` = " + getarg(0) + " and `talkid` = " + getarg(1) + " and `lang` = '" + .@Lang$ + "' order by rand() limit 1", .@Dialog$);
+	if (!.@Cnt) {
+		if (.@Lang$ != $@BK_DEFLANG$) {
+			// If message not found in the passed language, try to get the it in the Default Server Language
+			set .@Cnt, query_sql("select `dialog` from `bk6_talk` where `npcid` = " + getarg(0) + " and `talkid` = " + getarg(1) + " and `lang` = '" + $@BK_DEFLANG$ + "' order by rand() limit 1", .@Dialog$);
+		} else {
+			// Try to use any language...
+			set .@Cnt, query_sql("select `dialog` from `bk6_talk` where `npcid` = " + getarg(0) + " and `talkid` = " + getarg(1) + " and `lang` <> '" + $@BK_DEFLANG$ + "' order by rand() limit 1", .@Dialog$);
+		}
+		if (!.@Cnt) {
+			atcommand "@request ** Message not found - NPCID: " + getarg(0) + " TALKID: " + getarg(1) + " Language: " + .@Lang$;
+			return "<" + getarg(0) + "/" + getarg(1) + "/" + .@Lang$ + " ?>";
+		}
+		setd "$@r" + getarg(0) + "_" + getarg(1) + .@Lang$,1; // Mark this message because is not using the required language.
+	} else {
+		setd "$@r" + getarg(0) + "_" + getarg(1) + .@Lang$,0;
+	}
+	
+	setd "$@m" + getarg(0) + "_" + getarg(1) + .@Lang$ + "$", .@Dialog$[0];
+	return .@Dialog$[0];
+}
+
+// getNPCID {<npc unique name>}: set/get a automatic npcid
+function	script	getNPCID	{
+	set .@name$, getarg(0,"");
+	if (.@name$ == "") set .@name$, strnpcinfo(3);
+	if (getd("$@n" + .@name$) > 0) return getd("$@n" + .@name$);
+	if (!query_sql("select `npcid` from `bk6_npc` where `name` = '" + .@name$ + "'", .@npcid)) {
+		query_sql "insert into `bk6_npc` (`name`)  values ('" + .@name$ + "')";
+		query_sql "SELECT LAST_INSERT_ID() as npcid", .@npcid;
+	}
+	setd "$@n" + .@name$,.@npcid[0];
+	return .@npcid[0];
+}
+
+// getMesType <npcid>, <talkid>,{1=unique message, 2=multi message>}
+function	script	getMesType	{
+	if (getarg(2,0)) query_sql "replace into `bk6_talkmain` (`npcid`, `talkid`, `static`) values (" + getarg(0) + ", " + getarg(1) + ", " + getarg(2) + ")";
+	
+	if (!getd("$@tm" + getarg(0) + "_" + getarg(1))) {
+	
+		set .@Cnt, query_sql("select `static` from `bk6_talkmain` where `npcid` = " + getarg(0) + " and `talkid` = " + getarg(1),.@Static);
+		if (.@Cnt) setd "$@tm" + getarg(0) + "_" + getarg(1), .@Static[0]; else setd "$@tm" + getarg(0) + "_" + getarg(1),1;
+	}
+	return getd("$@tm" + getarg(0) + "_" + getarg(1));
+}
+
+// newMes <npcid>,<talkid>,'<dialog>',{'<language, default: en>'},{<0=unique message (default), 1=multi message>}
+function	script	newMes	{
+	if (getarg(4,1)) setd "$@mt" + getarg(0) + "_" + getarg(1),1; // Mark it as multi message
+	if (!query_sql("select 1 from `bk6_talk` where `npcid`=" + getarg(0) + " and `talkid`=" + getarg(1) + " and `lang`='" + getarg(3,"en") + "' and `dialog`='" + escape_sql(getarg(2)) + "'",.@t))
+		query_sql "replace into `bk6_talk` (`npcid`, `talkid`, `lang`, `custom`, `dialog`) values (" + getarg(0) + "," + getarg(1) + ",'" + getarg(3,"en") + "',0,'" + escape_sql(getarg(2)) + "')";
+	return;
+}
+
+// clearNPCDialog <npcid>,{'<language>'}
+function	script	clearNPCDialog	{
+	if (getarg(1,"") != "") set .@Condition$, " and lang='" + getarg(1) + "'";
+	query_sql "delete from `bk6_talk` where `npcid`=" + getarg(0) + .@Condition$;
+	return;
+}
+
+// replaceNPCDialog <intid>, '<newdialog>'
+function	script	replaceNPCDialog	{
+	query_sql "update `bk6_talk` set `dialog`='" + escape_sql(getarg(0)) + "' where `intid`=" + getarg(0);
+	return;
+}
+
+// exportLng <npcid>,'<language>'
+function	script	exportLng	{
+	dispbottom "*** " + getarg(0) + "/" + getarg(1) + " ***";
+	dispbottom "insert into bk6_talk (npcid, talkid, lang, custom, dialog) values ";
+	set .@start,0;
+	while (1) {
+		if (!.@cnttotal) {
+			deletearray .@aatotmsg[0],128;
+			deletearray .@aatotpages[0],128;
+			set .@Cnt, query_sql("select count(*) cnt, FLOOR(count(*) / 20) + if(count(*) % 20 > 0,1,0) ritems from `bk6_talk` where `npcid`=" + getarg(0) + " and `lang`='" + escape_sql(getarg(1)) + "'",.@aatotmsg,.@aatotpages);
+			if (!.@Cnt) return 0;
+			set .@maxpage, .@aatotpages[0] - 1;
+			if (.@cidxm > .@maxpage) set .@cidxm, .@maxpage;
+			set .@cnttotal,1;
+		}
+		if (.@cidxm > .@maxpage) {
+			dispbottom "*** " + getarg(0) + "/" + getarg(1) + " ***";
+			return 1;
+		}
+		deletearray .@talkid[0],128;
+		deletearray .@custom[0],128;
+		deletearray .@dialog$[0],128;
+		set .@Cnt, query_sql("select `talkid`, `custom`, `dialog` from `bk6_talk` where `npcid`=" + getarg(0) + " and `lang`='" + escape_sql(getarg(1)) + "' limit " + (.@cidxm * 20) + ",20",.@talkid,.@custom,.@dialog$);
+		for (set .@x,0; .@x < .@Cnt; set .@x, .@x + 1) {
+			if (.@start) set .@export$, ","; else { set .@export$, ""; set .@start,1; }
+			dispbottom .@export$ + "(" + getarg(0) + "," + .@talkid[.@x] + ",'" + escape_sql(getarg(1)) + "'," + .@custom[.@x] + ",'" + escape_sql(.@dialog$[.@x]) + "')";
+		}
+		set .@cidxm, .@cidxm + 1;
+	}
+}
+
+-	script	exportlang	-1,{
+OnWhisperGlobal:
+	if (getgmlevel() < 99) end;
+	callfunc "exportLng",$@BKNPCID,@whispervar0$;
+}
+
+prontera,182,212,3	script	lang	952,{
+OnWhisperGlobal:
+lMainM:
+	switch (select(callfunc("getMes",$@BKNPCID,65),callfunc("getMes",$@BKNPCID,63))) {
+		case 1:
+			set .@TLang,query_sql("select `lang`, `name` from `bk6_lang` where `enabled`=1 order by `name` asc",.@BKLangID$,.@BKLangName$);
+			for (set .@x,0; .@x < .@TLang; set .@x, .@x + 1) {
+				if (#USER_LANG$ == .@BKLangID$[.@x])
+					set .@MenuLang$, .@MenuLang$ + "^1B7EE0" + .@BKLangName$[.@x] + "^000000 ^ff0000(*)^000000:";
+				else
+					set .@MenuLang$, .@MenuLang$ + "^0AA6C9" + .@BKLangName$[.@x] + "^000000:";
+			}
+			set .@MenuLang$, .@MenuLang$ + callfunc("getMes",$@BKNPCID,63);
+			set .@Lang, select(.@MenuLang$) - 1;
+			if (.@Lang >= .@TLang) close;
+			set #USER_LANG$, .@BKLangID$[.@Lang];
+			announce "** " + callfunc("getMes",$@BKNPCID,71) + .@BKLangName$[.@Lang] + " **",bc_self;
+			close;
+		default:
+			close;
+	}
+	goto lMainM;
+}

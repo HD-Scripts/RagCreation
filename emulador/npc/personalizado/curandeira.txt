@@ -1,0 +1,49 @@
+prontera,147,175,1	script	Eventos	50,{
+show "[Local de Eventos]";
+show "Você quer ir ao local de Eventos?";
+menu "Opa,claro que sim",sim,"Ah,agora não to afim",nao;
+ 
+nao:
+close;
+ 
+sim:
+close2;
+warp "prontera",256,67;
+end;
+}
+//============================
+//============================
+prontera,161,186,4	script	Ajudante##01::cBuffer	920,{
+percentheal 100,100;;
+skilleffect 34,0; sc_start SC_BLESSING,360000,10;
+skilleffect 29,0; sc_start SC_INCREASEAGI,360000,10;
+close;
+}
+//////////////////////////////////////////////////////
+//Cidades 
+alberta,189,147,4	duplicate(cBuffer)	Ajudante#02	920
+aldebaran,142,124,4	duplicate(cBuffer)	Ajudante#03	920
+amatsu,196,85,1	duplicate(cBuffer)	Ajudante#04	920
+ayothaya,155,119,6	duplicate(cBuffer)	Ajudante#05	920
+comodo,202,145,4	duplicate(cBuffer)	Ajudante#06	920
+einbroch,56,206,4	duplicate(cBuffer)	Ajudante#07	920
+einbroch,243,170,2	duplicate(cBuffer)	Ajudante#08	920
+einbech,76,103,4	duplicate(cBuffer)	Ajudante#09	920
+geffen,127,64,6	duplicate(cBuffer)	Ajudante#10	920
+gonryun,162,123,4	duplicate(cBuffer)	Ajudante#11	920
+izlude,135,120,4	duplicate(cBuffer)	Ajudante#12	920
+hugel,102,154,5	duplicate(cBuffer)	Ajudante#13	920
+lighthalzen,153,97,6	duplicate(cBuffer)	Ajudante#14	920
+louyang,212,59,4	duplicate(cBuffer)	Ajudante#15	920
+morocc,151,97,4	duplicate(cBuffer)	Ajudante#16	920
+payon,165,227,4	duplicate(cBuffer)	Ajudante#18	920
+umbala,132,131,4	duplicate(cBuffer)	Ajudante#19	920
+xmas,143,137,4	duplicate(cBuffer)	Ajudante#20	920
+yuno,166,188,4	duplicate(cBuffer)	Ajudante#21	920
+rachel,123,115,5	duplicate(cBuffer)	Ajudante#22	920
+veins,212,125,5	duplicate(cBuffer)	Ajudante#23	920
+nameless_i,178,257,5	duplicate(cBuffer)	Ajudante#24	920
+moscovia,221,194,4	duplicate(cBuffer)	Ajudante#25	920
+brasilis,196,219,4	duplicate(cBuffer)	Ajudante#26	920
+manuk,293,193,5	duplicate(cBuffer)	Ajudante#27	920
+splendide,193,179,5	duplicate(cBuffer)	Ajudante#28	920
