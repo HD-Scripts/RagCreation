@@ -1,0 +1,119 @@
+//Feito por Admin_Zel
+//Uma simples megasena
+//A principio não tem erro
+prontera,144,228,5	script	Mega-Sena	60,{
+
+if(getgmlevel() > 99){
+show "Ola gm, o que deseja?";
+menu "Começar o sorteio",-,"Terminar o sorteio",term,"Nada",fechar;
+set $@sena,1;
+set $num1,rand(0,10);
+set $num2,rand(0,10);
+set $num3,rand(0,10);
+set $num4,rand(0,10);
+Announce "O sorteio da mega sena começou, venham ate mim em prontera e vejam se voces tiveram sorte",9;
+close;
+
+term:
+next;
+show "Deseja terminar o sorteio da mega-sena?";
+menu "Sim",-,"Não",fechar;
+set $@sena,0;
+show "Pronto";close;
+
+}else{
+
+show "Bem vindo a mega-sena";
+show "O que deseja fazer ?";
+if($@sena==1) menu "Ver numeros",num,"Ver se eu ganhei",gnh,"Ver o vencedor",venc,"Nada",fechar;
+menu "Apostar na mega-sena",apos,"Ver premio acumulado",acum,"Nada",fechar;
+
+acum:
+next;
+show "Até agora acumulamos "+$premiof+" Zenys";close;
+
+apos:
+next;
+show "Quanto voce deseja apostar? Minimo: 5000";
+digit @aposta;
+if(@aposta<5000) goto ultra;
+if(Zeny<@aposta) goto ultra2;
+next;
+show "Então voce deseja apostar "+@aposta+"?";
+menu "Sim",-,"''Re-apostar''",apos,"Fechar",fechar;
+next;
+set Zeny,Zeny-@aposta;
+set $premiof,$premiof+(@aposta*2);
+show "Agora digite seus numeros para concorrer ao premio final";
+next;
+show "São ao todo 4 numeros, de 0 a 10";
+nume1:
+show "Numero 1:";
+digit num1;
+if(num1>10 || num1<0) goto nume1;
+nume2:
+next;
+show "Numero 2:";
+digit num2;
+if(num2>10 || num2<0) goto nume2;
+nume3:
+next;
+show "Numero 3:";
+digit num3;
+if(num3>10 || num3<0) goto nume3;
+nume4:
+next;
+show "Numero 4:";
+digit num4;
+if(num4>10 || num4<0) goto nume4;
+next;
+show "Pronto, agora espere o sorteio e boa sorte";close;
+
+
+ultra:
+next;
+show "Me desculpe, mas voce digitou um valor invalido";close;
+
+ultra2:
+next;
+show "Voce não tem todo esse Zeny";close;
+
+fechar:
+show "Tenha um bom dia";close;
+
+num:
+next;
+show "Os numeros são";
+show ""+$num1+" "+$num2+" "+$num3+" "+$num4+"";
+next;
+show "Deixe-me confirmar seus numeros para ver se voce ganhou";
+gnh:
+if($premiof<1){
+show "Ops,Não a premio nenhum";close;}else{
+if(num1 != $num1) goto erro;
+if(num2 != $num2) goto erro;
+if(num3 != $num3) goto erro;
+if(num4 != $num4) goto erro;
+next;
+show "Parabens voce conseguiu!! Aqui esta seu dinheiro";
+set Zeny,Zeny+$premiof;
+set $premiof,0;
+set $venc$,strcharinfo(0);
+set $@sena,0;
+close;
+
+erro:
+show "Ahh que pena, voce não acertou os numeros...";close;
+
+venc:
+next;
+if($venc$ != ""){
+show "O vencedor da ultima mega-sena é";
+next;
+show "^000FF0"+$venc$+"^000000";close;
+}else{
+show "Ninguem ganhou ainda";close;
+}
+}
+}
+}

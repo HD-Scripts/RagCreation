@@ -1,0 +1,2502 @@
+// .----------------------------------------------------------.
+// .			  SoulBlaker Scripts Apresenta:			.
+// .			___________________			   .
+// .		  /  _____/______						.
+// .		  _____	|	|  _/			  .
+// .		  /		|	|				.
+// .		  /_______  / |______  /			  .
+// .			  /		/					  .
+// .			  [ eAthena Advanced Scripts ]				  .
+// .							v1.0  .
+// .----------------------------------------------------------.
+// ;  http://www.eathena.w...er-m271867.html	;
+// .----------------------------------------------------------.
+// . Script:												  .
+// .  Master of Quest										.
+// .----------------------------------------------------------.
+// . Por: SoulBlaker  Compátivel: eAthena SVN	 versão: 1.3  .
+// .----------------------------------------------------------.
+// . Descrição:											  .
+// .  Este npc cria/deleta quest em game, você apenas vai	.
+// .  digitar ids e quantias e ele irá fazer o resto.		.
+// .----------------------------------------------------------.
+// . Changelog da Versão:									.
+// .  - 1.0 Iniciado o NPC. [SoulBlaker]					.
+// .  - 1.1 Otimizado Menus Dinamicos. [SoulBlaker]		  .
+// .  - 1.2 Corrigido bug da remoção de Zeny. [SoulBlaker]  .
+// .  - 1.3 Corrigido alguns bugs do script. [SoulBlaker]	.
+// *----------------------------------------------------------*
+lighthalzen,154,110,5	script	Quest#mofq_01	811,{
+	if( getgmlevel() == 99 )
+	{
+		mes "^00BFFF[Quest]^000000";
+		mes "Olá Senhor(a) Administrador(a),";
+		mes "O que deseja dos meus serviços?";
+		next;
+		switch ( select ("Checar Quests.","Adicionar uma Nova Quest.","Remover uma Quest.","Limpar Todas a Quests.","Cancelar.") )
+		{
+			case 1:
+				mes "^00BFFF[Quest]^000000";
+				mes "Muito bem administrador, escolha a quest que deseja checar:";
+				next;
+				callsub OnPlayerMenu;
+				break;
+			case 2:
+				mes "^00BFFF[Quest]^000000";
+				mes "Você escolheu 'Adicionar uma Nova Quests'.";
+				mes "Por favor, digite o ID do Item que o jogador vai ganhar ao terminar a quest.";
+				next;
+				input .@getitem[0];
+				mes "^00BFFF[Quest]^000000";
+				mes "Por favor, digite a quantidade de ^FF0000" + GetItemName(.@getitem[0]);
+				mes "^000000que o jogador vai ganhar quando terminar a quest.";
+				next;
+				input .@amount[0];
+				mes "^00BFFF[Quest]^000000";
+				mes "Por favor, didite o id do";
+				mes "1° Item requerido para";
+				mes "fazer a quest.";
+				next;
+				input .@getitem[1];
+				mes "^00BFFF[Quest]^000000";
+				mes "Muito bem, agora digite a quantia de ^FF0000" + GetItemName(.@getitem[1]) + "^000000 que precisa para fazer a quest.";
+				next;
+				input .@amount[1];
+				mes "^00BFFF[Quest]^000000";
+				mes "Muito bem, o jogador deve trazer ^FF0000" + .@amount[1] + " " + GetItemName(.@getitem[1]) + "^000000.";
+				next;
+				mes "^00BFFF[Quest]^000000";
+				mes "Deseja adicionar mais algum item?";
+				next;
+				if( select( "Sim.", "Não" ) == 1)
+				{
+					set .@loop,1;
+					set .@num,2;
+				}
+				else
+					set .@loop,0;
+				while( .@loop )
+				{
+					mes "^00BFFF[Quest]^000000";
+					mes "Por favor, didite o id do";
+					mes .@num+"° Item requerido para";
+					mes "fazer a quest.";
+					next;
+					input .@getitem[.@num];
+					mes "^00BFFF[Quest]^000000";
+					mes "Por favor, digite a qunatidade de ^FF0000" + GetItemName(.@getitem[.@num]);
+					mes "^000000que o jogador vai ganhar quando terminar a quest.";
+					next;
+					input .@amount[.@num];
+					mes "^00BFFF[Quest]^000000";
+					mes "Muito bem, o jogador deve trazer ^FF0000" + .@amount[.@num] + " " + GetItemName(.@getitem[.@num]) + "^000000.";
+					next;
+					mes "^00BFFF[Quest]^000000";
+					mes "O Senhor(a) deseja adicionar mais algum item?";
+					next;
+					if( select( "Sim.", "Não" ) == 1 )
+						set .@num, .@num + 1;
+					else
+						set .@loop,0;
+				}
+				mes "^00BFFF[Quest]^000000";
+				mes "Por favor, digite o Custo de Zeny que vai ser cobrado para fazer a Quest.";
+				mes "Se você digitar '0', o Custo de Zeny será ignorado na hora de fazer a Quest.";
+				next;
+				input .@ZenyCost;
+				set .@Size,getarraysize(.@getitem);
+				mes "^00BFFF[Quest]^000000";
+				mes "Muito bem, veja se está tudo correto.";
+				mes "O jogador ganha ^FF0000"+.@amount[0]+" " + getitemname(.@getitem[0]) + "^000000 se trouxer:";
+				for( set .@num, 1; .@num < .@Size; set .@num, .@num + 1 )
+					mes .@amount[.@num]+"x " + getitemname(.@getitem[.@num]);
+				if( .@ZenyCost )
+					mes "E " + .@ZenyCost +"zenys";
+				next;
+				mes "^00BFFF[Quest]^000000";
+				mes "Está tudo correto?";
+				next;
+				if( select( "Está tudo correto.", "Cancelar a Operação" ) == 1 )
+				{
+					set .@QuestId,0;
+					set .@Size,getarraysize($questmaster_id);
+					set .@loop,1;
+					set .@num,0;
+					while(.@loop)
+					{
+						if( $questmaster_id[.@num] == 0 || .@num == .@Size )
+							set .@loop,0;
+						else
+							set .@num, .@num + 1;
+					}
+					set .@QuestId, .@num;
+					mes "^00BFFF[Quest]^000000";
+					mes "A Quest foi adicionada com sucesso, qualquer bug ou erro";
+					mes "reporte ao membro 'SoulBlaker' no fórum de suporte do eAthena.";
+					mes "Obrigado por utilizar meus serviços.";
+					set $questmaster_id[.@QuestId],.@getitem[0];
+					setd "$questmasteramount_"+.@QuestId+"[0]",.@amount[0];
+					set .@Size,getarraysize(.@getitem);
+					for ( set .@num, 1; .@num <= .@Size; set .@num, .@num + 1) {
+						setd "$questmasterq_"+.@QuestId+"["+.@num+"]",.@getitem[.@num];
+						setd "$questmasteramount_"+.@QuestId+"["+.@num+"]",.@amount[.@num];
+					}
+					setd "$questmasterzeny_"+.@QuestId, .@ZenyCost;
+				}
+				else {
+					mes "^00BFFF[Quest]^000000";
+					mes "Por favor tente novamente, mais tenha um pouco mais de atenção.";
+				}
+				close;
+			case 3:
+				mes "^00BFFF[Quest]^000000";
+				mes "Qual a Quest que o Senhor(a) deseja remover?";
+				next;
+				callsub OnQuestRemaker;
+				set .@Choose, $@Choose;
+				mes "^00BFFF[Quest]^000000";
+				mes "O Senhor(a) deseja remover a Quest da ^FF0000" + GetItemName($questmaster_id[.@Choose]) + "^000000?";
+				next;
+				if( Select (" Sim.", "Não" ) == 1 )
+				{
+					set .@Size,getarraysize(getd("$questmasterq_"+.@Choose));
+					for( set .@num,1; .@num < .@Size; set .@num, .@num + 1 )
+					{
+						setd "$questmasterq_"+.@Choose+"["+.@num+"]",0;
+						setd "$questmasteramount_"+.@Choose+"["+.@num+"]",0;
+					}
+					set $questmaster_id[.@Choose],0;
+					setd "$questmasteramount_"+.@Choose+"[0]",0;
+					setd "$questmasterzeny_"+.@Choose,0;
+					mes "^00BFFF[Quest]^000000";
+					mes "A Quest foi deletada com sucesso, qualquer bug ou erro";
+					mes "reporte ao membro 'SoulBlaker' no fórum de suporte do eAthena.";
+					mes "Obrigado por utilizar meus serviços";
+				}
+				else {
+					mes "^00BFFF[Quest]^000000";
+					mes "Estarei aqui se precisar...";
+				}
+				break;
+			case 4:
+				set .@Size,getarraysize($questmaster_id);
+				for( set .@num,0; .@num < .@Size; set .@num, .@num + 1 )
+				{
+					set .@Size2,getarraysize(getd("$questmasterq_"+.@num));
+					for( set .@num2,1; .@num2 < .@Size2; set .@num2, .@num2 + 1 )
+					{
+						setd "$questmasterq_"+.@num+"["+.@num2+"]",0;
+						setd "$questmasteramount_"+.@num+"["+.@num2+"]",0;
+					}
+					set $questmaster_id[.@num],0;
+					setd "$questmasteramount_"+.@num+"[0]",0;
+					setd "$questmasterzeny_"+.@num,0;
+				}
+				mes "^00BFFF[Quest]^000000";
+				mes "Todas as quests foram deletada!";
+				break;
+			case 5:
+				mes "^00BFFF[Quest]^000000";
+				mes "Estarei aqui se precisar...";
+				break;
+		}
+	}
+	else {
+		mes "^00BFFF[Quest]^000000";
+		mes "Olá ^FF0000"+ strcharinfo(0) + "^000000, gostária de fazer alguma quest?";
+		next;
+		callsub OnPlayerMenu;
+	}
+	close;
+OnPlayerMenu:
+	callsub OnQuestRemaker;
+	set .@Choose,$@Choose;
+	set .@ZenyCost, getd("$questmasterzeny_"+.@Choose);
+	mes "^00BFFF[Quest]^000000";
+	mes "Muito bem, você gostária de fazer a quest da ^FF0000" + GetItemName($questmaster_id[.@Choose]) + "^000000 certo?";
+	next;
+	set .@Size,getarraysize(getd("$questmasterq_"+.@Choose));
+	mes "^00BFFF[Quest]^000000";
+	mes "Para fazer a quest da ^FF0000" + GetItemName($questmaster_id[.@Choose]) + "^000000 você precisa me trazer:";
+	for( set .@num,1; .@num < .@Size; set .@num, .@num + 1 )
+		mes getd("$questmasteramount_"+.@Choose+"["+.@num+"]")+"x " + GetItemName(getd("$questmasterq_"+.@Choose+"["+.@num+"]")) + ".";
+	if( .@ZenyCost )
+		mes "E ^FF0000" + .@ZenyCost + "^000000 zenys.";
+	next;
+	switch(select("Fazer a quest agora!","Vou pensar mais um pouco...") )
+	{
+		case 1:
+			if( checkweight($questmaster_id[.@Choose],getd("$questmasteramount_"+.@Choose+"[0]")) == 0 )
+			{
+				mes "^00BFFF[Quest]^000000";
+				mes "Você está carregando muitos itens com você.";
+				mes "Por favor, volte depois que usar o Serviço de Armazém Kafra para armazenar alguns de seus itens.";
+				close;
+			}
+			for( set .@num,1; .@num < .@Size; set .@num, .@num + 1 )
+			{
+				set .@id[.@num],getd("$questmasterq_"+.@Choose+"["+.@num+"]");
+				set .@amount[.@num],getd("$questmasteramount_"+.@Choose+"["+.@num+"]");
+				if( countitem(.@id[.@num]) < .@amount[.@num] )
+				{
+					mes "^00BFFF[Quest]^000000";
+					mes "Me desculpe, mais você não tem "+.@amount[.@num]+"x "+getitemname(.@id[.@num])+"!";
+					close;
+				}
+			}
+			if( .@ZenyCost && Zeny < .@ZenyCost)
+			{
+				mes "^00BFFF[Quest]^000000";
+				mes "Me desculpe, mais você não tem " + .@ZenyCost + " suficiente.";
+				close;
+			}
+			for( set .@num,1; .@num < .@Size; set .@num, .@num + 1 )
+				delitem .@id[.@num],.@amount[.@num];
+			mes "^00BFFF[Quest]^000000";
+			mes "Muito bem, aqui está sua recompensa...";
+			getitem $questmaster_id[.@Choose],getd("$questmasteramount_"+.@Choose+"[0]");
+			if( .@ZenyCost )
+				set Zeny, Zeny - .@ZenyCost;
+			break;
+		case 2:
+			mes "^00BFFF[Quest]^000000";
+			mes "Estarei aqui se precisar.";
+			break;
+	}
+	return;		  
+  
+OnQuestRemaker:
+	set .@Size,getarraysize($questmaster_id);
+	for( set .@num, 0; .@num < .@Size; set .@num, .@num + 1 )
+		set .@ChooseMenu$, .@ChooseMenu$+GetItemName(getd("$questmaster_id"+"["+.@num+"]"))+":";
+	set .@ChooseMenu$,.@ChooseMenu$+"^FF0000Cancelar^000000";
+	set $@Choose,select(.@ChooseMenu$)-1;
+	if( ($@Choose+1) > .@num )
+	{
+		mes "^00BFFF[Quest]^000000";
+		mes "Estarei aqui caso precisar.";
+		close;
+	}
+	return;
+}
+// *----------------------------------------------------------*
+// *----------------------------------------------------------*
+// *----------------------------------------------------------*
+// *----------------------------------------------------------*
+// *----------------------------------------------------------*
+prontera,164,164,4	script	Quest RagnaMundi	72,{
+show "[Quest]";
+show "Você quer ir para ate as Quest do RagnaMundi??";
+menu "Opa,claro que sim",sim,"Ah,agora não to afim",nao;
+ 
+nao:
+close;
+ 
+sim:
+close2;
+warp "dewata",201,182;
+end;
+}
+//=============================================
+//== Cronus Tools :: Gerador de Quest's =======
+//== Versão: ==================================
+//== 1.0
+//== Autor: ===================================
+//== RoM
+//=============================================
+dewata,207,175,4	script	Quest de Asas	453,{
+	mes "[Quest de Asas]";
+	mes "Olá "+StrCharInfo(0)+"!";
+	mes "Eu tenho alguns itens interessantes aqui, deseja dar uma olhada?";
+	next;
+	if( select("Claro!:Talvez mais tarde...") == 2 )
+	{
+		mes "[Quest de Asas]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest de Asas]";
+	mes "Bem, estes são os itens que eu tenho...";
+	mes "Sobre qual deles vai querer saber mais?";
+	next;
+	switch(select("Asas de Borboleta Vermelha:Asas de Verdes Metal:Asas de Fênix:Asas Lunáticas:Asas de Fada Suprema Vermelha:Asas da Reencarnação:Asas de Ceda Vernelha:Asas de Mariposa:Asas do Bem:Aura da Música:Asas de Incubus:Asas de Gárgula:Asas de Sucubos:Asas Sangrentas:Máscara de Fugitivo:Asas de Yin Yang:Nenhum"))
+	{
+	case 1:
+		mes "[Asas de Borboleta Vermelha]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20031);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7563);
+		mes "250x "+getitemname(7122);
+		mes "320x "+getitemname(994);
+		mes "120x "+getitemname(7217);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7563) >= 300 && countitem(7122) >= 250 && countitem(994) >= 320 && countitem(7217) >= 120)
+		{
+			delitem 7563,300;
+			delitem 7122,250;
+			delitem 994,320;
+			delitem 7217,120;
+			getitem 20031,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 2:
+		mes "[Asas de Verdes Metal]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20093);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(1057);
+		mes "320x "+getitemname(1013);
+		mes "150x "+getitemname(7047);
+		mes "2x "+getitemname(12346);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1057) >= 300 && countitem(1013) >= 320 && countitem(7047) >= 150 && countitem(12346) >= 2)
+		{
+			delitem 1057,300;
+			delitem 1013,320;
+			delitem 7047,150;
+			delitem 12346,2;
+			getitem 20093,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 3:
+		mes "[Asas de Fênix]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20391);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(929);
+		mes "260x "+getitemname(7221);
+		mes "70x "+getitemname(7440);
+		mes "50x "+getitemname(7047);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(929) >= 300 && countitem(7221) >= 260 && countitem(7440) >= 70 && countitem(7047) >= 50)
+		{
+			delitem 929,300;
+			delitem 7221,260;
+			delitem 7440,70;
+			delitem 7047,50;
+			getitem 20391,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 4:
+		mes "[Asas Lunáticas]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20261);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7163);
+		mes "230x "+getitemname(901);
+		mes "200x "+getitemname(1019);
+		mes "10x "+getitemname(978);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7163) >= 300 && countitem(901) >= 230 && countitem(1019) >= 200 && countitem(978) >= 10)
+		{
+			delitem 7163,300;
+			delitem 901,230;
+			delitem 1019,200;
+			delitem 978,10;
+			getitem 20261,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 5:
+		mes "[Asas de Fada Suprema Vermelha]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20039);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7071);
+		mes "200x "+getitemname(7217);
+		mes "150x "+getitemname(7205);
+		mes "10x "+getitemname(975);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7071) >= 300 && countitem(7217) >= 200 && countitem(7205) >= 150 && countitem(975) >= 10)
+		{
+			delitem 7071,300;
+			delitem 7217,200;
+			delitem 7205,150;
+			delitem 975,10;
+			getitem 20039,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 6:
+		mes "[Asas da Reencarnação]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20110);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7098);
+		mes "200x "+getitemname(940);
+		mes "200x "+getitemname(916);
+		mes "5x "+getitemname(7295);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7098) >= 300 && countitem(940) >= 200 && countitem(916) >= 200 && countitem(7295) >= 5)
+		{
+			delitem 7098,300;
+			delitem 940,200;
+			delitem 916,200;
+			delitem 7295,5;
+			getitem 20110,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 7:
+		mes "[Asas de Ceda Vernelha]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20130);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7321);
+		mes "200x "+getitemname(7094);
+		mes "150x "+getitemname(7216);
+		mes "200x "+getitemname(7563);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7321) >= 300 && countitem(7094) >= 200 && countitem(7216) >= 150 && countitem(7563) >= 200)
+		{
+			delitem 7321,300;
+			delitem 7094,200;
+			delitem 7216,150;
+			delitem 7563,200;
+			getitem 20130,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 8:
+		mes "[Asas de Mariposa]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20075);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(548);
+		mes "300x "+getitemname(7064);
+		mes "200x "+getitemname(724);
+		mes "100x "+getitemname(949);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(548) >= 300 && countitem(7064) >= 300 && countitem(724) >= 200 && countitem(949) >= 100)
+		{
+			delitem 548,300;
+			delitem 7064,300;
+			delitem 724,200;
+			delitem 949,100;
+			getitem 20075,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 9:
+		mes "[Asas do Bem]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20403);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(1099);
+		mes "300x "+getitemname(7054);
+		mes "100x "+getitemname(7065);
+		mes "200x "+getitemname(949);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1099) >= 300 && countitem(7054) >= 300 && countitem(7065) >= 100 && countitem(949) >= 200)
+		{
+			delitem 1099,300;
+			delitem 7054,300;
+			delitem 7065,100;
+			delitem 949,200;
+			getitem 20403,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 10:
+		mes "[Aura da Música]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20459);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7838);
+		mes "300x "+getitemname(7182);
+		mes "200x "+getitemname(960);
+		mes "150x "+getitemname(7063);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7838) >= 300 && countitem(7182) >= 300 && countitem(960) >= 200 && countitem(7063) >= 150)
+		{
+			delitem 7838,300;
+			delitem 7182,300;
+			delitem 960,200;
+			delitem 7063,150;
+			getitem 20459,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 11:
+		mes "[Asas de Incubus]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20112);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(990);
+		mes "300x "+getitemname(959);
+		mes "200x "+getitemname(944);
+		mes "130x "+getitemname(949);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(990) >= 300 && countitem(959) >= 300 && countitem(944) >= 200 && countitem(949) >= 130)
+		{
+			delitem 990,300;
+			delitem 959,300;
+			delitem 944,200;
+			delitem 949,130;
+			getitem 20112,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 12:
+		mes "[Asas de Gárgula]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20085);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(727);
+		mes "200x "+getitemname(960);
+		mes "200x "+getitemname(949);
+		mes "100x "+getitemname(7323);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(727) >= 300 && countitem(960) >= 200 && countitem(949) >= 200 && countitem(7323) >= 100)
+		{
+			delitem 727,300;
+			delitem 960,200;
+			delitem 949,200;
+			delitem 7323,100;
+			getitem 20085,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 13:
+		mes "[Asas de Sucubos]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20094);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(994);
+		mes "200x "+getitemname(7447);
+		mes "200x "+getitemname(5066);
+		mes "100x "+getitemname(12373);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(994) >= 300 && countitem(7447) >= 200 && countitem(5066) >= 200 && countitem(12373) >= 100)
+		{
+			delitem 994,300;
+			delitem 7447,200;
+			delitem 5066,200;
+			delitem 12373,100;
+			getitem 20094,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 14:
+		mes "[Asas Sangrentas]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20183);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(1055);
+		mes "300x "+getitemname(1099);
+		mes "200x "+getitemname(7053);
+		mes "150x "+getitemname(938);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1055) >= 300 && countitem(1099) >= 300 && countitem(7053) >= 200 && countitem(938) >= 150)
+		{
+			delitem 1055,300;
+			delitem 1099,300;
+			delitem 7053,200;
+			delitem 938,150;
+			getitem 20183,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 15:
+		mes "[Máscara de Fugitivo]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(5361);
+		mes " ";
+		mes "Requerimento:";
+		mes "500x "+getitemname(7216);
+		mes "300x "+getitemname(1059);
+		mes "200x "+getitemname(949);
+		mes "200x "+getitemname(914);
+		mes "5x "+getitemname(7022);
+		mes "3x "+getitemname(7754);
+		mes "10x "+getitemname(975);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7216) >= 500 && countitem(1059) >= 300 && countitem(949) >= 200 && countitem(914) >= 200 && countitem(7022) >= 5 && countitem(7754) >= 3 && countitem(975) >= 10 && countitem(671) >= 100)
+		{
+			delitem 7216,500;
+			delitem 1059,300;
+			delitem 949,200;
+			delitem 914,200;
+			delitem 7022,5;
+			delitem 7754,3;
+			delitem 975,10;
+			delitem 671,100;
+			getitem 5361,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 16:
+		mes "[Asas de Yin Yang]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20141);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7112);
+		mes "1x "+getitemname(5169);
+		mes "10x "+getitemname(2255);
+		mes "10x "+getitemname(2254);
+		mes "3x "+getitemname(7754);
+		mes "20x "+getitemname(706);
+		mes "5x "+getitemname(7024);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Asas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Asas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7112) >= 300 && countitem(5169) >= 1 && countitem(2255) >= 10 && countitem(2254) >= 10 && countitem(7754) >= 3 && countitem(706) >= 20 && countitem(7024) >= 5 && countitem(671) >= 100)
+		{
+			delitem 7112,300;
+			delitem 5169,1;
+			delitem 2255,10;
+			delitem 2254,10;
+			delitem 7754,3;
+			delitem 706,20;
+			delitem 7024,5;
+			delitem 671,100;
+			getitem 20141,1;
+			mes "[Quest de Asas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 17:
+		mes "[Quest de Asas]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest de Asas]";
+	mes "Me desculpe, mas você não tem todos os itens necessários para esta quest.";
+	mes "Volte quando você tiver todos os itens!";
+	close;
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//=============================================
+//== Cronus Tools :: Gerador de Quest's =======
+//== Versão: ==================================
+//== 1.0
+//== Autor: ===================================
+//== RoM
+//=============================================
+dewata,199,185,4	script	Quest Divinas	450,{
+	mes "[Quest Divinas]";
+	mes "Olá "+StrCharInfo(0)+"!";
+	mes "Eu tenho alguns itens interessantes aqui, deseja dar uma olhada?";
+	next;
+	if( select("Claro!:Talvez mais tarde...") == 2 )
+	{
+		mes "[Quest Divinas]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest Divinas]";
+	mes "Bem, estes são os itens que eu tenho...";
+	mes "Sobre qual deles vai querer saber mais?";
+	next;
+	switch(select("Megingjard:Brisingamen:Sleipnir:Nenhum"))
+	{
+	case 1:
+		mes "[Megingjard]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(2629);
+		mes " ";
+		mes "Requerimento:";
+		mes "4x "+getitemname(7080);
+		mes "5x "+getitemname(7081);
+		mes "4x "+getitemname(7082);
+		mes "3x "+getitemname(7084);
+		mes "3x "+getitemname(7085);
+		mes "5x "+getitemname(7836);
+		mes "5x "+getitemname(7837);
+		next;
+		mes "[Quest Divinas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest Divinas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7080) >= 4 && countitem(7081) >= 5 && countitem(7082) >= 4 && countitem(7084) >= 3 && countitem(7085) >= 3 && countitem(7836) >= 5 && countitem(7837) >= 5)
+		{
+			delitem 7080,4;
+			delitem 7081,5;
+			delitem 7082,4;
+			delitem 7084,3;
+			delitem 7085,3;
+			delitem 7836,5;
+			delitem 7837,5;
+			getitem 2629,1;
+			mes "[Quest Divinas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 2:
+		mes "[Brisingamen]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(2630);
+		mes " ";
+		mes "Requerimento:";
+		mes "4x "+getitemname(7073);
+		mes "4x "+getitemname(7077);
+		mes "3x "+getitemname(7088);
+		mes "3x "+getitemname(7090);
+		mes "3x "+getitemname(7092);
+		mes "5x "+getitemname(7834);
+		mes "5x "+getitemname(7835);
+		next;
+		mes "[Quest Divinas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest Divinas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7073) >= 4 && countitem(7077) >= 4 && countitem(7088) >= 3 && countitem(7090) >= 3 && countitem(7092) >= 3 && countitem(7834) >= 5 && countitem(7835) >= 5)
+		{
+			delitem 7073,4;
+			delitem 7077,4;
+			delitem 7088,3;
+			delitem 7090,3;
+			delitem 7092,3;
+			delitem 7834,5;
+			delitem 7835,5;
+			getitem 2630,1;
+			mes "[Quest Divinas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 3:
+		mes "[Sleipnir]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(2410);
+		mes " ";
+		mes "Requerimento:";
+		mes "3x "+getitemname(7076);
+		mes "5x "+getitemname(7079);
+		mes "3x "+getitemname(7083);
+		mes "3x "+getitemname(7086);
+		mes "5x "+getitemname(7832);
+		mes "5x "+getitemname(7833);
+		next;
+		mes "[Quest Divinas]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest Divinas]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7076) >= 3 && countitem(7079) >= 5 && countitem(7083) >= 3 && countitem(7086) >= 3 && countitem(7832) >= 5 && countitem(7833) >= 5)
+		{
+			delitem 7076,3;
+			delitem 7079,5;
+			delitem 7083,3;
+			delitem 7086,3;
+			delitem 7832,5;
+			delitem 7833,5;
+			getitem 2410,1;
+			mes "[Quest Divinas]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 4:
+		mes "[Quest Divinas]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest Divinas]";
+	mes "Me desculpe, mas você não tem todos os itens necessários para esta quest.";
+	mes "Volte quando você tiver todos os itens!";
+	close;
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//=============================================
+//== Cronus Tools :: Gerador de Quest's =======
+//== Versão: ==================================
+//== 1.0
+//== Autor: ===================================
+//== RoM
+//=============================================
+dewata,200,176,4	script	Quest de Mids	452,{
+	mes "[Quest de Mids]";
+	mes "Olá "+StrCharInfo(0)+"!";
+	mes "Eu tenho alguns itens interessantes aqui, deseja dar uma olhada?";
+	next;
+	if( select("Claro!:Talvez mais tarde...") == 2 )
+	{
+		mes "[Quest de Mids]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest de Mids]";
+	mes "Bem, estes são os itens que eu tenho...";
+	mes "Sobre qual deles vai querer saber mais?";
+	next;
+	switch(select("Chamas Negras:Cavalo Marinho Azul:Black Tail:Rabo de Gato:Bandana Kakashi:Bandana de Konoha:Bandana da Névoa:Bandana da Areia:Bandana do Som:Cavalo Marinho Arco - Iris:Círculo da Esperança:Cavalo de Fogo:Orelhas de Chii Evolídas:Nenhum"))
+	{
+	case 1:
+		mes "[Chamas Negras]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20010);
+		mes " ";
+		mes "Requerimento:";
+		mes "200x "+getitemname(949);
+		mes "150x "+getitemname(7511);
+		mes "1x "+getitemname(2242);
+		mes "3000000 Zenys";
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(949) >= 200 && countitem(7511) >= 150 && countitem(2242) >= 1 && Zeny >= 3000000)
+		{
+			delitem 949,200;
+			delitem 7511,150;
+			delitem 2242,1;
+			set Zeny,Zeny-3000000;
+			getitem 20010,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 2:
+		mes "[Cavalo Marinho Azul]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20184);
+		mes " ";
+		mes "Requerimento:";
+		mes "200x "+getitemname(949);
+		mes "150x "+getitemname(991);
+		mes "1x "+getitemname(2242);
+		mes "3000000 Zenys";
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(949) >= 200 && countitem(991) >= 150 && countitem(2242) >= 1 && Zeny >= 3000000)
+		{
+			delitem 949,200;
+			delitem 991,150;
+			delitem 2242,1;
+			set Zeny,Zeny-3000000;
+			getitem 20184,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 3:
+		mes "[Black Tail]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20240);
+		mes " ";
+		mes "Requerimento:";
+		mes "200x "+getitemname(949);
+		mes "150x "+getitemname(1003);
+		mes "1x "+getitemname(2242);
+		mes "3000000 Zenys";
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(949) >= 200 && countitem(1003) >= 150 && countitem(2242) >= 1 && Zeny >= 3000000)
+		{
+			delitem 949,200;
+			delitem 1003,150;
+			delitem 2242,1;
+			set Zeny,Zeny-3000000;
+			getitem 20240,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 4:
+		mes "[Rabo de Gato]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20172);
+		mes " ";
+		mes "Requerimento:";
+		mes "200x "+getitemname(949);
+		mes "150x "+getitemname(7038);
+		mes "1x "+getitemname(2242);
+		mes "3000000 Zenys";
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(949) >= 200 && countitem(7038) >= 150 && countitem(2242) >= 1 && Zeny >= 3000000)
+		{
+			delitem 949,200;
+			delitem 7038,150;
+			delitem 2242,1;
+			set Zeny,Zeny-3000000;
+			getitem 20172,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 5:
+		mes "[Bandana Kakashi]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20311);
+		mes " ";
+		mes "Requerimento:";
+		mes "50x "+getitemname(7566);
+		mes "100x "+getitemname(7510);
+		mes "10x "+getitemname(7562);
+		mes "5x "+getitemname(7022);
+		mes "1x "+getitemname(2211);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7566) >= 50 && countitem(7510) >= 100 && countitem(7562) >= 10 && countitem(7022) >= 5 && countitem(2211) >= 1 && countitem(671) >= 100)
+		{
+			delitem 7566,50;
+			delitem 7510,100;
+			delitem 7562,10;
+			delitem 7022,5;
+			delitem 2211,1;
+			delitem 671,100;
+			getitem 20311,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 6:
+		mes "[Bandana de Konoha]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20313);
+		mes " ";
+		mes "Requerimento:";
+		mes "400x "+getitemname(993);
+		mes "10x "+getitemname(2211);
+		mes "200x "+getitemname(691);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(993) >= 400 && countitem(2211) >= 10 && countitem(691) >= 200 && countitem(671) >= 50)
+		{
+			delitem 993,400;
+			delitem 2211,10;
+			delitem 691,200;
+			delitem 671,50;
+			getitem 20313,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 7:
+		mes "[Bandana da Névoa]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20314);
+		mes " ";
+		mes "Requerimento:";
+		mes "400x "+getitemname(992);
+		mes "10x "+getitemname(2211);
+		mes "200x "+getitemname(693);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(992) >= 400 && countitem(2211) >= 10 && countitem(693) >= 200 && countitem(671) >= 50)
+		{
+			delitem 992,400;
+			delitem 2211,10;
+			delitem 693,200;
+			delitem 671,50;
+			getitem 20314,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 8:
+		mes "[Bandana da Areia]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20315);
+		mes " ";
+		mes "Requerimento:";
+		mes "400x "+getitemname(930);
+		mes "10x "+getitemname(2211);
+		mes "200x "+getitemname(985);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(930) >= 400 && countitem(2211) >= 10 && countitem(985) >= 200 && countitem(671) >= 50)
+		{
+			delitem 930,400;
+			delitem 2211,10;
+			delitem 985,200;
+			delitem 671,50;
+			getitem 20315,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 9:
+		mes "[Bandana do Som]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20316);
+		mes " ";
+		mes "Requerimento:";
+		mes "400x "+getitemname(991);
+		mes "10x "+getitemname(2211);
+		mes "200x "+getitemname(689);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(991) >= 400 && countitem(2211) >= 10 && countitem(689) >= 200 && countitem(671) >= 50)
+		{
+			delitem 991,400;
+			delitem 2211,10;
+			delitem 689,200;
+			delitem 671,50;
+			getitem 20316,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 10:
+		mes "[Cavalo Marinho Arco - Iris]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20185);
+		mes " ";
+		mes "Requerimento:";
+		mes "510x "+getitemname(951);
+		mes "150x "+getitemname(916);
+		mes "320x "+getitemname(956);
+		mes "10x "+getitemname(980);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(951) >= 510 && countitem(916) >= 150 && countitem(956) >= 320 && countitem(980) >= 10 && countitem(671) >= 50)
+		{
+			delitem 951,510;
+			delitem 916,150;
+			delitem 956,320;
+			delitem 980,10;
+			delitem 671,50;
+			getitem 20185,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 11:
+		mes "[Círculo da Esperança]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20335);
+		mes " ";
+		mes "Requerimento:";
+		mes "510x "+getitemname(1055);
+		mes "215x "+getitemname(936);
+		mes "100x "+getitemname(1013);
+		mes "300x "+getitemname(7063);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1055) >= 510 && countitem(936) >= 215 && countitem(1013) >= 100 && countitem(7063) >= 300 && countitem(671) >= 50)
+		{
+			delitem 1055,510;
+			delitem 936,215;
+			delitem 1013,100;
+			delitem 7063,300;
+			delitem 671,50;
+			getitem 20335,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 12:
+		mes "[Cavalo de Fogo]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20320);
+		mes " ";
+		mes "Requerimento:";
+		mes "520x "+getitemname(7563);
+		mes "200x "+getitemname(990);
+		mes "310x "+getitemname(949);
+		mes "10x "+getitemname(980);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7563) >= 520 && countitem(990) >= 200 && countitem(949) >= 310 && countitem(980) >= 10 && countitem(671) >= 50)
+		{
+			delitem 7563,520;
+			delitem 990,200;
+			delitem 949,310;
+			delitem 980,10;
+			delitem 671,50;
+			getitem 20320,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 13:
+		mes "[Orelhas de Chii Evolídas]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20599);
+		mes " ";
+		mes "Requerimento:";
+		mes "1x "+getitemname(5055);
+		mes "1x "+getitemname(5057);
+		mes "200x "+getitemname(7023);
+		mes "10x "+getitemname(7294);
+		mes "30x "+getitemname(6039);
+		mes "2x "+getitemname(7566);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Mids]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Mids]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(5055) >= 1 && countitem(5057) >= 1 && countitem(7023) >= 200 && countitem(7294) >= 10 && countitem(6039) >= 30 && countitem(7566) >= 2 && countitem(671) >= 100)
+		{
+			delitem 5055,1;
+			delitem 5057,1;
+			delitem 7023,200;
+			delitem 7294,10;
+			delitem 6039,30;
+			delitem 7566,2;
+			delitem 671,100;
+			getitem 20599,1;
+			mes "[Quest de Mids]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 14:
+		mes "[Quest de Mids]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest de Mids]";
+	mes "Me desculpe, mas você não tem todos os itens necessários para esta quest.";
+	mes "Volte quando você tiver todos os itens!";
+	close;
+}
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+//=============================================
+//== Cronus Tools :: Gerador de Quest's =======
+//== Versão: ==================================
+//== 1.0
+//== Autor: ===================================
+//== RoM
+//=============================================
+dewata,195,175,4	script	Quest de Elmos	451,{
+	mes "[Quest de Elmos]";
+	mes "Olá "+StrCharInfo(0)+"!";
+	mes "Eu tenho alguns itens interessantes aqui, deseja dar uma olhada?";
+	next;
+	if( select("Claro!:Talvez mais tarde...") == 2 )
+	{
+		mes "[Quest de Elmos]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest de Elmos]";
+	mes "Bem, estes são os itens que eu tenho...";
+	mes "Sobre qual deles vai querer saber mais?";
+	next;
+	switch(select("Elmo de Valquiria Sombrio Azul:Elmo da Valquiria Sombrio Vermelho:Elmo de Valquiria Sombrio Verde:Elmo de Valquiria Sombrio Roxo:Elmo de Valquiria Sombrio Amarelo:Elmo de Valquiria Sombrio Cinza:Elmo do Anjo Enfurecido:Chapéu de Palha Vermelho:Chapéu de Palha:Chapéu Oriental:Elmo Sygnun:Elmo de Baal:Elmo Negro:Elmo de Samurai:Fones de Dj:Dragão Negro:Elmo Supremo da Valquiria Marron:Elmo do Anjo Mal:Chapéu de Xerife:Elmo da Valquiria Elemental:Boné do Super - Man:Elmo de Hermes:Lord Kaho Preto:Lord Kaho Celeste:Lord Kaho Verde:Lord Kaho Dourado:Lord Kaho Roxo:Lord Kaho Vermelho:Lord Kaho Branco:Nenhum"))
+	{
+	case 1:
+		mes "[Elmo de Valquiria Sombrio Azul]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20041);
+		mes " ";
+		mes "Requerimento:";
+		mes "150x "+getitemname(7063);
+		mes "200x "+getitemname(991);
+		mes "1x "+getitemname(2228);
+		mes "5000000 Zenys";
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7063) >= 150 && countitem(991) >= 200 && countitem(2228) >= 1 && Zeny >= 5000000)
+		{
+			delitem 7063,150;
+			delitem 991,200;
+			delitem 2228,1;
+			set Zeny,Zeny-5000000;
+			getitem 20041,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 2:
+		mes "[Elmo da Valquiria Sombrio Vermelho]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20049);
+		mes " ";
+		mes "Requerimento:";
+		mes "150x "+getitemname(7063);
+		mes "200x "+getitemname(990);
+		mes "1x "+getitemname(2228);
+		mes "5000000 Zenys";
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7063) >= 150 && countitem(990) >= 200 && countitem(2228) >= 1 && Zeny >= 5000000)
+		{
+			delitem 7063,150;
+			delitem 990,200;
+			delitem 2228,1;
+			set Zeny,Zeny-5000000;
+			getitem 20049,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 3:
+		mes "[Elmo de Valquiria Sombrio Verde]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20043);
+		mes " ";
+		mes "Requerimento:";
+		mes "150x "+getitemname(7063);
+		mes "200x "+getitemname(993);
+		mes "1x "+getitemname(2228);
+		mes "5000000 Zenys";
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7063) >= 150 && countitem(993) >= 200 && countitem(2228) >= 1 && Zeny >= 5000000)
+		{
+			delitem 7063,150;
+			delitem 993,200;
+			delitem 2228,1;
+			set Zeny,Zeny-5000000;
+			getitem 20043,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 4:
+		mes "[Elmo de Valquiria Sombrio Roxo]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20048);
+		mes " ";
+		mes "Requerimento:";
+		mes "150x "+getitemname(7063);
+		mes "200x "+getitemname(719);
+		mes "1x "+getitemname(2228);
+		mes "5000000 Zenys";
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7063) >= 150 && countitem(719) >= 200 && countitem(2228) >= 1 && Zeny >= 5000000)
+		{
+			delitem 7063,150;
+			delitem 719,200;
+			delitem 2228,1;
+			set Zeny,Zeny-5000000;
+			getitem 20048,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 5:
+		mes "[Elmo de Valquiria Sombrio Amarelo]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20044);
+		mes " ";
+		mes "Requerimento:";
+		mes "150x "+getitemname(7063);
+		mes "200x "+getitemname(992);
+		mes "1x "+getitemname(2228);
+		mes "5000000 Zenys";
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7063) >= 150 && countitem(992) >= 200 && countitem(2228) >= 1 && Zeny >= 5000000)
+		{
+			delitem 7063,150;
+			delitem 992,200;
+			delitem 2228,1;
+			set Zeny,Zeny-5000000;
+			getitem 20044,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 6:
+		mes "[Elmo de Valquiria Sombrio Cinza]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20050);
+		mes " ";
+		mes "Requerimento:";
+		mes "150x "+getitemname(7063);
+		mes "200x "+getitemname(930);
+		mes "1x "+getitemname(2228);
+		mes "5000000 Zenys";
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7063) >= 150 && countitem(930) >= 200 && countitem(2228) >= 1 && Zeny >= 5000000)
+		{
+			delitem 7063,150;
+			delitem 930,200;
+			delitem 2228,1;
+			set Zeny,Zeny-5000000;
+			getitem 20050,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 7:
+		mes "[Elmo do Anjo Enfurecido]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20087);
+		mes " ";
+		mes "Requerimento:";
+		mes "600x "+getitemname(1024);
+		mes "200x "+getitemname(994);
+		mes "50x "+getitemname(7440);
+		mes "10x "+getitemname(980);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1024) >= 600 && countitem(994) >= 200 && countitem(7440) >= 50 && countitem(980) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 1024,600;
+			delitem 994,200;
+			delitem 7440,50;
+			delitem 980,10;
+			delitem 2228,1;
+			getitem 20087,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 8:
+		mes "[Chapéu de Palha Vermelho]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20375);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7151);
+		mes "520x "+getitemname(7197);
+		mes "150x "+getitemname(7186);
+		mes "10x "+getitemname(975);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7151) >= 300 && countitem(7197) >= 520 && countitem(7186) >= 150 && countitem(975) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 7151,300;
+			delitem 7197,520;
+			delitem 7186,150;
+			delitem 975,10;
+			delitem 2228,1;
+			getitem 20375,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 9:
+		mes "[Chapéu de Palha]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20098);
+		mes " ";
+		mes "Requerimento:";
+		mes "300x "+getitemname(7151);
+		mes "520x "+getitemname(7197);
+		mes "150x "+getitemname(7186);
+		mes "10x "+getitemname(976);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7151) >= 300 && countitem(7197) >= 520 && countitem(7186) >= 150 && countitem(976) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 7151,300;
+			delitem 7197,520;
+			delitem 7186,150;
+			delitem 976,10;
+			delitem 2228,1;
+			getitem 20098,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 10:
+		mes "[Chapéu Oriental]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20116);
+		mes " ";
+		mes "Requerimento:";
+		mes "600x "+getitemname(7150);
+		mes "200x "+getitemname(1019);
+		mes "50x "+getitemname(7197);
+		mes "10x "+getitemname(979);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7150) >= 600 && countitem(1019) >= 200 && countitem(7197) >= 50 && countitem(979) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 7150,600;
+			delitem 1019,200;
+			delitem 7197,50;
+			delitem 979,10;
+			delitem 2228,1;
+			getitem 20116,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 11:
+		mes "[Elmo Sygnun]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20095);
+		mes " ";
+		mes "Requerimento:";
+		mes "250x "+getitemname(1003);
+		mes "610x "+getitemname(985);
+		mes "120x "+getitemname(7315);
+		mes "50x "+getitemname(7217);
+		mes "5x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1003) >= 250 && countitem(985) >= 610 && countitem(7315) >= 120 && countitem(7217) >= 50 && countitem(983) >= 5 && countitem(2228) >= 1)
+		{
+			delitem 1003,250;
+			delitem 985,610;
+			delitem 7315,120;
+			delitem 7217,50;
+			delitem 983,5;
+			delitem 2228,1;
+			getitem 20095,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 12:
+		mes "[Elmo de Baal]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20113);
+		mes " ";
+		mes "Requerimento:";
+		mes "500x "+getitemname(1003);
+		mes "150x "+getitemname(7205);
+		mes "200x "+getitemname(7043);
+		mes "10x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1003) >= 500 && countitem(7205) >= 150 && countitem(7043) >= 200 && countitem(983) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 1003,500;
+			delitem 7205,150;
+			delitem 7043,200;
+			delitem 983,10;
+			delitem 2228,1;
+			getitem 20113,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 13:
+		mes "[Elmo Negro]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20096);
+		mes " ";
+		mes "Requerimento:";
+		mes "150x "+getitemname(7315);
+		mes "450x "+getitemname(1003);
+		mes "320x "+getitemname(949);
+		mes "10x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7315) >= 150 && countitem(1003) >= 450 && countitem(949) >= 320 && countitem(983) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 7315,150;
+			delitem 1003,450;
+			delitem 949,320;
+			delitem 983,10;
+			delitem 2228,1;
+			getitem 20096,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 14:
+		mes "[Elmo de Samurai]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20097);
+		mes " ";
+		mes "Requerimento:";
+		mes "310x "+getitemname(7156);
+		mes "150x "+getitemname(7157);
+		mes "130x "+getitemname(1042);
+		mes "10x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7156) >= 310 && countitem(7157) >= 150 && countitem(1042) >= 130 && countitem(983) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 7156,310;
+			delitem 7157,150;
+			delitem 1042,130;
+			delitem 983,10;
+			delitem 2228,1;
+			getitem 20097,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 15:
+		mes "[Fones de Dj]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20221);
+		mes " ";
+		mes "Requerimento:";
+		mes "320x "+getitemname(7218);
+		mes "210x "+getitemname(7119);
+		mes "100x "+getitemname(1052);
+		mes "50x "+getitemname(7063);
+		mes "5x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7218) >= 320 && countitem(7119) >= 210 && countitem(1052) >= 100 && countitem(7063) >= 50 && countitem(983) >= 5 && countitem(2228) >= 1)
+		{
+			delitem 7218,320;
+			delitem 7119,210;
+			delitem 1052,100;
+			delitem 7063,50;
+			delitem 983,5;
+			delitem 2228,1;
+			getitem 20221,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 16:
+		mes "[Dragão Negro]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20084);
+		mes " ";
+		mes "Requerimento:";
+		mes "180x "+getitemname(7511);
+		mes "520x "+getitemname(920);
+		mes "110x "+getitemname(1003);
+		mes "200x "+getitemname(949);
+		mes "10x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7511) >= 180 && countitem(920) >= 520 && countitem(1003) >= 110 && countitem(949) >= 200 && countitem(983) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 7511,180;
+			delitem 920,520;
+			delitem 1003,110;
+			delitem 949,200;
+			delitem 983,10;
+			delitem 2228,1;
+			getitem 20084,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 17:
+		mes "[Elmo Supremo da Valquiria Marron]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20064);
+		mes " ";
+		mes "Requerimento:";
+		mes "250x "+getitemname(1067);
+		mes "510x "+getitemname(7200);
+		mes "130x "+getitemname(548);
+		mes "50x "+getitemname(1003);
+		mes "10x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(1067) >= 250 && countitem(7200) >= 510 && countitem(548) >= 130 && countitem(1003) >= 50 && countitem(983) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 1067,250;
+			delitem 7200,510;
+			delitem 548,130;
+			delitem 1003,50;
+			delitem 983,10;
+			delitem 2228,1;
+			getitem 20064,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 18:
+		mes "[Elmo do Anjo Mal]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20002);
+		mes " ";
+		mes "Requerimento:";
+		mes "200x "+getitemname(7005);
+		mes "500x "+getitemname(7563);
+		mes "220x "+getitemname(7511);
+		mes "100x "+getitemname(949);
+		mes "3x "+getitemname(983);
+		mes "5x "+getitemname(975);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7005) >= 200 && countitem(7563) >= 500 && countitem(7511) >= 220 && countitem(949) >= 100 && countitem(983) >= 3 && countitem(975) >= 5 && countitem(2228) >= 1)
+		{
+			delitem 7005,200;
+			delitem 7563,500;
+			delitem 7511,220;
+			delitem 949,100;
+			delitem 983,3;
+			delitem 975,5;
+			delitem 2228,1;
+			getitem 20002,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 19:
+		mes "[Chapéu de Xerife]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20294);
+		mes " ";
+		mes "Requerimento:";
+		mes "130x "+getitemname(7511);
+		mes "200x "+getitemname(507);
+		mes "600x "+getitemname(1003);
+		mes "10x "+getitemname(983);
+		mes "1x "+getitemname(2228);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7511) >= 130 && countitem(507) >= 200 && countitem(1003) >= 600 && countitem(983) >= 10 && countitem(2228) >= 1)
+		{
+			delitem 7511,130;
+			delitem 507,200;
+			delitem 1003,600;
+			delitem 983,10;
+			delitem 2228,1;
+			getitem 20294,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 20:
+		mes "[Elmo da Valquiria Elemental]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20584);
+		mes " ";
+		mes "Requerimento:";
+		mes "2x "+getitemname(7008);
+		mes "2x "+getitemname(6022);
+		mes "2x "+getitemname(7566);
+		mes "100x "+getitemname(7111);
+		mes "5x "+getitemname(7510);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 2 && countitem(6022) >= 2 && countitem(7566) >= 2 && countitem(7111) >= 100 && countitem(7510) >= 5 && countitem(671) >= 100)
+		{
+			delitem 7008,2;
+			delitem 6022,2;
+			delitem 7566,2;
+			delitem 7111,100;
+			delitem 7510,5;
+			delitem 671,100;
+			getitem 20066,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 21:
+		mes "[Boné do Super - Man]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20591);
+		mes " ";
+		mes "Requerimento:";
+		mes "4x "+getitemname(7566);
+		mes "4x "+getitemname(6022);
+		mes "510x "+getitemname(943);
+		mes "100x "+getitemname(7112);
+		mes "30x "+getitemname(968);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7566) >= 4 && countitem(6022) >= 4 && countitem(943) >= 510 && countitem(7112) >= 100 && countitem(968) >= 30 && countitem(671) >= 100)
+		{
+			delitem 7566,4;
+			delitem 6022,4;
+			delitem 943,510;
+			delitem 7112,100;
+			delitem 968,30;
+			delitem 671,100;
+			getitem 20591,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 22:
+		mes "[Elmo de Hermes]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20583);
+		mes " ";
+		mes "Requerimento:";
+		mes "610x "+getitemname(12028);
+		mes "8x "+getitemname(7008);
+		mes "2x "+getitemname(7566);
+		mes "30x "+getitemname(6069);
+		mes "5x "+getitemname(12346);
+		mes "5x "+getitemname(978);
+		mes "2x "+getitemname(982);
+		mes "50x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(12028) >= 610 && countitem(7008) >= 8 && countitem(7566) >= 2 && countitem(6069) >= 30 && countitem(12346) >= 5 && countitem(978) >= 5 && countitem(982) >= 2 && countitem(671) >= 50)
+		{
+			delitem 12028,610;
+			delitem 7008,8;
+			delitem 7566,2;
+			delitem 6069,30;
+			delitem 12346,5;
+			delitem 978,5;
+			delitem 982,2;
+			delitem 671,50;
+			getitem 20583,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 23:
+		mes "[Lord Kaho Preto]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20212);
+		mes " ";
+		mes "Requerimento:";
+		mes "10x "+getitemname(7008);
+		mes "1x "+getitemname(5121);
+		mes "3x "+getitemname(7754);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 10 && countitem(5121) >= 1 && countitem(7754) >= 3 && countitem(671) >= 100)
+		{
+			delitem 7008,10;
+			delitem 5121,1;
+			delitem 7754,3;
+			delitem 671,100;
+			getitem 20212,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 24:
+		mes "[Lord Kaho Celeste]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20431);
+		mes " ";
+		mes "Requerimento:";
+		mes "10x "+getitemname(7008);
+		mes "1x "+getitemname(5121);
+		mes "3x "+getitemname(7754);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 10 && countitem(5121) >= 1 && countitem(7754) >= 3 && countitem(671) >= 100)
+		{
+			delitem 7008,10;
+			delitem 5121,1;
+			delitem 7754,3;
+			delitem 671,100;
+			getitem 20431,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 25:
+		mes "[Lord Kaho Verde]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20433);
+		mes " ";
+		mes "Requerimento:";
+		mes "10x "+getitemname(7008);
+		mes "1x "+getitemname(5121);
+		mes "3x "+getitemname(7754);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 10 && countitem(5121) >= 1 && countitem(7754) >= 3 && countitem(671) >= 100)
+		{
+			delitem 7008,10;
+			delitem 5121,1;
+			delitem 7754,3;
+			delitem 671,100;
+			getitem 20433,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 26:
+		mes "[Lord Kaho Dourado]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20432);
+		mes " ";
+		mes "Requerimento:";
+		mes "10x "+getitemname(7008);
+		mes "1x "+getitemname(5121);
+		mes "3x "+getitemname(7754);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 10 && countitem(5121) >= 1 && countitem(7754) >= 3 && countitem(671) >= 100)
+		{
+			delitem 7008,10;
+			delitem 5121,1;
+			delitem 7754,3;
+			delitem 671,100;
+			getitem 20432,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 27:
+		mes "[Lord Kaho Roxo]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20079);
+		mes " ";
+		mes "Requerimento:";
+		mes "10x "+getitemname(7008);
+		mes "1x "+getitemname(5121);
+		mes "3x "+getitemname(7754);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 10 && countitem(5121) >= 1 && countitem(7754) >= 3 && countitem(671) >= 100)
+		{
+			delitem 7008,10;
+			delitem 5121,1;
+			delitem 7754,3;
+			delitem 671,100;
+			getitem 20079,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 28:
+		mes "[Lord Kaho Vermelho]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20222);
+		mes " ";
+		mes "Requerimento:";
+		mes "10x "+getitemname(7008);
+		mes "1x "+getitemname(5121);
+		mes "3x "+getitemname(7754);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 10 && countitem(5121) >= 1 && countitem(7754) >= 3 && countitem(671) >= 100)
+		{
+			delitem 7008,10;
+			delitem 5121,1;
+			delitem 7754,3;
+			delitem 671,100;
+			getitem 20222,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 29:
+		mes "[Lord Kaho Branco]";
+		mes "Recompensa:";
+		mes "1x "+getitemname(20190);
+		mes " ";
+		mes "Requerimento:";
+		mes "10x "+getitemname(7008);
+		mes "1x "+getitemname(5121);
+		mes "3x "+getitemname(7754);
+		mes "100x "+getitemname(671);
+		next;
+		mes "[Quest de Elmos]";
+		mes "Deseja fazer esta quest?";
+		next;
+		if( select("Sim!:Agora não...") == 2 )
+		{
+			mes "[Quest de Elmos]";
+			mes "Tudo bem... Até mais!";
+			close;
+		}
+		if(countitem(7008) >= 10 && countitem(5121) >= 1 && countitem(7754) >= 3 && countitem(671) >= 100)
+		{
+			delitem 7008,10;
+			delitem 5121,1;
+			delitem 7754,3;
+			delitem 671,100;
+			getitem 20190,1;
+			mes "[Quest de Elmos]";
+			mes "Parabéns! Aqui está!";
+			close;
+		}
+		break;
+	case 30:
+		mes "[Quest de Elmos]";
+		mes "Tudo bem, estarei aqui se você mudar de idéia.";
+		close;
+	}
+	mes "[Quest de Elmos]";
+	mes "Me desculpe, mas você não tem todos os itens necessários para esta quest.";
+	mes "Volte quando você tiver todos os itens!";
+	close;
+}

@@ -1,0 +1,53 @@
+prontera,122,168,3	script	Controle de Manutenção	429,{
+Set @GMLv,80;
+if(getgmlevel()>=@GMLv){
+show "Deseja acessar o painel?";
+show "Tenha cautela, pois qualquer erro de um pequeno enter no lugar errado, desconecta todos os jogadores do jogo!!";
+menu "Cancelar ação!",canc,"Acessar painel!",accesar;
+
+canc:
+show "Operação Anulada!";
+close;
+
+accesar:
+show "Selecione uma das opções disponíveis.";
+menu "Servidor em Manutenção!",manutencao,"Servidor Liberado!",lib;
+
+manutencao:
+show "Você tem certeza que deseja por o servidor em manutenção?";
+menu "Cancelar ação!",canccc,"Sim, continuar!",manu_s;
+
+canccc:
+show "Operação Anulada!";
+close;
+
+manu_s:
+show "Servidor está em manutenção!";
+enablenpc "sinfdicot";
+close;
+
+lib:
+show "Você tem certeza que deseja liberar o servidor?";
+menu "Cancelar ação!",cancc,"Sim, continuar!",lib_s;
+
+cancc:
+show "Operação Anulada!";
+close;
+
+lib_s:
+show "Servidor está liberado!";
+disablenpc "sinfdicot";
+close;
+end;
+}
+}
+-	script	sinfdicot	-1,{
+OnPCLoginEvent:
+Set @GMLv,30;
+if(getgmlevel()>=@GMLv){
+end;
+}
+announce "Desculpem-nos, nosso servidor está em manutenção!",bc_self;
+atcommand "@kick "+strcharinfo(0);
+end;
+}

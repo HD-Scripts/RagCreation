@@ -1,0 +1,427 @@
+prontera,253,61,5	script	Sortudo	869,{
+
+ 
+
+set @npc$,"[^ff0000 Sortudo ^000000]";
+
+set @lvlgm,99;
+
+ 
+
+mes @npc$;
+
+mes "Bem-vindo(a) ao evento da sorte.";
+
+mes "O que deseja fazer hoje?";
+
+if(getgmlevel() >= @lvlgm) set .@m$,"Manipular evento";
+
+switch(select("Entrar no evento","Informações",.@m$,"Sair"))
+
+{
+
+next;
+
+mes @npc$;
+
+ 
+
+                case 1:
+
+                if(!$evento)
+
+                {
+
+                        mes "O evento está fechado.";
+
+                        close;
+
+                }
+
+                mes "Boa sorte!";
+
+                set @evento, rand(1,8);
+
+                if(@evento == 1){ warp "quiz_02",318,34; }
+
+                if(@evento == 2){ warp "quiz_02",37,52; }
+
+                if(@evento == 3){ warp "quiz_02",73,52; }
+
+                if(@evento == 4){ warp "quiz_02",330,34; }
+
+                if(@evento == 5){ warp "quiz_02",49,52; }
+
+                if(@evento == 6){ warp "quiz_02",342,34; }
+
+                if(@evento == 7){ warp "quiz_02",354,34; }
+
+                if(@evento == 8){ warp "quiz_02",61,52; }
+
+                end;
+
+ 
+
+                case 2:
+
+                mes "Esse é um evento aonde exige muita sorte e astúcia.";
+
+                next;
+
+                mes @npc$;
+
+                mes "Nós abrimos todos os dias a cada 03h, começando da 00h.";
+
+                next;
+
+                mes @npc$;
+
+                mes "Após o início do evento, você precisará sobreviver à 5 minutos de PvP.";
+
+                next;
+
+                mes @npc$;
+
+                mes "Caso você consiga sobreviver, irá precisar de sorte para receber um bom prêmio!";
+
+                next;
+
+                mes @npc$;
+
+                mes "Os prêmios que você pode receber aleatoriamente são:";
+
+                for(set @i, 0; @i < getarraysize($id_prize); set @i, @i + 1)
+
+                        mes "^777777"+$quantity_prize[@i]+"x "+getitemname($id_prize[@i])+"^000000";
+
+                mes "Prêmio em Zeny: ^777777"+$quantity_zeny+"z^000000";
+
+                close;
+
+ 
+
+                case 3:
+
+                mes "O que o senhor deseja fazer?";
+
+                switch(select("Iniciar o evento:Alterar prêmios:Sair"))
+
+                {
+
+                        next;   
+
+                        mes @npc$;
+
+ 
+
+                        case 1:
+
+                        if(!$evento)
+
+                        {
+
+                                mes "Evento iniciado com sucesso.";
+
+                                close2;
+
+                                callsub evento_start;
+
+                                end;
+
+                        }
+
+                        mes "O evento já foi iniciado.";
+
+                        close;
+
+ 
+
+                        case 2:                         
+
+                        mes "Você deseja mudar as prêmiações?";
+
+                        if(select("Não:Sim") == 1 ) close;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Digite o ID do 1º item que poderá ser dropado."; input @id_one;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Digite a quantidade do 1º item que poderá ser dropado."; input @quantity_one;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Digite o ID do 2º item que poderá ser dropado."; input @id_two;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Digite a quantidade do 2º item que poderá ser dropado."; input @quantity_two;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Digite o ID do 3º item que poderá ser dropado."; input @id_three;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Digite a quantidade do 3º item que poderá ser dropado."; input @quantity_three;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Digite a quantidade de Zeny que poderá ser dropado caso o jogador não receba um item."; input @quantity_zeny;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "1º prêmio: ^777777"+@quantity_one+" - "+getitemname(@id_one)+"^000000";
+
+                        mes "2º prêmio: ^777777"+@quantity_two+" - "+getitemname(@id_two)+"^000000";
+
+                        mes "3º prêmio: ^777777"+@quantity_three+" - "+getitemname(@id_three)+"^000000";
+
+                        mes "Prêmio em Zeny: ^777777"+@quantity_zeny+"z^000000";
+
+                        next;
+
+                        if(select("Confirmar:Cancelar") == 2 ) close;
+
+                        next;
+
+                        mes @npc$;
+
+                        mes "Prêmiações editadas com sucesso.";
+
+                        close2;
+
+                        setarray $id_prize[0],@id_one,@id_two,@id_three;
+
+                        setarray $quantity_prize[0],@quantity_one,@quantity_two,@quantity_three;
+
+                        set $quantity_zeny,@quantity_zeny;
+
+                        end;
+
+ 
+
+                        case 3:
+
+                        mes "Até mais!";
+
+                        close;
+
+                }
+
+ 
+
+                case 4:
+
+                mes "Até mais!";
+
+                close;
+
+        }
+
+OnClock0000: OnClock1200:
+
+OnClock0300: OnClock1500:
+
+OnClock0600: OnClock1800:
+
+OnClock0900: OnClock2100:
+
+evento_start:
+
+ 
+
+        set $evento,1;
+
+        killmonsterall "quiz_02";
+
+        announce "Evento da Sorte : Estamos abertos! Vocês têm 5 minutos para entrar.",bc_blue|bc_all;
+
+        sleep 240000;
+
+        announce "Evento da Sorte : Falta 1 minuto para o fechamento do evento.",bc_blue|bc_all;
+
+        sleep 60000;
+
+ 
+
+        set $evento,0;
+
+        if(getmapusers("quiz_02") < 1)
+
+        {
+
+                announce "Evento da Sorte : O evento foi cancelado por falta de jogadores.",bc_blue|bc_all;
+
+                end;
+
+        }
+
+        announce "Evento da Sorte : O evento começou!",bc_blue|bc_all;
+
+        pvpon "quiz_02";
+
+        removemapflag "quiz_02",mf_noskill;
+
+        sleep 3000;
+
+        mapannounce "quiz_02","Evento da Sorte : Em 5 minutos os baús irão aparecer.",bc_blue|bc_all;
+
+        sleep 300000;
+
+        pvpoff "quiz_02";
+
+        setmapflag "quiz_02",mf_noskill;
+
+        mapannounce "quiz_02","Evento da Sorte : Os baús aparecerão!",bc_blue|bc_all;
+
+        monster "quiz_02",34,69, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",39,60, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",51,69, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",46,60, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",58,69, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",63,60, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",75,69, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",70,60, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+ 
+
+        monster "quiz_02",316,51, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",321,42, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",333,51, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",328,42, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",340,51, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",345,42, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",357,51, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        monster "quiz_02",352,42, "Baú da Sorte",1354,1,""+strnpcinfo(1)+"::OnPrize";
+
+        end;
+
+ 
+
+OnPrize:
+
+        set @rand_prize, rand(1,5);
+
+        if(@rand_prize == 1)
+
+        {
+
+                getitem $id_prize[0],$quantity_prize[0];
+
+                announce "[ "+strcharinfo(0)+" ] abriu um Baú da Sorte e recebeu: "+$quantity_prize[0]+" "+getitemname($id_prize[0])+"",8;
+
+        }
+
+        if(@rand_prize == 2)
+
+        {
+
+                getitem $id_prize[1],$quantity_prize[1];
+
+                announce "[ "+strcharinfo(0)+" ] abriu um Baú da Sorte e recebeu: "+$quantity_prize[1]+" "+getitemname($id_prize[1])+"",8;
+
+        }
+
+        if(@rand_prize == 3)
+
+        {
+
+                getitem $id_prize[2],$quantity_prize[2];
+
+                announce "[ "+strcharinfo(0)+" ] abriu um Baú da Sorte e recebeu: "+$quantity_prize[2]+" "+getitemname($id_prize[2])+"",8;
+
+        }
+
+        if(@rand_prize == 4)
+
+        {
+
+                set Zeny,Zeny + $quantity_zeny;
+
+                announce "[ "+strcharinfo(0)+" ] abriu um Baú da Sorte e recebeu: "+$quantity_zeny+"z",8;
+
+        }
+
+        if(@rand_prize == 5)
+
+        {
+
+                atcommand "@kill "+strcharinfo(0);
+
+                announce "[ "+strcharinfo(0)+" ] abriu um Baú da Sorte e recebeu: A Morte! (muhaha)",8;
+
+        }
+
+        warp "prontera",156,191;
+
+        end;
+
+ 
+
+OnPCDieEvent:
+
+        if(strcharinfo(3) == "quiz_02")
+
+        {
+
+                dispbottom "Você perdeu.";
+
+                warp "SavePoint",0,0;
+
+                end;
+
+        }
+
+OnInit:
+
+        set $evento,0;
+
+        end;
+
+}
+
+ 
+
+quiz_02 mapflag nomemo
+
+quiz_02 mapflag nowarp
+
+quiz_02 mapflag nowarpto
+
+quiz_02 mapflag noicewall
+
+quiz_02 mapflag nomemo
+
+quiz_02 mapflag noreturn

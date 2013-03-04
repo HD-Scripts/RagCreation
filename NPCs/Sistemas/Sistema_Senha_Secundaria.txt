@@ -1,0 +1,194 @@
+// Criado e desenvolvido por Proxy
+//|==========================================================================================|
+//|   Script Criando por ragnaproxy | Cronus | Por Favor, não Retire Os Créditos.            |
+//|==========================================================================================|
+//|         ************************* Senha Secundária 4.0 ***************************       |
+//|==========================================================================================|
+prontera,140,182,5	script	Trocador de senha	121,{
+
+set .nnP$, "[^FF0000Trocador de senha^000000]";
+
+    	   mes .nnP$;
+    	   mes "Olá eu sou o assistente da 'senha secundária'";
+    	   mes "Eu sou responsável por todas as senha secundárias";
+    	   next;
+    	   mes .nnP$;
+    	   mes "O que deseja ?";
+    	   switch(select("Criar uma senha","Trocar senha","Sair")) { next;
+    	   
+case 1:
+
+    if( ##SenhaC == 0 )
+    {
+           Callfunc "SenhaAtiva";
+           
+    }else{
+    
+    mes .nnP$;
+    mes "Você já crio sua senha secundária";
+    close;
+ 
+    }
+    
+case 2:
+
+    	   nOPP:
+           next;
+   	   mes .nnP$;
+   	   mes "Digite a senha atual.";
+   	   digit #ATUALP$;
+   	   
+    if( #ATUALP$ == #SenhaP$)
+    {
+     	   next;
+  	   mes .nnP$;
+  	   mes "Digite a nova senha.";
+  	   digit #SenhaP$;
+           next;
+  	   mes .nnP$;
+  	   mes "Está correto?";
+   	   mes "^0000FF"+#SenhaP$+"^000000";
+   	   if(Select("Sim:não")== 2) goto nOPP;  next;
+   	   mes .nnP$;
+   	   mes "Sua senha foi alterada com sucesso.";
+   	   close;
+    }
+     	   next;
+  	   mes .nnP$;
+   	   mes "Senha inválida."; 
+   	   close;
+   	   
+case 3:
+    	  close;
+	   
+    }
+}
+
+-	script	##login	-1,{
+
+OnPCLoginEvent:
+if(getgmlevel() > 40) end;
+set $nPCC$, "[^FF0000Segurança^000000]";
+set $nPCP$, "[^FF0000Senha secundária^000000]";
+
+          if( ##COnT == 1 ) end;
+          if( ##SenhaC == 0 )
+
+    {
+           Callfunc "SenhaAtiva";
+    }
+        
+          if( ##SenhaC == 1 )
+
+	  {   
+	       set @gmlvl,getgmlevel();
+	       atcommand "@adjgmlvl -1 "+strcharinfo(0);
+	       pcblockmove getcharid(3),1;
+	       SEnP:
+	       mes $nPCC$; 
+	       mes "Sistema de proteção de contas ativado"; 
+	       if(Select("Digita minha senha:Recuperar senha")== 1)
+
+          {                       
+               Digit #SenhaT$;
+	  if( #SenhaT$ == #SenhaP$ )
+
+          {    
+	       atcommand "@adjgmlvl "+@gmlvl+" "+strcharinfo(0);
+	       pcblockmove getcharid(3),0;
+               next;
+	       mes $nPCC$; 
+	       mes "Senha correta, bom jogo"; 
+	       close; 
+ 
+          }
+
+	       close2;
+               addtimer 2000,"##login::OnTempo"; end;
+	       OnTempo:	   
+	       announce "SEnHA ERRADA!! VOCÊ SERÁ DESCOnECTADO",bc,0xD20000;
+	       sleep2 3000;
+	       atcommand "@Kick "+Strcharinfo(0); end;
+ 
+	  }    
+
+	      next;  
+              mes $nPCC$;
+              mes "Digite a palavra chave.";
+              next;
+              Digit #CHA$;
+               
+          if( #CHA$ == ##PL$ )
+
+          {   
+
+              mes $nPCC$;
+              mes "Sua senha abaixo.";
+              mes  "^0000FF"+#SenhaP$+"^000000";
+              next; 
+              goto SEnP; 
+                 
+          }
+
+	      next;
+              mes $nPCC$;
+              mes "Palavra chave inválida.";
+              mes "Por medidas de segurança você será desconectado.";
+              close2;
+              sleep2 3000;
+	      atcommand "@Kick "+Strcharinfo(0)+""; end;
+    
+	 }
+}
+
+ function	script	SenhaAtiva	{
+
+         if( ##SenhaC == 0 )
+
+         {
+
+               mes $nPCP$;
+	       mes "Olá ^339966"+Strcharinfo(0)+"^000000 seja bem vindo"; 
+	       next;
+	       mes $nPCP$;
+	       mes "Para melhor segurança da sua conta você poderá criar uma senha secundária"; 
+	       next;
+	       mes $nPCP$;
+	       mes "Você gostaria de cria uma senha secundaria ?";
+	       if(select("Sim:não")== 2)
+
+	 {
+
+  	       next;
+	       mes $nPCP$;
+	       mes  "Tudo bem então, tomo cuidado com sua conta.";
+  	       set ##COnT,1; 
+	       close;
+
+	 } 
+
+	       next;
+      	       nAOP:
+	       mes $nPCP$;
+      	       mes "Digite a senha, ela pode conter números e letras.";
+      	       next;
+      	       Digit #SenhaP$;
+     	       mes $nPCP$;
+      	       mes "Digite uma palavra chave para recuperação da senha.";
+      	       next;	
+      	       Digit ##PL$;
+      	       mes $nPCP$;
+ 	       mes "Está correto?";
+ 	       mes "Senha";
+ 	       mes "^0000FF"+#SenhaP$+"^000000";
+	       mes "Palavra chave";
+	       mes "^0000FF"+##PL$+"^000000";
+ 	       next;
+ 	       if(Select("Sim:não")==2) goto nAOP;
+               mes $nPCP$;
+               mes "Sua senha foi definida com sucesso!! boa sorte na sua jornada.";
+               set ##SenhaC,1; set ##COnT,0; 
+	       close; 
+
+	  } 
+}   

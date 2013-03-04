@@ -1,0 +1,121 @@
+//============mapflag==================
+pvp_n_8-5	mapflag	nowarp
+pvp_n_8-5	mapflag	nosave
+pvp_n_8-5	mapflag	noicewall
+pvp_n_8-5	mapflag	noteleport
+pvp_n_8-5	mapflag	nowarpto
+pvp_n_8-5	mapflag	noskill
+pvp_n_8-5	mapflag	pvp	off
+pvp_n_8-5	mapflag	gvg	off
+pvp_n_8-5	mapflag	nobranch
+pvp_n_8-5	mapflag	nomemo
+pvp_n_8-5	mapflag	noreturn
+//======================================
+
+-	script	Evento Poring#var	-1,{
+end;
+	OnInit:
+		//- ID do item do prêmio.
+		set $ipe, 671;
+
+		//- Quantidade do item do prêmio.
+		set $qpe, 1;
+
+		//- Tirar 50% de HP quando matar
+		//- um poring falso?
+		//- [0=NÃO|1=SIM]
+		set $hpe, 0;
+		end;
+}
+//===== Script: ==============================================
+prontera,256,75,5	script	Evento Poring	909,{
+
+	if(getgroupid() < 2)
+	{
+		if(!.poringcatch)
+		{
+			mes "Não tem evento por inquanto.";
+			close;
+		}
+		mes "Olá "+strcharinfo(0)+" o que posso fazer por você?";
+		next;
+		switch(select("Entrar no evento.:Informação."))
+		{
+			case 1:
+				mes "Divirta-se!";
+				next;
+				warp "pvp_n_8-5", 100, 100;
+				end;
+
+			case 2:
+				mes "São invocados 100 Porings.";
+				mes "Somente 1 é verdadeiro e você tem que acha-lo.";
+				mes "Caso consiga, ganhará um item.";
+				mes "Boa Sorte!.";
+				close;
+		}
+	}
+	mes "Olá "+strcharinfo(0)+" o que posso fazer por você?";
+	next;
+	menu "Ligar evento",open,"Entrar no evento",go; callsub OnEventStart;
+
+	go:
+	mes "Teletransportanto";
+	warp "pvp_n_8-5", 0, 0;
+	end;
+
+		Onclock0030: callsub OnEventStart;
+		Onclock0330: callsub OnEventStart;
+		OnClock0630: callsub OnEventStart;
+		OnClock0930: callsub OnEventStart;
+		OnClock1230: callsub OnEventStart;
+		OnClock1530: callsub OnEventStart;
+		Onclock1830: callsub OnEventStart;
+		Onclock2130: callsub OnEventStart;
+
+	open:
+	mes "Evento ligado com sucesso";
+	next;
+	warp "pvp_n_8-5", 0, 0;
+		OnEventStart:
+			announce "[Evento Poring]: Gente, é hora do evento. Falem comigo para entrar.",0;
+			initnpctimer;
+			monster "pvp_n_8-5",0,0,"Poring",1002,1,strnpcinfo(0)+"::OnMobKilled";
+			monster "pvp_n_8-5",0,0,"Pouring",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Proing",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Poirng",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Poing",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Porimg",1002,5,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Porinq",1002,1,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Poring",1113,1,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Poring",1062,1,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Por|ng",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Por1ng",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Porong",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"P0ring",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"P@ring",1002,10,strnpcinfo(0)+"::OnWrongKilled";
+			monster "pvp_n_8-5",0,0,"Porng",1002,1,strnpcinfo(0)+"::OnWrongKilled";
+			set .poringcatch,1;
+			end;
+
+		OnTimer600000:
+			stopnpctimer;
+			announce "[Evento Poring]: O tempo acabou, tente na próxima vez.",0;
+			set .poringcatch,0;
+			killmonsterall "pvp_n_8-5";
+			end;
+
+		OnMobKilled:
+			stopnpctimer;
+			announce "[Evento Poring]: "+strcharinfo(0)+" encontrou o Poring premiado!.Obrigado por participarem, Esperem até o próximo evento.",0;
+			dispbottom "Parabéns, você me achou.";
+			getitem 671,1;
+			killmonsterall "pvp_n_8-5";
+			set .poringcatch,0;
+			end;
+
+		OnWrongKilled:
+			dispbottom "Whaa, você errou feio.";
+			warp "prontera",155,179;
+			end;
+}

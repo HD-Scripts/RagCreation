@@ -1,0 +1,5 @@
+function	script	Vipzell	{
+
+query_sql "UPDATE `login` SET `dvip` = '7', `group_id` = '1' WHERE `account_id` = '"+getcharid(3)+"'";
+end;
+}

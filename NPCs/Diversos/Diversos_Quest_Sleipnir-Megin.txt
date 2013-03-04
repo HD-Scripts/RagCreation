@@ -1,0 +1,102 @@
+//=============================================
+//== KABAL SCRIPTS
+//== Versão: ==================================
+//== 1.2
+//== Autor: ===================================
+//== Kabal
+//=============================================
+lighthalzen,154,107,4	script	Mulher	803,{
+mes "[Mulher]";
+mes "Olá "+StrCharInfo(0)+"!";
+mes "Eu tenho alguns itens interessantes aqui, deseja dar uma olhada?";
+next;
+if( select("Claro!:Talvez mais tarde...") == 2 )
+{
+mes "[Mulher]";
+mes "Tudo bem, estarei aqui se você mudar de idéia.";
+close;
+}
+mes "[Mulher]";
+mes "Bem, estes são os itens que eu tenho...";
+mes "Sobre qual deles vai querer saber mais?";
+next;
+switch(select("Megingjard:Sleipnir:Nenhum"))
+{
+case 1:
+mes "[Megingjard]";
+mes "Recompensa:";
+mes "1x "+getitemname(2629);
+mes " ";
+mes "Requerimento:";
+mes "300x "+getitemname(7511);
+mes "300x "+getitemname(7063);
+mes "300x "+getitemname(7054);
+mes "300x "+getitemname(2353);
+mes "10x "+getitemname(7510);
+next;
+mes "[Mulher]";
+mes "Deseja fazer esta quest?";
+next;
+if( select("Sim!:Agora não...") == 2 )
+{
+mes "[Mulher]";
+mes "Tudo bem... Até mais!";
+close;
+}
+if(countitem(7511) >= 300 && countitem(7063) >= 300 && countitem(7054) >= 300 && countitem(1721) >= 300 && countitem(7510) >= 10)
+{
+delitem 7511,300;
+delitem 7063,300;
+delitem 7054,300;
+delitem 2353,300;
+delitem 7510,10;
+getitem 2629,1;
+mes "[Mulher]";
+mes "Parabéns! Aqui está!";
+close;
+}
+break;
+case 2:
+mes "[Sleipnir]";
+mes "Recompensa:";
+mes "1x "+getitemname(2410);
+mes " ";
+mes "Requerimento:";
+mes "300x "+getitemname(7221);
+mes "300x "+getitemname(7209);
+mes "300x "+getitemname(7213);
+mes "300x "+getitemname(7215);
+mes "5x "+getitemname(2421);
+next;
+mes "[Mulher]";
+mes "Deseja fazer esta quest?";
+next;
+if( select("Sim!:Agora não...") == 2 )
+{
+mes "[Mulher]";
+mes "Tudo bem... Até mais!";
+close;
+}
+if(countitem(7221) >= 300 && countitem(7209) >= 300 && countitem(7213) >= 300 && countitem(7215) >= 300 && countitem(2421) >= 5)
+{
+delitem 7221,300;
+delitem 7209,300;
+delitem 7213,300;
+delitem 7215,300;
+delitem 2421,5;
+getitem 2410,1;
+mes "[Mulher]";
+mes "Parabéns! Aqui está!";
+close;
+}
+break;
+case 3:
+mes "[Mulher]";
+mes "Tudo bem, estarei aqui se você mudar de idéia.";
+close;
+}
+mes "[Mulher]";
+mes "Me desculpe, mas você não tem todos os itens necessários para esta quest.";
+mes "Volte quando você tiver todos os itens!";
+close;
+}

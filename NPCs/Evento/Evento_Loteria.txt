@@ -1,0 +1,367 @@
+//=======================================================
+//====================NPC Loteria ==========================
+//======================Autor: ============================
+//===================== Sr•Kira ============================
+//====================Testado Por:==========================
+//==================Sr•Kira, Khamael=========================
+//=====================V 1.2 ==============================
+//=======================================================
+prontera,259,64,4	script	Loto_Gerente	872,{
+if(getgmlevel()<99) goto nogm;
+mes "Olá GM,quer configurar a loteria?";
+menu "Editar Valores",e_val,"Opções de ativação",o_atv,"Menu de Player",nogm,"não...clickei por acidente",-;
+close;
+e_val:
+mes "Muito bem, que valor deseja editar?";
+menu "Preço do Bilhete",v_bil,"Valor inicial do Prêmio",v_pre,"Data do Sorteio",-;
+mes "Bom...preste MUITA atenção agora!!!";
+mes "O Sorteio é Manual, ou seja,na data marcada um GM ";
+mes "deve iniciar o Sorteio nas Opções de Ativação";
+mes "Então após definir uma data e hora,tenha em mente que alguém deve iniciar o sorteio nesta data e hora!";
+mes "A reputação do server é que está em jogo, OK?";
+next;
+mes "Defina uma Data";
+mes "ex: 12/12 ou 12/12/2012";
+digit $data$;
+next;
+mes "Agora em que Horário deve começar o Sorteio?";
+mes "ex: 12:00 ou 12 Horas ou 12:30h...etc";
+digit $hora$;
+close;
+v_bil:
+mes "Defina um preço para o Bilhete da Loteria";
+digit $custo;
+close;
+v_pre:
+mes "Qual Prêmio quer Definir?";
+menu "1º Prêmio",premio1,"2º Prêmio",premio2,"3º Prêmio",-;
+mes "O 3º Prêmio deve ser um item";
+mes "Você só defini 1 item , mas pode escolher a quantidade.";
+next;
+mes "Digite o ID do item";
+digit $premio3;
+next;
+mes "Digite o nome deste item ";
+digit $nitem3$;
+next;
+mes "Digite a Quantidade";
+digit $qitem3;
+next;
+mes "conferindo...";
+mes "O 3º Prêmio é "+$qitem3+ $nitem3$+"";
+mes "O ID do item "+$nitem3$+" é "+$premio3+".";
+close;
+premio1:
+mes "Se a bilheteria ja foi aberta e o premio ja está acumulando dinheiro, é melhor não fazer isso!";
+mes "ao alterar o valor perde-se todo o dinheiro acumulado!";
+mes "quer continuar assim mesmo?";
+menu "Sim",-,"Não",exit;
+mes "Digite o Valor inicial do Prêmio";
+digit $premio1;
+next;
+mes "O prêmio inicial é "+$premio1+"";
+close;
+premio2:
+mes "O 2º Prêmio deve ser um item";
+mes "Você só defini 1 item , mas pode escolher a quantidade.";
+next;
+mes "Digite o ID do item";
+digit $premio2;
+next;
+mes "Digite o nome deste item ";
+digit $nitem2$;
+next;
+mes "Digite a Quantidade";
+digit $qitem2;
+next;
+mes "conferindo...";
+mes "O 2º Prêmio é "+$qitem2+_+$nitem2$+"";
+mes "O ID do item "+$nitem2$+" é "+$premio2+".";
+close;
+o_atv:
+mes "Muito bem, o que deseja fazer?";
+menu "Abrir Bilheteria",bilh0,"Parar Bilheteria",bilh1,"Sortear Numeros",-;
+set $bilh,1;
+set $sor,1;
+Announce "A Bilheteria está Fechada!",1;
+Announce "O GM"+StrCharInfo(0)+" Começou o Sorteio da Loteria!",1;
+set $sor1,rand(1,10);
+Announce "Primeiro Numero..."+$sor1+" !!!",1;
+Announce "O Vencedor pode ser você !!!",1;
+set $sor2,rand(1,10);
+Announce "Segundo Numero..."+$sor2+" !!!",1;
+Announce "Tá esquentando !!!",1;
+set $sor3,rand(1,10);
+Announce "Terceiro Numero..."+$sor3+" !!!",1;
+Announce "O Primeiro Bilhete Premiado é ["+$sor1+"]["+$sor2+"]["+$sor3+"]!!!",1;
+set $sor4,rand(1,10);
+set $sor5,rand(1,10);
+set $sor6,rand(1,10);
+set $sor7,rand(1,10);
+set $sor8,rand(1,10);
+set $sor9,rand(1,10);
+Announce "Se vc ganhou Venha receber seu prêmio",1;
+Announce "Se não ganhou neste sorteio, Venha conferir os 2º e 3º Prêmio!",1;
+close;
+
+bilh0:
+set $bilh,0;
+set $sor,0;
+Announce "A Bilheteria está Aberta!",1;
+close;
+
+bilh1:
+set $bilh,1;
+Announce "A Bilheteria está Fechada!",1;
+close;
+
+nogm:
+if($sor == 1) goto r_pre;
+mes "Já Comprou seu Bilhete?";
+mes "O1º prêmio está em "+$premio1+"";
+mes "O 2º Prêmio é "+$qitem2+" "+$nitem2$+"";
+mes "O 2º Prêmio é "+$qitem3+" "+$nitem3$+"";
+mes "O Sorteio será "+$data$+" as "+$hora$+"";
+next;
+mes "Seus Bilhetes:";
+mes "["+a1+"] ["+a2+"] ["+a3+"]";
+mes "["+b1+"] ["+b2+"] ["+b3+"]";
+mes "["+c1+"] ["+c2+"] ["+c3+"]";
+close;
+
+r_pre:
+mes "Os numeros Sorteados são:";
+mes "Primeiro Prêmio:";
+mes "["+$sor1+"] ["+$sor2+"] ["+$sor3+"]";
+mes "Segundo Prêmio:";
+mes "["+$sor4+"] ["+$sor5+"] ["+$sor6+"]";
+mes "Terceiro Prêmio:";
+mes "["+$sor7+"] ["+$sor8+"] ["+$sor9+"]";
+mes "Seus Bilhetes são:";
+mes "["+a1+"] ["+a2+"] ["+a3+"]";
+mes "["+b1+"] ["+b2+"] ["+b3+"]";
+mes "["+c1+"] ["+c2+"] ["+c3+"]";
+next;
+mes "O que deseja Fazer?";
+menu "sair",exit,"Receber Prêmio",-;
+if(a1==$sor1 && a2==$sor2 && a3==$sor3)goto r_pr1;
+if(b1==$sor1 && b2==$sor2 && b3==$sor3)goto r_pr1;
+if(c1==$sor1 && c2==$sor2 && c3==$sor3)goto r_pr1;
+if(a1==$sor4 && a2==$sor5 && a3==$sor6)goto r_pr2;
+if(b1==$sor4 && b2==$sor5 && b3==$sor6)goto r_pr2;
+if(c1==$sor4 && c2==$sor5 && c3==$sor6)goto r_pr2;
+if(a1==$sor7 && a2==$sor8 && a3==$sor9)goto r_pr3;
+if(b1==$sor7 && b2==$sor8 && b3==$sor9)goto r_pr3;
+if(c1==$sor7 && c2==$sor8 && c3==$sor9)goto r_pr3;
+
+mes "Você Não Ganhou!Nenhum Prêmio.";
+set bn,0;
+set a1,0;
+set a2,0;
+set a3,0;
+set b1,0;
+set b2,0;
+set b3,0;
+set c1,0;
+set c2,0;
+set c3,0;
+mes "Seus Bilhetes Foram Zerados!";
+close;
+
+close;
+
+r_pr1:
+set Zeny,Zeny+$premio1;
+set bn,0;
+set a1,0;
+set a2,0;
+set a3,0;
+set b1,0;
+set b2,0;
+set b3,0;
+set c1,0;
+set c2,0;
+set c3,0;
+mes "Seus Bilhetes Foram Zerados!";
+close;
+
+r_pr2:
+getitem $premio2,$qitem2;
+set bn,0;
+set a1,0;
+set a2,0;
+set a3,0;
+set b1,0;
+set b2,0;
+set b3,0;
+set c1,0;
+set c2,0;
+set c3,0;
+mes "Seus Bilhetes Foram Zerados!";
+close;
+
+r_pr3:
+getitem $premio3,$qitem3;
+set bn,0;
+set a1,0;
+set a2,0;
+set a3,0;
+set b1,0;
+set b2,0;
+set b3,0;
+set c1,0;
+set c2,0;
+set c3,0;
+mes "Seus Bilhetes Foram Zerados!";
+close;
+
+exit:
+mes "Até Mais";
+close;
+}
+
+//=================Bilheteria===================
+prontera,127,212,3	script	Bilheteria	72,{
+set $zadd,$custo;
+
+if($bilh==1) goto clbil;
+if($preio1>2000000000) set $zadd,0;
+mes "Olá, Sou a Vendedora de Bilhetes!";
+mes "Nosso Prêmio está em "+$premio1+"";
+mes "Em que posso Ajudar?";
+menu "Comprar Bilhete",sim,"Zerar Bilhetes",zall,"Nada",-;
+mes " Tudo Bem...volte quando não for mais pão duro!";
+close;
+sim:
+if (Zeny <$custo) goto s_grana;
+set Zeny,Zeny-$custo;
+set $premio1,$premio1+$zadd;
+if(bn==0) goto ba;
+if(bn==1) goto bb;
+if(bn==2) goto bc;
+if(bn==3) goto full;
+ba:
+mes "Ótimo,digite um numero de 1a 10";
+digit a1;
+if(a1>10 ||a1==0)goto a_inval;
+next;
+mes "Agora o segundo Numero..";
+digit a2;
+if(a2>10 ||a2==0)goto a_inval;
+next;
+mes ".. o ultimo numero agora:";
+digit a3;
+if(a3>10 ||a3==0)goto a_inval;
+next;
+set bn,bn+1;
+mes" Muito Obrigada!";
+close;
+bb:
+mes "Este é seu segundo bilhete!";
+mes "O Primeiro é:";
+mes "["+a1+"]["+a2+"]["+a3+"] ";
+next;
+mes "digite um numero de 1 a 10";
+digit b1;
+if(b1>10 ||b1==0)goto b_inval;
+next;
+mes "Agora o segundo Numero..";
+digit b2;
+if(b2>10 ||b2==0)goto b_inval;
+next;
+mes ".. o ultimo numero agora:";
+digit b3;
+if(b3>10 ||b3==0)goto b_inval;
+next;
+set bn,bn+1;
+mes" Muito Obrigada!";
+close;
+
+bc:
+mes "Este é seu terceiro bilhete!";
+mes "O os outros são:";
+mes "["+a1+"] ["+a2+"] ["+a3+"]";
+mes "["+b1+"] ["+b2+"] ["+b3+"]";
+next;
+mes "Digite um numero de 1a 10";
+digit c1;
+if(c1>10 ||c1==0)goto c_inval;
+next;
+mes "Agora o segundo Numero..";
+digit c2;
+if(c2>10 ||c2==0)goto c_inval;
+next;
+mes ".. o ultimo numero agora:";
+digit c3;
+if(c3>10 ||c3==0)goto c_inval;
+next;
+set bn,bn+1;
+mes" Muito Obrigada!";
+close;
+
+a_inval:
+mes " O Numero deve ser entre 1 e 10!!!";
+mes "Agora tem que começar de novo!";
+next;
+goto ba;
+
+b_inval:
+mes " O Numero deve ser entre 1 e 10!!!";
+mes "Agora tem que começar de novo!";
+next;
+goto bb;
+
+c_inval:
+mes " O Numero deve ser entre 1 e 10!!!";
+mes "Agora tem que começar de novo!";
+next;
+goto bc;
+
+full:
+mes "Desculpe Senhor, mas você ja tem 3 Bilhetes neste char";
+mes "Os Numeros são:";
+mes "["+a1+"] ["+a2+"] ["+a3+"]";
+mes "["+b1+"] ["+b2+"] ["+b3+"]";
+mes "["+c1+"] ["+c2+"] ["+c3+"]";
+next;
+mes "Deseja Trocar algum bilhete?";
+menu "Sim",tro,"não",-;
+mes "Muito Bem...então não posso te vender mais bilhetes neste char.";
+mes "Volte com outro char para comprar mais bilhetes.";
+close;
+tro:
+mes "ok...qual bilhete deseja trocar?";
+menu "Bilhete 1",cb1,"Bilhete 2",cb2,"Bilhete 3",cb3,"Zerar Tudo",zall,"Nenhum",-;
+close;
+cb1:
+goto ba;
+cb23:
+goto bb;
+cb3:
+goto bc;
+zall:
+set bn,0;
+set a1,0;
+set a2,0;
+set a3,0;
+set b1,0;
+set b2,0;
+set b3,0;
+set c1,0;
+set c2,0;
+set c3,0;
+mes "Seus Bilhetes Foram Zerados!";
+mes "Fale comigo outra vez para comprar!";
+close;
+
+clbil:
+mes "A Bilheteria está Fechada!";
+mes "Volte outra hora!";
+close;
+
+s_grana:
+mes "Ta querendo me enganar?";
+mes "Você ta sem grana!";
+mes "Volte quando tiver o dinheiro!";
+close;
+}
